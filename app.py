@@ -1,12 +1,15 @@
 import tkinter as tk
-from tkinter import ttk
-
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
 class MainApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Household Management System")
-        self.root.geometry("500x400")
+        self.root.geometry("600x500")
+
+        # Use a modern theme
+        style = ttk.Style(theme="flatly")
 
         self.build_main_menu()
 
@@ -14,75 +17,70 @@ class MainApp:
     # MAIN MENU
     # ----------------------------------------------------
     def build_main_menu(self):
-        title = ttk.Label(self.root, text="Household Management", font=("Arial", 20))
+        frame = ttk.Frame(self.root, padding=20)
+        frame.pack(fill=BOTH, expand=True)
+
+        title = ttk.Label(frame, text="Household Management", 
+                          font=("Segoe UI", 24, "bold"))
         title.pack(pady=20)
 
-        # Each button opens a different module window
-        ttk.Button(self.root, text="Grocery List Manager", width=30,
-                   command=self.open_grocery).pack(pady=8)
+        # Icon images (optional)
+        try:
+            self.grocery_img = tk.PhotoImage(file="icons/grocery.png").subsample(6)
+            self.meal_img = tk.PhotoImage(file="icons/meal.png").subsample(6)
+            self.budget_img = tk.PhotoImage(file="icons/budget.png").subsample(6)
+            self.chore_img = tk.PhotoImage(file="icons/chore.png").subsample(6)
+        except:
+            self.grocery_img = self.meal_img = self.budget_img = self.chore_img = None
 
-        ttk.Button(self.root, text="Meal Planner", width=30,
-                   command=self.open_meal).pack(pady=8)
+        # Modern rounded buttons
+        ttk.Button(frame, text="  Grocery List Manager", image=self.grocery_img,
+                   compound="left", bootstyle=PRIMARY, width=30,
+                   command=self.open_grocery).pack(pady=12)
 
-        ttk.Button(self.root, text="Budget Tracker", width=30,
-                   command=self.open_budget).pack(pady=8)
+        ttk.Button(frame, text="  Meal Planner", image=self.meal_img,
+                   compound="left", bootstyle=INFO, width=30,
+                   command=self.open_meal).pack(pady=12)
 
-        ttk.Button(self.root, text="Chore Scheduler", width=30,
-                   command=self.open_chore).pack(pady=8)
+        ttk.Button(frame, text="  Budget Tracker", image=self.budget_img,
+                   compound="left", bootstyle=SUCCESS, width=30,
+                   command=self.open_budget).pack(pady=12)
+
+        ttk.Button(frame, text="  Chore Scheduler", image=self.chore_img,
+                   compound="left", bootstyle=DANGER, width=30,
+                   command=self.open_chore).pack(pady=12)
 
     # ----------------------------------------------------
-    # SUBMODULE WINDOWS
+    # SUBMODULE WINDOWS (Modern Styled)
     # ----------------------------------------------------
+    def base_window(self, title):
+        win = ttk.Toplevel(self.root)
+        win.title(title)
+        win.geometry("500x400")
+        ttk.Label(win, text=title, font=("Segoe UI", 20, "bold")).pack(pady=20)
+        return win
 
-    # --- Grocery List Module ---
     def open_grocery(self):
-        win = tk.Toplevel(self.root)
-        win.title("Grocery List Manager")
-        win.geometry("450x350")
+        win = self.base_window("Grocery List Manager")
+        ttk.Label(win, text="[TODO: Grocery UI Here]").pack(pady=20)
 
-        ttk.Label(win, text="Grocery List Module", font=("Arial", 16)).pack(pady=10)
-
-        # TODO: Add your grocery module widgets here
-        ttk.Label(win, text="[TODO: Grocery UI here]").pack(pady=10)
-
-    # --- Meal Planner Module ---
     def open_meal(self):
-        win = tk.Toplevel(self.root)
-        win.title("Meal Planner")
-        win.geometry("450x350")
+        win = self.base_window("Meal Planner")
+        ttk.Label(win, text="[TODO: Meal Planner UI Here]").pack(pady=20)
 
-        ttk.Label(win, text="Meal Planner Module", font=("Arial", 16)).pack(pady=10)
-
-        # TODO: Add your meal planner widgets here
-        ttk.Label(win, text="[TODO: Meal Planner UI here]").pack(pady=10)
-
-    # --- Budget Tracker Module ---
     def open_budget(self):
-        win = tk.Toplevel(self.root)
-        win.title("Budget Tracker")
-        win.geometry("450x350")
+        win = self.base_window("Budget Tracker")
+        ttk.Label(win, text="[TODO: Budget UI Here]").pack(pady=20)
 
-        ttk.Label(win, text="Budget Tracker Module", font=("Arial", 16)).pack(pady=10)
-
-        # TODO: Add your budget UI here
-        ttk.Label(win, text="[TODO: Budget UI here]").pack(pady=10)
-
-    # --- Chore Scheduler Module ---
     def open_chore(self):
-        win = tk.Toplevel(self.root)
-        win.title("Chore Scheduler")
-        win.geometry("450x350")
-
-        ttk.Label(win, text="Chore Scheduler Module", font=("Arial", 16)).pack(pady=10)
-
-        # TODO: Add your chore scheduler UI here
-        ttk.Label(win, text="[TODO: Chore Scheduler UI here]").pack(pady=10)
+        win = self.base_window("Chore Scheduler")
+        ttk.Label(win, text="[TODO: Chore Scheduler UI Here]").pack(pady=20)
 
 
 # ----------------------------------------------------
 # RUN APP
 # ----------------------------------------------------
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = ttk.Window(themename="flatly")
     app = MainApp(root)
     root.mainloop()
