@@ -7,10 +7,7 @@ class App():
         self.root = root
         self.root.title("Household Management Assistant App")
         self.root.geometry("400x300")
-
-        self.chore_list = []
-
-        self.main_menu()
+        self.main_menu()   ## call to return to main menu
 
     def main_menu(self):
         for widget in self.root.winfo_children():
@@ -32,6 +29,21 @@ class App():
         print("Grocery List Manager clicked")
 
     def open_chore(self):
+        ChoreScheduler(self.root, back_callback = self.main_menu).open()
+
+    def open_budget(self):
+        print("Budget Tracker clicked")
+
+    def open_meal(self):
+        print("Meal Planner clicked")
+
+class ChoreScheduler:
+    def __init__(self, root, back_callback):
+        self.root = root
+        self.chore_list = []
+        self.back_callback = back_callback ## function to call to go back to main menu
+
+    def open(self):
         self.chore_list = []
 
         for widget in self.root.winfo_children():
@@ -60,14 +72,8 @@ class App():
             chore_list = ttk.Treeview(self.root, columns = columns, show = "headings")
             chore_list.pack(fill = "both", expand = True, padx = 20, pady = 20)
 
-        btn_back = tk.Button(self.root, text = "Back", command = self.main_menu)
+        btn_back = tk.Button(self.root, text = "Back", command = self.back_callback)
         btn_back.pack(pady = 20)
-
-    def open_budget(self):
-        print("Budget Tracker clicked")
-
-    def open_meal(self):
-        print("Meal Planner clicked")
 
 if __name__ == "__main__":
     root = tk.Tk()
