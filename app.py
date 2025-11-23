@@ -9,6 +9,8 @@ class App():
         self.root.geometry("400x300")
         self.main_menu()   ## call to return to main menu
 
+        self.chore_module = ChoreScheduler(self.root, back_callback = self.main_menu)
+
     def main_menu(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -29,7 +31,7 @@ class App():
         print("Grocery List Manager clicked")
 
     def open_chore(self):
-        ChoreScheduler(self.root, back_callback = self.main_menu).open()
+        self.chore_module.open()
 
     def open_budget(self):
         print("Budget Tracker clicked")
@@ -44,8 +46,6 @@ class ChoreScheduler:
         self.back_callback = back_callback ## function to call to go back to main menu
 
     def open(self):
-        self.chore_list = []
-
         for widget in self.root.winfo_children():
             widget.pack_forget()        
 
