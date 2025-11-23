@@ -1,86 +1,75 @@
 import tkinter as tk
-import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
+from tkinter import messagebox  ## popup windows
+from tkinter import ttk         ## create table
 
-class MainApp:
+class App():
     def __init__(self, root):
         self.root = root
-        self.root.title("Household Management System")
-        self.root.geometry("600x500")
+        self.root.title("Household Management Assistant App")
+        self.root.geometry("400x300")
 
-        # Use a modern theme
-        style = ttk.Style(theme="flatly")
+        self.chore_list = []
 
-        self.build_main_menu()
+        self.main_menu()
 
-    # ----------------------------------------------------
-    # MAIN MENU
-    # ----------------------------------------------------
-    def build_main_menu(self):
-        frame = ttk.Frame(self.root, padding=20)
-        frame.pack(fill=BOTH, expand=True)
+    def main_menu(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
 
-        title = ttk.Label(frame, text="Household Management", 
-                          font=("Segoe UI", 24, "bold"))
-        title.pack(pady=20)
+        btn_grocery = tk.Button(self.root, text = "Grocery List Manager", width = 25, height = 2, command = self.open_grocery)
+        btn_grocery.pack(pady = 5)
 
-        # Icon images (optional)
-        try:
-            self.grocery_img = tk.PhotoImage(file="icons/grocery.png").subsample(6)
-            self.meal_img = tk.PhotoImage(file="icons/meal.png").subsample(6)
-            self.budget_img = tk.PhotoImage(file="icons/budget.png").subsample(6)
-            self.chore_img = tk.PhotoImage(file="icons/chore.png").subsample(6)
-        except:
-            self.grocery_img = self.meal_img = self.budget_img = self.chore_img = None
+        btn_chore = tk.Button(self.root, text = "Chore Scheduler", width = 25, height = 2, command = self.open_chore)
+        btn_chore.pack(pady = 5)
 
-        # Modern rounded buttons
-        ttk.Button(frame, text="  Grocery List Manager", image=self.grocery_img,
-                   compound="left", bootstyle=PRIMARY, width=30,
-                   command=self.open_grocery).pack(pady=12)
+        btn_budget = tk.Button(self.root, text = "Budget Tracker", width = 25, height = 2, command = self.open_budget)
+        btn_budget.pack(pady = 5)
 
-        ttk.Button(frame, text="  Meal Planner", image=self.meal_img,
-                   compound="left", bootstyle=INFO, width=30,
-                   command=self.open_meal).pack(pady=12)
-
-        ttk.Button(frame, text="  Budget Tracker", image=self.budget_img,
-                   compound="left", bootstyle=SUCCESS, width=30,
-                   command=self.open_budget).pack(pady=12)
-
-        ttk.Button(frame, text="  Chore Scheduler", image=self.chore_img,
-                   compound="left", bootstyle=DANGER, width=30,
-                   command=self.open_chore).pack(pady=12)
-
-    # ----------------------------------------------------
-    # SUBMODULE WINDOWS (Modern Styled)
-    # ----------------------------------------------------
-    def base_window(self, title):
-        win = ttk.Toplevel(self.root)
-        win.title(title)
-        win.geometry("500x400")
-        ttk.Label(win, text=title, font=("Segoe UI", 20, "bold")).pack(pady=20)
-        return win
+        btn_meal = tk.Button(self.root, text = "Meal Planner", width = 25, height = 2, command = self.open_meal)
+        btn_meal.pack(pady = 5)
 
     def open_grocery(self):
-        win = self.base_window("Grocery List Manager")
-        ttk.Label(win, text="[TODO: Grocery UI Here]").pack(pady=20)
-
-    def open_meal(self):
-        win = self.base_window("Meal Planner")
-        ttk.Label(win, text="[TODO: Meal Planner UI Here]").pack(pady=20)
-
-    def open_budget(self):
-        win = self.base_window("Budget Tracker")
-        ttk.Label(win, text="[TODO: Budget UI Here]").pack(pady=20)
+        print("Grocery List Manager clicked")
 
     def open_chore(self):
-        win = self.base_window("Chore Scheduler")
-        ttk.Label(win, text="[TODO: Chore Scheduler UI Here]").pack(pady=20)
+        self.chore_list = []
 
+        for widget in self.root.winfo_children():
+            widget.pack_forget()        
 
-# ----------------------------------------------------
-# RUN APP
-# ----------------------------------------------------
+        def save_chore():
+            add_chore = entry.get()
+            if add_chore:                ## for empty input
+                self.chore_list.append(add_chore)
+                print("Enter chore:", add_chore)
+                entry.delete(0, tk.END)
+
+        def add_chore_form():
+            global entry
+            entry = ttk.Entry(self.root, width=25)
+            entry.pack(pady=5)
+            ttk.Button(self.root, text = "Save", command = save_chore).pack(pady=5)
+
+        if len(self.chore_list) == 0:
+            chore_empty = tk.Label(self.root, text = "No chores yet")
+            chore_empty.pack(pady = 20)
+            chore_add = tk.Button(self.root, text = "Add Chore", command = add_chore_form)
+            chore_add.pack(pady = 20)
+        else:
+            columns = ("Chore", "Status")
+            chore_list = ttk.Treeview(self.root, columns = columns, show = "headings")
+            chore_list.pack(fill = "both", expand = True, padx = 20, pady = 20)
+
+        btn_back = tk.Button(self.root, text = "Back", command = self.main_menu)
+        btn_back.pack(pady = 20)
+
+    def open_budget(self):
+        print("Budget Tracker clicked")
+
+    def open_meal(self):
+        print("Meal Planner clicked")
+
 if __name__ == "__main__":
-    root = ttk.Window(themename="flatly")
-    app = MainApp(root)
+    root = tk.Tk()
+    app = App(root)
     root.mainloop()
