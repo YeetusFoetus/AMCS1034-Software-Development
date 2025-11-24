@@ -1,5 +1,6 @@
 # Import all the definitions from 'tkinter' library
-import tkinter as tk
+import os.path as path
+import json
 from tkinter import *
 
 """
@@ -16,59 +17,27 @@ Note:
 - The following code designs the user interface for the grocery list manager.
 - Variables are also declared at this stage.
 """
-# Creates a list of groceries
-groceries = [
-    {
-        "name": "Cucumber",
-        "category": "Vegetable",
-        "quantity": 12
-    },
-    {
-        "name": "Apple",
-        "category": "Fruit",
-        "quantity": 8
-    },
-    {
-        "name": "Chicken meat",
-        "category": "Raw meat",
-        "quantity": 7
-    },
-    {
-        "name": "Rice",
-        "category": "Cereal grain",
-        "quantity": 2
-    },
-    {
-        "name": "Potato Chips",
-        "category": "Snack",
-        "quantity": 10
-    },
-    {
-        "name": "Potato Tyre Chips",
-        "category": "Snack",
-        "quantity": 10
-    },
-    {
-        "name": "Popcorn",
-        "category": "Snack",
-        "quantity": 10
-    },
-    {
-        "name": "Muruku",
-        "category": "Snack",
-        "quantity": 10
-    },
-    {
-        "name": "Pepsi",
-        "category": "Beverage",
-        "quantity": 5
-    },
-    {
-        "name": "Pat Choi",
-        "category": "Vegetable",
-        "quantity": 8
-    }
-]
+if path.isfile("groceryList.json"):
+    try:
+        # Opens the 'JSON' file that contains the list of groceries
+        f = open("groceryList.json", "r+")
+
+        # Creates a list of groceries
+        groceryList_json = f.read()
+
+        # Closes 'groceryList.json' after reading the content
+        f.close()
+
+        # Loads the list of the groceries from 'JSON' string
+        groceries = json.loads(groceryList_json)
+    except:
+        print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
+else:
+    # Warns the user that 'groceryList.json' does not exist
+    print("WARNING: 'groceryList.json' file does not exist.")
+
+    # Declares an empty list of groceries if the file does not exist
+    groceries = []
 
 categories = [] # Declares a list of options that will be displayed on the drop-down menu
 
@@ -147,8 +116,12 @@ def change_categoryView(category):
 
 # Initialises the window with initial values
 def Init():
-    category_opt.set(categories[0])
-    change_categoryView(category_opt.get())
+    if(len(categories) > 0):
+        category_opt.set(categories[0])
+        change_categoryView(category_opt.get())
+    else:
+        category_opt.set("No categories available")
+        pass
 
 loadCategories()    # Loads the categories from the list of groceries
 
