@@ -4,7 +4,14 @@ import json
 from tkinter import *
 
 class groceryListManager:
+    def __init__(self):
+        print("INFO: 'groceryListManager' class has been initialised successfully.")
+
     def loadList():
+        # Disables the graphical user interface from being launched if a function from 'groceryListManager' class is being called.
+        global noGUI    # Setting 'noGUI' variable to 'True' prevent the graphical user interface from being launched if a function from 'groceryListManager' class is being called.
+        noGUI = True
+
         # Declares an empty list of groceries
         groceries = []
 
@@ -70,6 +77,8 @@ class groceryListManager:
                                      font=("Arial", 12)
                                      )
         
+        container_category = Frame(root, background="green")
+
         # This frame arranges the list boxes horizontally to make them look like a table
         rowContainer = Frame(root, background="yellowgreen")
         
@@ -101,6 +110,7 @@ class groceryListManager:
             groceries_listView_name.delete(0, END)
             groceries_listView_category.delete(0, END)
             groceries_listView_quantity.delete(0, END)
+
             # Adds the item to the list based on the selected category
             for currIndex, grocery in enumerate(groceries):
                 if grocery.get("category") == category:
@@ -140,10 +150,22 @@ class groceryListManager:
         # Note: Remember to show the control on the window with 'pack' function.
         label_appTitle.pack(side="top")
         label_appDescription.pack(side="top")
-        category.pack(side="top")
+
+        category.pack()
+
         groceries_listView_name.pack(in_=rowContainer, side="left")
         groceries_listView_category.pack(in_=rowContainer, side="left")
         groceries_listView_quantity.pack(in_=rowContainer, side="left")
-        rowContainer.pack(side="top")
+        
+        # Containers
+        container_category.pack()
+        rowContainer.pack()
         
         root.mainloop() # Runs the application with the window
+
+# Runs the grocery list manager application if no function from the class is being called
+if __name__ == "__main__":
+    print("Starting Grocery List Manager...")
+    groceryListManager.App()
+else:
+    print("NOTE: 'groceryListManager' module has been imported.")
