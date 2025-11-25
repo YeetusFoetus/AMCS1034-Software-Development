@@ -7,11 +7,7 @@ class groceryListManager:
     def __init__(self):
         print("INFO: 'groceryListManager' class has been initialised successfully.")
 
-    def loadList():
-        # Disables the graphical user interface from being launched if a function from 'groceryListManager' class is being called.
-        global noGUI    # Setting 'noGUI' variable to 'True' prevent the graphical user interface from being launched if a function from 'groceryListManager' class is being called.
-        noGUI = True
-
+    def getList(self):
         # Declares an empty list of groceries
         groceries = []
 
@@ -37,12 +33,20 @@ class groceryListManager:
         # Returns the 'groceries' list to the calling function
         return groceries
     
-    def App():
+    def App(self, root = None):
         """
         Note:
         - Every window must be initialised with the following code.
+
+        - 'Tk()' function creates the main window.
+
+        - Tkinter cannot have multiple main instances of 'Tk()' at the same time.
+          Therefore, 'Toplevel()' function is utilised so multiple instances of Tkinter windows can be opened.
         """
-        root = Tk() # Creates the main window
+        if root is None:
+            root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
+            print("INFO: 'Grocery List Manager' window is opened in a new window.")
+
         root.title("Grocery List Manager - Household Management Assistant App") # Sets the title of the window
         root.geometry("800x600")    # Sets the size of the window
         root.configure(bg='white')  # Changes the background colour using 'configure' function
@@ -52,7 +56,7 @@ class groceryListManager:
         - The following code designs the user interface for the grocery list manager.
         - Variables are also declared at this stage.
         """
-        groceries = groceryListManager.loadList() # Loads the list of groceries by calling 'loadList' function from 'groceryListManager' class
+        groceries = self.getList() # Loads the list of groceries by calling 'loadList' function from the current 'groceryListManager' class' instance
         
         categories = [] # Declares a list of options that will be displayed on the drop-down menu
         
@@ -166,6 +170,9 @@ class groceryListManager:
 # Runs the grocery list manager application if no function from the class is being called
 if __name__ == "__main__":
     print("Starting Grocery List Manager...")
-    groceryListManager.App()
+    # Creates a new instance from 'groceryListManager' class
+    root = Tk()
+    instance = groceryListManager()
+    instance.App(root)
 else:
     print("NOTE: 'groceryListManager' module has been imported.")
