@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox  ## popup windows
 from tkinter import ttk         ## create table
+# Grocery List Manager
+from groceryListManager import groceryListManager
 
 class App():
     def __init__(self, root):
@@ -30,6 +32,11 @@ class App():
 
     def open_grocery(self):
         print("Grocery List Manager clicked")
+        try:
+            glm = groceryListManager()
+            glm.App()
+        except:
+            print("ERROR: Sorry, but something unexpected happened while launching 'Grocery List Manager'.")
 
     def open_chore(self):
         self.chore_list = []
