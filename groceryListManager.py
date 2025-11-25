@@ -43,6 +43,11 @@ class groceryListManager:
         - Tkinter cannot have multiple main instances of 'Tk()' at the same time.
           Therefore, 'Toplevel()' function is utilised so multiple instances of Tkinter windows can be opened.
         """
+        # Sets the style of Grocery List Manager's window
+        style_widgets_bgColour = "white"
+        style_widgets_fgColour = "black"
+        style_widgets_font = "Arial 12"
+
         if root is None:
             root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
             print("INFO: 'Grocery List Manager' window is opened in a new window.")
@@ -66,8 +71,8 @@ class groceryListManager:
         label_appTitle_text.set("Hi there!")
         label_appTitle = Label(root,
                                textvariable=label_appTitle_text,
-                               bg="white",
-                               fg="black",
+                               bg=style_widgets_bgColour,
+                               fg=style_widgets_fgColour,
                                font=("Arial", 28, "bold")
                                )
         
@@ -76,36 +81,65 @@ class groceryListManager:
         label_appDescription_text.set("Let's manage your grocery list.")
         label_appDescription = Label(root,
                                      textvariable=label_appDescription_text,
-                                     bg="white",
-                                     fg="black",
-                                     font=("Arial", 12)
+                                     bg=style_widgets_bgColour,
+                                     fg=style_widgets_fgColour,
+                                     font=style_widgets_font
                                      )
         
-        container_category = Frame(root, background="green")
-
+        container_category = LabelFrame(root,
+                                        text="Category: ",
+                                        bg=style_widgets_bgColour,
+                                        fg=style_widgets_fgColour,
+                                        font=style_widgets_font
+                                        )
         # This frame arranges the list boxes horizontally to make them look like a table
-        rowContainer = Frame(root, background="yellowgreen")
+        groceries_table = LabelFrame(root,
+                                     text="Your list of groceries",
+                                     bg=style_widgets_bgColour,
+                                     fg=style_widgets_fgColour,
+                                     font=style_widgets_font)
+
+        groceries_table_name = LabelFrame(root,
+                                          text="Name",
+                                          bg=style_widgets_bgColour,
+                                          fg=style_widgets_fgColour,
+                                          font=style_widgets_font + " bold",
+                                          bd=0)
+        
+        groceries_table_category = LabelFrame(root,
+                                          text="Category",
+                                          bg=style_widgets_bgColour,
+                                          fg=style_widgets_fgColour,
+                                          font=style_widgets_font + " bold",
+                                          bd=0)
+        
+        groceries_table_quantity = LabelFrame(root,
+                                          text="Quantity",
+                                          bg=style_widgets_bgColour,
+                                          fg=style_widgets_fgColour,
+                                          font=style_widgets_font + " bold",
+                                          bd=0)
         
         # Creates a drop-down menu that consists of the groceries
         # 'Name' column
         groceries_listView_name = Listbox(root,
-                              bg="whitesmoke",
-                              fg="black",
-                              font=("Arial", 12),
+                              bg=style_widgets_bgColour,
+                              fg=style_widgets_fgColour,
+                              font=style_widgets_font,
                               )
         
         # 'Category' column
         groceries_listView_category = Listbox(root,
-                                              bg="whitesmoke",
-                                              fg="black",
-                                              font=("Arial", 12)
+                                              bg=style_widgets_bgColour,
+                                              fg=style_widgets_fgColour,
+                                              font=style_widgets_font
                                               )
         
         # 'Quantity' column
         groceries_listView_quantity = Listbox(root,
-                                              bg="whitesmoke",
-                                              fg="black",
-                                              font=("Arial", 12)
+                                              bg=style_widgets_bgColour,
+                                              fg=style_widgets_fgColour,
+                                              font=style_widgets_font
                                               )
         
         # Note: In Python, 'def' defines functions.
@@ -149,21 +183,29 @@ class groceryListManager:
         
         Init()  # Loads the data onto the dynamic form controls for the first time
         
-        category = OptionMenu(root, category_opt, *categories, command=change_categoryView)  # Creates an option menu that lists out all the categories
+        category = OptionMenu(root,
+                              category_opt,
+                              *categories,
+                              command=change_categoryView)  # Creates an option menu that lists out all the categories
         
         # Note: Remember to show the control on the window with 'pack' function.
-        label_appTitle.pack(side="top")
-        label_appDescription.pack(side="top")
+        label_appTitle.pack()
+        label_appDescription.pack()
+        
+        category.pack(in_=container_category)
 
-        category.pack()
-
-        groceries_listView_name.pack(in_=rowContainer, side="left")
-        groceries_listView_category.pack(in_=rowContainer, side="left")
-        groceries_listView_quantity.pack(in_=rowContainer, side="left")
+        groceries_listView_name.pack(in_=groceries_table_name)
+        groceries_listView_category.pack(in_=groceries_table_category)
+        groceries_listView_quantity.pack(in_=groceries_table_quantity)
         
         # Containers
         container_category.pack()
-        rowContainer.pack()
+
+        # The table that shows the list of groceries
+        groceries_table_name.pack(in_=groceries_table, side="left")
+        groceries_table_category.pack(in_=groceries_table, side="left")
+        groceries_table_quantity.pack(in_=groceries_table, side="left")
+        groceries_table.pack()
         
         root.mainloop() # Runs the application with the window
 
