@@ -44,6 +44,9 @@ class ChoreScheduler:
         self.root = root
         self.chore_list = {}
         self.back_callback = back_callback ## function to call to go back to main menu 
+        self.tree_archive = ttk.Treeview(self.root, columns = "Chore", show = "headings")
+        self.tree_archive.heading("Chore", text = "Chore")
+
 
     def menu(self):
         for widget in self.root.winfo_children():
@@ -67,9 +70,18 @@ class ChoreScheduler:
             self.store_archive()
 
     def store_archive(self):
+        self.tree_archive.pack()
+
+        for chore in self.chore_list:
+            self.tree_archive.insert('', 'end', 'chore', values = chore)
+        '''selected = self.tree_archive.selection()
+        if selected:
+            for id in selected:
+                chore_data = self.tree_archive.item(id)'''
+
         tk.Label(self.root, text = "Archive", font = ("Arial", 24, "bold")).pack(pady = 5)
         tk.Button(self.root, text = "Back", command = self.menu).pack(side = "bottom")
-        tk.Button(self.root, text = "Delete Chore").pack(side="bottom")
+        tk.Button(self.root, text = "Delete Chore", command = self.delete_chore).pack(side="bottom")
         tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "bottom")
 
         for chore in self.chore_list:
@@ -79,9 +91,8 @@ class ChoreScheduler:
         self.chore_list[self.entry.get()] = "Pending"
         self.archive()
 
-    #use tree
     def delete_chore(self):
-        for chore, status in self.chore_list:
+        for chore in self.chore_list:
             del self.chore_list[chore]
 
     def add_chore_form(self):
