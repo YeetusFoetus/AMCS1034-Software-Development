@@ -42,7 +42,7 @@ class App():
 class ChoreScheduler:
     def __init__(self, root, back_callback):
         self.root = root
-        self.chore_list = []
+        self.chore_list = {}
         self.back_callback = back_callback ## function to call to go back to main menu 
 
     def menu(self):
@@ -60,16 +60,20 @@ class ChoreScheduler:
             widget.destroy()  
 
         if len(self.chore_list) == 0:
-            tk.Label(self.root, text = "No chores yet").pack(pady = 20)
+            tk.Label(self.root, text = "No chores saved yet").pack(pady = 20)
             tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(pady = 20)
             tk.Button(self.root, text = "Back", command = self.menu).pack(pady = 20)
         else:
-            self.chore_table()      
+            self.store_archive()
+
+    def store_archive(self):
+        tk.Label(self.root, text = "Archive", font = ("Arial", 24, "bold")).pack(pady = 5)
+        tk.Button(self.root, text = "Back", command = self.menu).pack(side = "bottom")
+        for chore in self.chore_list:
+            tk.Label(self.root, text = chore).pack()
 
     def save_chore(self):
-        add_chore = self.entry.get()
-        if add_chore.strip():                ## for checking empty input and removing blank space
-            self.chore_list.append(add_chore)
+        self.chore_list[self.entry.get()] = "Pending"
         self.archive()
 
     def add_chore_form(self):
@@ -83,8 +87,11 @@ class ChoreScheduler:
 
         tk.Button(self.root, text = "Save", command = self.save_chore).pack(pady=5)
         tk.Button(self.root, text = "Back", command = self.archive).pack(pady = 10)
+    ## ------------------------------------------------
 
+    ## ---------------Tdy List-----------------
     def chore_table(self):
+        tk.Label(self.root, text = "Today's List of Chores")
         table_frame = tk.Frame(self.root)
         table_frame.pack(fill = "both", expand = "True")
 
@@ -102,9 +109,6 @@ class ChoreScheduler:
         tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "left")
         tk.Button(self.root, text = "Back", command = self.menu).pack(side = "right")
         tk.Button(self.root, text = "Update Status").pack(pady = 20)
-    ## ------------------------------------------------
-
-    ## ---------------Tdy List-----------------
     ## ------------------------------------------
     ## ---------------Members---------------------
     ## ----------------------------------------------
