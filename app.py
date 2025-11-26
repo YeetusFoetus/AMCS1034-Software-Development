@@ -69,12 +69,20 @@ class ChoreScheduler:
     def store_archive(self):
         tk.Label(self.root, text = "Archive", font = ("Arial", 24, "bold")).pack(pady = 5)
         tk.Button(self.root, text = "Back", command = self.menu).pack(side = "bottom")
+        tk.Button(self.root, text = "Delete Chore").pack(side="bottom")
+        tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "bottom")
+
         for chore in self.chore_list:
             tk.Label(self.root, text = chore).pack()
 
     def save_chore(self):
         self.chore_list[self.entry.get()] = "Pending"
         self.archive()
+
+    #use tree
+    def delete_chore(self):
+        for chore, status in self.chore_list:
+            del self.chore_list[chore]
 
     def add_chore_form(self):
         for widget in self.root.winfo_children():
