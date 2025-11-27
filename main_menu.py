@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox  ## popup windows
 from tkinter import ttk         ## create table
-from test2 import ChoreScheduler
-from test3 import groceryListManager
+from ChoreScheduler import ChoreScheduler
+from GroceryListManager import groceryListManager
 
 class App():
     def __init__(self, root):

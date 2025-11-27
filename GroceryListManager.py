@@ -152,6 +152,8 @@ class groceryListManager:
                                               font=style_widgets_font
                                               )
         
+        Button(self.root, text = "Back", command = self.back_callback).pack(side="bottom")
+        
         # Note: In Python, 'def' defines functions.
         def loadList(category):
             # Clears the list
