@@ -67,20 +67,16 @@ class groceryListManager:
         
         # 'label_appTitle' greets the user
         # Note: For labels in Tkinter, their inner text MUST be declared with StringVar() first.
-        label_appTitle_text = StringVar()
-        label_appTitle_text.set("Hi there!")
         label_appTitle = Label(root,
-                               textvariable=label_appTitle_text,
+                               text="Hi there!",
                                bg=style_widgets_bgColour,
                                fg=style_widgets_fgColour,
                                font=("Arial", 28, "bold")
                                )
         
         # 'label_appDescription' explains users about the context of the current window
-        label_appDescription_text = StringVar()
-        label_appDescription_text.set("Let's manage your grocery list.")
         label_appDescription = Label(root,
-                                     textvariable=label_appDescription_text,
+                                     text="Let's manage your grocery list.",
                                      bg=style_widgets_bgColour,
                                      fg=style_widgets_fgColour,
                                      font=style_widgets_font
