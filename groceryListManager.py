@@ -2,9 +2,18 @@
 import os.path as path
 import json
 from tkinter import *
+import tkinter.messagebox
 
 class groceryListManager:
     def __init__(self):
+        self.widgets_bgColour = "white"
+        self.widgets_fgColour = "black"
+        self.widgets_padx = 16
+        self.widgets_pady = 8
+
+        # Loads the groceries
+        self.groceries = self.getList()
+
         print("INFO: 'groceryListManager' class has been initialised successfully.")
 
     def getList(self):
@@ -19,13 +28,13 @@ class groceryListManager:
                 # Creates a list of groceries
                 groceryList_json = f.read()
 
-                # Closes 'groceryList.json' after reading the content
-                f.close()
-
                 # Loads the list of the groceries from 'JSON' string
                 groceries = json.loads(groceryList_json)
             except:
                 print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
+            finally:
+                # Closes 'groceryList.json' after reading the content
+                f.close()
         else:
             # Warns the user that 'groceryList.json' does not exist
             print("WARNING: 'groceryList.json' file does not exist.")
@@ -33,6 +42,108 @@ class groceryListManager:
         # Returns the 'groceries' list to the calling function
         return groceries
     
+    def addGrocery_UI(self, root = None):
+        if root is None:
+            root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
+            print("INFO: 'Grocery List Manager' window is opened in a new window.")
+
+        root.title("Add a grocery - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
+        root.geometry("400x300")    # Sets the size of the window
+        root.config(bg="white")
+
+        # Sets variables for certain form controls
+        groceryName = StringVar()
+        groceryCategory = StringVar()
+        groceryQuantity = StringVar()
+
+        def submitForm():
+            result = self.addGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get())
+            if result == True:
+                root.destroy()  # Closes the window
+
+        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
+        form = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
+        form_button = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
+
+        """
+        Note:
+        - Tkinter elements can be placed inside a frame by replacing 'root' with the frame's name.
+        """
+        Label(header, text="Add a grocery", font=("Segoe UI Light", 18), bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 1)
+
+        Label(form, text="Name: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 1)
+        Entry(form, textvariable=groceryName).grid(row = 1, column = 2)
+        
+        Label(form, text="Category: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 2, column = 1)
+        Entry(form, textvariable=groceryCategory).grid(row = 2, column = 2)
+
+        Label(form, text="Quantity: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 3, column = 1)
+        Entry(form, textvariable=groceryQuantity).grid(row = 3, column = 2)
+
+        Button(form_button, text="Add now", command=submitForm).grid(row = 1, column = 1)
+        # Note: 'root.destroy()' closes the active window.
+        Button(form_button, text="Cancel", command=root.destroy).grid(row = 1, column = 2)
+
+        header.pack(anchor="w")
+        form.pack(anchor="w")
+        form_button.pack(anchor="w")
+
+        # Displays the window
+        root.mainloop()
+
+    def addGrocery(self, name, category, quantity):
+        # Validates the grocery's information entered by the user
+        if name == "" or name == None:
+            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's name cannot be empty.")
+            return False    # Returns 'False' to the calling function
+        elif category == "" or category == None:
+            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
+            return False
+        elif quantity == "" or quantity == None:
+            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
+            return False
+        else:
+            try:    # Validates the grocery's quantity
+                int(quantity)
+            except ValueError:
+                tkinter.messagebox.showerror("showerror", f"'{quantity}' is an invalid quantity. It has to be numerical.")
+                return False
+            else:
+                pass
+        
+        # Creates a dictionary that contains the new grocery's information
+        metadata = {"name": name, "category": category, "quantity": quantity}
+        
+        # Adds the dictionary to the end of the list
+        self.groceries.append(metadata)
+        
+        # Writes the dictionary to 'groceryList.json'
+        if path.isfile("groceryList.json"):
+            try:
+                # Opens the 'JSON' file that contains the list of groceries
+                f = open("groceryList.json", "r+")
+
+                # Converts the list of groceries which includes the new grocery into JSON string
+                groceryList_json = json.dumps(self.groceries)
+
+                # Writes 'JSON' string into 'JSON' file
+                f.write(groceryList_json)
+
+                # Reloads the list of the groceries from 'JSON' string
+                self.groceries = self.getList()
+
+                tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
+
+                return True
+            except:
+                print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
+            finally:
+                # Closes 'groceryList.json' after reading the content
+                f.close()
+        else:
+            # Warns the user that 'groceryList.json' does not exist
+            print("WARNING: 'groceryList.json' file does not exist.")
+
     def App(self, root = None):
         """
         Note:
@@ -43,11 +154,6 @@ class groceryListManager:
         - Tkinter cannot have multiple main instances of 'Tk()' at the same time.
           Therefore, 'Toplevel()' function is utilised so multiple instances of Tkinter windows can be opened.
         """
-        # Sets the style of Grocery List Manager's window
-        style_widgets_bgColour = "white"
-        style_widgets_fgColour = "black"
-        style_widgets_font = "Arial 12"
-
         if root is None:
             root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
             print("INFO: 'Grocery List Manager' window is opened in a new window.")
@@ -69,74 +175,59 @@ class groceryListManager:
         # Note: For labels in Tkinter, their inner text MUST be declared with StringVar() first.
         label_appTitle = Label(root,
                                text="Hi there!",
-                               bg=style_widgets_bgColour,
-                               fg=style_widgets_fgColour,
-                               font=("Arial", 28, "bold")
-                               )
+                               bg=self.widgets_bgColour,
+                               fg=self.widgets_fgColour)
         
         # 'label_appDescription' explains users about the context of the current window
         label_appDescription = Label(root,
                                      text="Let's manage your grocery list.",
-                                     bg=style_widgets_bgColour,
-                                     fg=style_widgets_fgColour,
-                                     font=style_widgets_font
-                                     )
+                                     bg=self.widgets_bgColour,
+                                     fg=self.widgets_fgColour)
         
         container_category = LabelFrame(root,
                                         text="Category: ",
-                                        bg=style_widgets_bgColour,
-                                        fg=style_widgets_fgColour,
-                                        font=style_widgets_font
-                                        )
+                                        bg=self.widgets_bgColour,
+                                        fg=self.widgets_fgColour)
+        
         # This frame arranges the list boxes horizontally to make them look like a table
         groceries_table = LabelFrame(root,
                                      text="Your list of groceries",
-                                     bg=style_widgets_bgColour,
-                                     fg=style_widgets_fgColour,
-                                     font=style_widgets_font)
+                                     bg=self.widgets_bgColour,
+                                     fg=self.widgets_fgColour)
 
         groceries_table_name = LabelFrame(root,
                                           text="Name",
-                                          bg=style_widgets_bgColour,
-                                          fg=style_widgets_fgColour,
-                                          font=style_widgets_font + " bold",
+                                          bg=self.widgets_bgColour,
+                                          fg=self.widgets_fgColour,
                                           bd=0)
         
         groceries_table_category = LabelFrame(root,
                                           text="Category",
-                                          bg=style_widgets_bgColour,
-                                          fg=style_widgets_fgColour,
-                                          font=style_widgets_font + " bold",
+                                          bg=self.widgets_bgColour,
+                                          fg=self.widgets_fgColour,
                                           bd=0)
         
         groceries_table_quantity = LabelFrame(root,
                                           text="Quantity",
-                                          bg=style_widgets_bgColour,
-                                          fg=style_widgets_fgColour,
-                                          font=style_widgets_font + " bold",
+                                          bg=self.widgets_bgColour,
+                                          fg=self.widgets_fgColour,
                                           bd=0)
         
         # Creates a drop-down menu that consists of the groceries
         # 'Name' column
         groceries_listView_name = Listbox(root,
-                              bg=style_widgets_bgColour,
-                              fg=style_widgets_fgColour,
-                              font=style_widgets_font,
-                              )
+                              bg=self.widgets_bgColour,
+                              fg=self.widgets_fgColour)
         
         # 'Category' column
         groceries_listView_category = Listbox(root,
-                                              bg=style_widgets_bgColour,
-                                              fg=style_widgets_fgColour,
-                                              font=style_widgets_font
-                                              )
+                                              bg=self.widgets_bgColour,
+                                              fg=self.widgets_fgColour)
         
         # 'Quantity' column
         groceries_listView_quantity = Listbox(root,
-                                              bg=style_widgets_bgColour,
-                                              fg=style_widgets_fgColour,
-                                              font=style_widgets_font
-                                              )
+                                              bg=self.widgets_bgColour,
+                                              fg=self.widgets_fgColour)
         
         # Note: In Python, 'def' defines functions.
         def loadList(category):
