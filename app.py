@@ -74,10 +74,10 @@ class ChoreScheduler:
 
         for chore in self.chore_list:
             self.tree_archive.insert('', 'end', 'chore', values = chore)
-        '''selected = self.tree_archive.selection()
-        if selected:
-            for id in selected:
-                chore_data = self.tree_archive.item(id)'''
+        #selected = self.tree_archive.selection()
+        #if selected:
+        #    for id in selected:
+        #        chore_data = self.tree_archive.item(id)
 
         tk.Label(self.root, text = "Archive", font = ("Arial", 24, "bold")).pack(pady = 5)
         tk.Button(self.root, text = "Back", command = self.menu).pack(side = "bottom")
