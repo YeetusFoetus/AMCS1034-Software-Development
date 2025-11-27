@@ -13,6 +13,7 @@ class groceryListManager:
 
         # Loads the groceries
         self.groceries = self.getList()
+        self.categories = self.getCategories()
 
         print("INFO: 'groceryListManager' class has been initialised successfully.")
 
@@ -42,6 +43,22 @@ class groceryListManager:
         # Returns the 'groceries' list to the calling function
         return groceries
     
+    def getCategories(self):
+        # Declares an empty list of sets
+        """
+        Note:
+        - Sets is used to avoid duplications of data.
+        - Remember to use 'set()' function since curly braces {} also means dictionaries.
+        """
+        groceries = self.getList()
+        categories = set()
+
+        for grocery in groceries:
+            category = grocery.get("category")
+            categories.add(category) # Add the category into the set
+        
+        return categories   # Returns the set of categories to the calling function
+
     def addGrocery_UI(self, root = None):
         if root is None:
             root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
@@ -167,68 +184,33 @@ class groceryListManager:
         - The following code designs the user interface for the grocery list manager.
         - Variables are also declared at this stage.
         """
+        # Declaring variables
         groceries = self.getList() # Loads the list of groceries by calling 'loadList' function from the current 'groceryListManager' class' instance
+        categories = self.getCategories() # Declares a list of options that will be displayed on the drop-down menu
+        category_opt = StringVar()   # Declares a variable for the selected category
         
-        categories = [] # Declares a list of options that will be displayed on the drop-down menu
-        
+        header = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+        actions = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+        search = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+        table = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+
         # 'label_appTitle' greets the user
         # Note: For labels in Tkinter, their inner text MUST be declared with StringVar() first.
-        label_appTitle = Label(root,
-                               text="Hi there!",
-                               bg=self.widgets_bgColour,
-                               fg=self.widgets_fgColour)
+        Label(header, text="Grocery List Manager", bg=self.widgets_bgColour, fg=self.widgets_fgColour, font=("Segoe UI Light", 18)).grid(row = 1, column = 1)
         
         # 'label_appDescription' explains users about the context of the current window
-        label_appDescription = Label(root,
-                                     text="Let's manage your grocery list.",
-                                     bg=self.widgets_bgColour,
-                                     fg=self.widgets_fgColour)
+        # Label(root, text="Let's manage your grocery list.", bg=self.widgets_bgColour, fg=self.widgets_fgColour)
         
-        container_category = LabelFrame(root,
-                                        text="Category: ",
-                                        bg=self.widgets_bgColour,
-                                        fg=self.widgets_fgColour)
-        
-        # This frame arranges the list boxes horizontally to make them look like a table
-        groceries_table = LabelFrame(root,
-                                     text="Your list of groceries",
-                                     bg=self.widgets_bgColour,
-                                     fg=self.widgets_fgColour)
+        # Defines the user actions
+        userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", bg=self.widgets_bgColour, fg=self.widgets_fgColour, padx=self.widgets_padx / 2, pady=self.widgets_pady)
+        userActions_wwyltd.grid(row = 1, column = 1)
+        Button(userActions_wwyltd, text="Add a grocery", command=self.addGrocery_UI).grid(row = 1, column = 1)
 
-        groceries_table_name = LabelFrame(root,
-                                          text="Name",
-                                          bg=self.widgets_bgColour,
-                                          fg=self.widgets_fgColour,
-                                          bd=0)
-        
-        groceries_table_category = LabelFrame(root,
-                                          text="Category",
-                                          bg=self.widgets_bgColour,
-                                          fg=self.widgets_fgColour,
-                                          bd=0)
-        
-        groceries_table_quantity = LabelFrame(root,
-                                          text="Quantity",
-                                          bg=self.widgets_bgColour,
-                                          fg=self.widgets_fgColour,
-                                          bd=0)
-        
-        # Creates a drop-down menu that consists of the groceries
-        # 'Name' column
-        groceries_listView_name = Listbox(root,
-                              bg=self.widgets_bgColour,
-                              fg=self.widgets_fgColour)
-        
-        # 'Category' column
-        groceries_listView_category = Listbox(root,
-                                              bg=self.widgets_bgColour,
-                                              fg=self.widgets_fgColour)
-        
-        # 'Quantity' column
-        groceries_listView_quantity = Listbox(root,
-                                              bg=self.widgets_bgColour,
-                                              fg=self.widgets_fgColour)
-        
+        # Designs the search bar
+        container_category = LabelFrame(search, text="Category: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour, padx=self.widgets_padx / 2, pady=self.widgets_pady)
+        container_category.grid(row = 1, column = 1)
+
+        # Defining the functions
         # Note: In Python, 'def' defines functions.
         def loadList(category):
             # Clears the list
@@ -243,14 +225,6 @@ class groceryListManager:
                     groceries_listView_category.insert(currIndex + 1, category)
                     groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
         
-        def loadCategories():
-            for grocery in groceries:
-                category = grocery.get("category")
-                if(category not in categories): # If the category does not exist in the list of categories
-                    categories.append(category) # Add the category into the list
-        
-        category_opt = StringVar()   # Declares a variable for the selected category
-        
         # Shows the groceries based on the category chosen by the user
         # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
         def change_categoryView(category):
@@ -260,39 +234,39 @@ class groceryListManager:
         # Initialises the window with initial values
         def Init():
             if(len(categories) > 0):
-                category_opt.set(categories[0])
                 change_categoryView(category_opt.get())
+                pass
             else:
                 category_opt.set("No categories available")
                 pass
-            
-        loadCategories()    # Loads the categories from the list of groceries
+
+        OptionMenu(container_category, category_opt, *categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
+        
+        # Designs the table of groceries
+        # This frame arranges the list boxes horizontally to make them look like a table
+        Label(table, text="Name", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 1)
+        Label(table, text="Category", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 2)
+        Label(table, text="Quantity", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 3)
+
+        # 'Name' column
+        groceries_listView_name = Listbox(table, bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        groceries_listView_name.grid(row = 2, column = 1)
+        
+        # 'Category' column
+        groceries_listView_category = Listbox(table, bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        groceries_listView_category.grid(row = 2, column = 2)
+        
+        # 'Quantity' column
+        groceries_listView_quantity = Listbox(table, bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        groceries_listView_quantity.grid(row = 2, column = 3)
         
         Init()  # Loads the data onto the dynamic form controls for the first time
-        
-        category = OptionMenu(root,
-                              category_opt,
-                              *categories,
-                              command=change_categoryView)  # Creates an option menu that lists out all the categories
-        
+
         # Note: Remember to show the control on the window with 'pack' function.
-        label_appTitle.pack()
-        label_appDescription.pack()
-        
-        category.pack(in_=container_category)
-
-        groceries_listView_name.pack(in_=groceries_table_name)
-        groceries_listView_category.pack(in_=groceries_table_category)
-        groceries_listView_quantity.pack(in_=groceries_table_quantity)
-        
-        # Containers
-        container_category.pack()
-
-        # The table that shows the list of groceries
-        groceries_table_name.pack(in_=groceries_table, side="left")
-        groceries_table_category.pack(in_=groceries_table, side="left")
-        groceries_table_quantity.pack(in_=groceries_table, side="left")
-        groceries_table.pack()
+        header.pack(anchor="w")
+        actions.pack(anchor="w")
+        search.pack(anchor="w")
+        table.pack(anchor="w")
         
         root.mainloop() # Runs the application with the window
 
