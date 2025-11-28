@@ -43,7 +43,14 @@ class groceryListManager:
         if path.isfile("groceryList.json"):
             try:
                 # Opens the 'JSON' file that contains the list of groceries
-                f = open("groceryList.json", "r+")
+                """
+                Note:
+                - For file operations in Python, there are three flags that serve different functions.
+                  - 'r' --> Read operation only
+                  - 'w' --> Write operation only
+                  - 'r+' --> Read and write operations
+                """
+                f = open("groceryList.json", "r")
 
                 # Creates a list of groceries
                 groceryList_json = f.read()
@@ -136,6 +143,8 @@ class groceryListManager:
             tkinter.messagebox.showerror("Error", f"'{quantity}' is an invalid quantity. It has to be an integer.")
             return False
         else:
+            isSuccess = False   # 'isSuccess' variable is used to indicate the status of the file's writing operation
+
             # Creates a dictionary that contains the new grocery's information
             metadata = {"name": name, "category": category, "quantity": quantity}
 
@@ -143,31 +152,32 @@ class groceryListManager:
             self.groceries.append(metadata)
 
             # Writes the dictionary to 'groceryList.json'
-            if path.isfile("groceryList.json"):
-                try:
-                    # Opens the 'JSON' file that contains the list of groceries
-                    f = open("groceryList.json", "r+")
+            try:
+                # Opens the 'JSON' file that contains the list of groceries
+                # Note: 'w' flag will create the file with the name if it does not exist.
+                f = open("groceryList.json", "w")
 
-                    # Converts the list of groceries which includes the new grocery into JSON string
-                    groceryList_json = json.dumps(self.groceries)
+                # Converts the list of groceries which includes the new grocery into JSON string
+                groceryList_json = json.dumps(self.groceries)
 
-                    # Writes 'JSON' string into 'JSON' file
-                    f.write(groceryList_json)
+                # Writes 'JSON' string into 'JSON' file
+                f.write(groceryList_json)
 
-                    # Reloads the list of the groceries from 'JSON' string
-                    self.groceries = self.getList()
+                isSuccess = True
 
-                    tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
+                tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
+            except:
+                print("Something went wrong while writing data to 'groceryList.json' file.")
 
-                    return True
-                except:
-                    print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
-                finally:
-                    # Closes 'groceryList.json' after reading the content
-                    f.close()
-            else:
-                # Warns the user that 'groceryList.json' does not exist
-                print("WARNING: 'groceryList.json' file does not exist.")
+                isSuccess = False
+            finally:
+                # Closes 'groceryList.json' after reading the content
+                f.close()
+
+                # Reloads the list of the groceries from 'JSON' string
+                self.groceries = self.getList()
+            
+            return isSuccess
     
     def addGrocery_UI(self, root = None):
         print("INFO: 'Grocery List Manager' window is opened in a new window.")
@@ -263,13 +273,13 @@ class groceryListManager:
         
         # Calls UI
         header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        empty = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
         actions = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
         search = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
         table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
 
-        # 'label_appTitle' greets the user
-        # Note: For labels in Tkinter, their inner text MUST be declared with StringVar() first.
         Label(header, text="Grocery List Manager").grid(row = 1, column = 1)
+        Label(empty, text="Your list is empty. Let's add your first grocery to your first grocery list!").grid(row = 1, column = 1)
         
         # 'label_appDescription' explains users about the context of the current window
         # Label(root, text="Let's manage your grocery list.")
@@ -279,66 +289,71 @@ class groceryListManager:
         userActions_wwyltd.grid(row = 1, column = 1)
         Button(userActions_wwyltd, text="Add a grocery", command=self.addGrocery_UI).grid(row = 1, column = 1)
 
-        # Designs the search bar
-        container_category = LabelFrame(search, text="Category: ", padx=self.widgets_padx / 2, pady=self.widgets_pady)
-        container_category.grid(row = 1, column = 1)
-
-        # Defining the functions
-        # Note: In Python, 'def' defines functions.
-        def loadList(category):
-            # Clears the list
-            groceries_listView_name.delete(0, END)
-            groceries_listView_category.delete(0, END)
-            groceries_listView_quantity.delete(0, END)
-
-            # Adds the item to the list based on the selected category
-            for currIndex, grocery in enumerate(groceries):
-                if grocery.get("category") == category:
-                    groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
-                    groceries_listView_category.insert(currIndex + 1, category)
-                    groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
-        
-        # Shows the groceries based on the category chosen by the user
-        # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
-        def change_categoryView(category):
-            print(category)
-            loadList(category)    # Changes the category displayed on the option menu
-        
-        # Initialises the window with initial values
-        def Init():
-            if(len(categories) > 0):
-                change_categoryView(category_opt.get())
-                pass
-            else:
-                category_opt.set("No categories available")
-                pass
-
-        OptionMenu(container_category, category_opt, *categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
-        
-        # Designs the table of groceries
-        # This frame arranges the list boxes horizontally to make them look like a table
-        Label(table, text="Name").grid(row = 1, column = 1)
-        Label(table, text="Category").grid(row = 1, column = 2)
-        Label(table, text="Quantity").grid(row = 1, column = 3)
-
-        # 'Name' column
-        groceries_listView_name = Listbox(table)
-        groceries_listView_name.grid(row = 2, column = 1)
-        
-        # 'Category' column
-        groceries_listView_category = Listbox(table)
-        groceries_listView_category.grid(row = 2, column = 2)
-        
-        # 'Quantity' column
-        groceries_listView_quantity = Listbox(table)
-        groceries_listView_quantity.grid(row = 2, column = 3)
-        
-        Init()  # Loads the data onto the dynamic form controls for the first time
-
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack()
-        search.pack()
-        table.pack()
+
+        if len(groceries) <= 0: # If the list is empty
+            empty.pack()
+        else:
+            # Designs the search bar
+            container_category = LabelFrame(search, text="Category: ", padx=self.widgets_padx / 2, pady=self.widgets_pady)
+            container_category.grid(row = 1, column = 1)
+
+            # Designs the table of groceries
+            # This frame arranges the list boxes horizontally to make them look like a table
+            Label(table, text="Name").grid(row = 1, column = 1)
+            Label(table, text="Category").grid(row = 1, column = 2)
+            Label(table, text="Quantity").grid(row = 1, column = 3)
+
+            # 'Name' column
+            groceries_listView_name = Listbox(table)
+            groceries_listView_name.grid(row = 2, column = 1)
+
+            # 'Category' column
+            groceries_listView_category = Listbox(table)
+            groceries_listView_category.grid(row = 2, column = 2)
+
+            # 'Quantity' column
+            groceries_listView_quantity = Listbox(table)
+            groceries_listView_quantity.grid(row = 2, column = 3)
+
+            # Defining the functions
+            # Note: In Python, 'def' defines functions.
+            def loadList(category):
+                # Clears the list
+                groceries_listView_name.delete(0, END)
+                groceries_listView_category.delete(0, END)
+                groceries_listView_quantity.delete(0, END)
+
+                # Adds the item to the list based on the selected category
+                for currIndex, grocery in enumerate(groceries):
+                    if grocery.get("category") == category:
+                        groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
+                        groceries_listView_category.insert(currIndex + 1, category)
+                        groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
+
+            # Shows the groceries based on the category chosen by the user
+            # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
+            def change_categoryView(category):
+                print(category)
+                loadList(category)    # Changes the category displayed on the option menu
+
+            # Initialises the window with initial values
+            def Init():
+                if(len(categories) > 0):
+                    change_categoryView(category_opt.get())
+                    pass
+                else:
+                    # category_opt.set("No categories available")
+                    pass
+
+            OptionMenu(container_category, category_opt, *categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
+
+            Init()  # Loads the data onto the dynamic form controls for the first time
+
+            search.pack()
+            table.pack()
+        
         actions.pack()
 
         self.UI_addBackButton(root)
