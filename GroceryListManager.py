@@ -267,7 +267,8 @@ class groceryListManager:
         - Variables are also declared at this stage.
         """
         # Declaring variables
-        groceries = self.getList() # Loads the list of groceries by calling 'loadList' function from the current 'groceryListManager' class' instance
+        groceryList = self.getList() # Loads the list of groceries by calling 'loadList' function from the current 'groceryListManager' class' instance
+        groceries = (groceryList) # Note: Tuples are used to avoid any changes to the data / list.
         categories = self.getCategories() # Declares a list of options that will be displayed on the drop-down menu
         category_opt = StringVar()   # Declares a variable for the selected category
         
@@ -341,6 +342,7 @@ class groceryListManager:
             # Initialises the window with initial values
             def Init():
                 if(len(categories) > 0):
+                    category_opt.set(groceries[0].get("category"))  # Choose the category of the first grocery item
                     change_categoryView(category_opt.get())
                     pass
                 else:
