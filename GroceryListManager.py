@@ -124,16 +124,16 @@ class groceryListManager:
     def addGrocery(self, name, category, quantity):
         # Validates the grocery's information entered by the user
         if name == "" or name == None:
-            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's name cannot be empty.")
+            tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's name cannot be empty.")
             return False    # Returns 'False' to the calling function
         elif category == "" or category == None:
-            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
+            tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
             return False
         elif quantity == "" or quantity == None:
-            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
+            tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
             return False
         elif quantity.isnumeric() == False:   # Validates the grocery's quantity
-            tkinter.messagebox.showerror("showerror", f"'{quantity}' is an invalid quantity. It has to be an integer.")
+            tkinter.messagebox.showerror("Error", f"'{quantity}' is an invalid quantity. It has to be an integer.")
             return False
         else:
             # Creates a dictionary that contains the new grocery's information
