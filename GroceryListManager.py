@@ -27,6 +27,8 @@ class groceryListManager:
         else:
             pass
         """
+        if back_callback != None:
+            self.back_callback = back_callback
 
         # Loads the groceries
         self.groceries = self.getList()
