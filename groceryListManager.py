@@ -333,9 +333,9 @@ class groceryListManager:
 
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack(anchor="w")
-        actions.pack(anchor="w")
         search.pack(anchor="w")
         table.pack(anchor="w")
+        actions.pack(anchor="w")
         
         root.mainloop() # Runs the application with the window
 
