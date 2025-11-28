@@ -17,13 +17,16 @@ class groceryListManager:
             self.root = root
         
         # Checks whether the main menu of a window is defined and passed to this class
+        """
         if back_callback == None:
+            # Sets to customised styles
             self.widgets_bgColour = "white"
             self.widgets_fgColour = "black"
+            self.widgets_header_font = ("Segoe UI Light", 18)
+            self.widgets_anchor = "w"
         else:
-            self.widgets_bgColour = "white"
-            self.widgets_fgColour = "black"
-            self.back_callback = back_callback
+            pass
+        """
 
         # Loads the groceries
         self.groceries = self.getList()
@@ -90,17 +93,19 @@ class groceryListManager:
             # Clears all the widgets on the current window
             for widget in root.winfo_children():
                 widget.destroy()
-
+        else:
+            # Sets the property of the window
+            root.config()
+    
+    def UI_addBackButton(self, root):
+        if self.isback_callbackExists() == True:
             # Adds a frame where the back button is located
-            notch = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+            notch = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
             
             # Adds a back button
             Button(notch, text="Return to the main menu", command=self.back_callback).grid(row = 1, column = 1)
 
-            notch.pack(anchor="w")
-        else:
-            # Sets the property of the window
-            root.config(bg=self.widgets_bgColour)
+            notch.pack()
 
     def UI_closeWindow(self, root):
         if self.isback_callbackExists() == True:
@@ -187,32 +192,32 @@ class groceryListManager:
             if result == True:
                 self.UI_returnToHome(root)  # Closes the window
 
-        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
-        form = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
-        form_button = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
+        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        form = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        form_button = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
 
         """
         Note:
         - Tkinter elements can be placed inside a frame by replacing 'root' with the frame's name.
         """
-        Label(header, text="Add a grocery", font=("Segoe UI Light", 18), bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 1)
+        Label(header, text="Add a grocery").grid(row = 1, column = 1)
 
-        Label(form, text="Name: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 1)
+        Label(form, text="Name: ").grid(row = 1, column = 1)
         Entry(form, textvariable=groceryName).grid(row = 1, column = 2)
         
-        Label(form, text="Category: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 2, column = 1)
+        Label(form, text="Category: ").grid(row = 2, column = 1)
         Entry(form, textvariable=groceryCategory).grid(row = 2, column = 2)
 
-        Label(form, text="Quantity: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 3, column = 1)
+        Label(form, text="Quantity: ").grid(row = 3, column = 1)
         Entry(form, textvariable=groceryQuantity).grid(row = 3, column = 2)
 
         Button(form_button, text="Add now", command=submitForm).grid(row = 1, column = 1)
         # Note: 'root.destroy()' closes the active window.
         Button(form_button, text="Cancel", command=lambda: self.UI_returnToHome(root)).grid(row = 1, column = 2)
 
-        header.pack(anchor="w")
-        form.pack(anchor="w")
-        form_button.pack(anchor="w")
+        header.pack()
+        form.pack()
+        form_button.pack()
 
         # Displays the window
         root.mainloop()
@@ -255,25 +260,25 @@ class groceryListManager:
         category_opt = StringVar()   # Declares a variable for the selected category
         
         # Calls UI
-        header = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
-        actions = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
-        search = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
-        table = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        actions = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        search = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
 
         # 'label_appTitle' greets the user
         # Note: For labels in Tkinter, their inner text MUST be declared with StringVar() first.
-        Label(header, text="Grocery List Manager", bg=self.widgets_bgColour, fg=self.widgets_fgColour, font=("Segoe UI Light", 18)).grid(row = 1, column = 1)
+        Label(header, text="Grocery List Manager").grid(row = 1, column = 1)
         
         # 'label_appDescription' explains users about the context of the current window
-        # Label(root, text="Let's manage your grocery list.", bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        # Label(root, text="Let's manage your grocery list.")
         
         # Defines the user actions
-        userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", bg=self.widgets_bgColour, fg=self.widgets_fgColour, padx=self.widgets_padx / 2, pady=self.widgets_pady)
+        userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", padx=self.widgets_padx / 2, pady=self.widgets_pady)
         userActions_wwyltd.grid(row = 1, column = 1)
         Button(userActions_wwyltd, text="Add a grocery", command=self.addGrocery_UI).grid(row = 1, column = 1)
 
         # Designs the search bar
-        container_category = LabelFrame(search, text="Category: ", bg=self.widgets_bgColour, fg=self.widgets_fgColour, padx=self.widgets_padx / 2, pady=self.widgets_pady)
+        container_category = LabelFrame(search, text="Category: ", padx=self.widgets_padx / 2, pady=self.widgets_pady)
         container_category.grid(row = 1, column = 1)
 
         # Defining the functions
@@ -310,29 +315,31 @@ class groceryListManager:
         
         # Designs the table of groceries
         # This frame arranges the list boxes horizontally to make them look like a table
-        Label(table, text="Name", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 1)
-        Label(table, text="Category", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 2)
-        Label(table, text="Quantity", bg=self.widgets_bgColour, fg=self.widgets_fgColour).grid(row = 1, column = 3)
+        Label(table, text="Name").grid(row = 1, column = 1)
+        Label(table, text="Category").grid(row = 1, column = 2)
+        Label(table, text="Quantity").grid(row = 1, column = 3)
 
         # 'Name' column
-        groceries_listView_name = Listbox(table, bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        groceries_listView_name = Listbox(table)
         groceries_listView_name.grid(row = 2, column = 1)
         
         # 'Category' column
-        groceries_listView_category = Listbox(table, bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        groceries_listView_category = Listbox(table)
         groceries_listView_category.grid(row = 2, column = 2)
         
         # 'Quantity' column
-        groceries_listView_quantity = Listbox(table, bg=self.widgets_bgColour, fg=self.widgets_fgColour)
+        groceries_listView_quantity = Listbox(table)
         groceries_listView_quantity.grid(row = 2, column = 3)
         
         Init()  # Loads the data onto the dynamic form controls for the first time
 
         # Note: Remember to show the control on the window with 'pack' function.
-        header.pack(anchor="w")
-        search.pack(anchor="w")
-        table.pack(anchor="w")
-        actions.pack(anchor="w")
+        header.pack()
+        search.pack()
+        table.pack()
+        actions.pack()
+
+        self.UI_addBackButton(root)
         
         root.mainloop() # Runs the application with the window
     
@@ -347,7 +354,7 @@ if __name__ == "__main__":
     print("Starting Grocery List Manager...")
     # Creates a new instance from 'groceryListManager' class
     root = Tk()
-    instance = groceryListManager(root)
+    instance = groceryListManager(root, Test)
     instance.App()
 else:
     print("NOTE: 'groceryListManager' module has been imported.")
