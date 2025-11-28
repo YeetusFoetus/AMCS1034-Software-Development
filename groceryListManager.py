@@ -5,17 +5,34 @@ from tkinter import *
 import tkinter.messagebox
 
 class groceryListManager:
-    def __init__(self):
-        self.widgets_bgColour = "white"
-        self.widgets_fgColour = "black"
+    def __init__(self, root = None, back_callback = None):
+        # Define styles for 'tkinter' elements
         self.widgets_padx = 16
         self.widgets_pady = 8
+
+        # Checks whether there is an instance of 'root' passes to that of this class
+        if root == None:
+            self.root = Tk()  # Creates a new instance of Tkinter window since the function is called by another Python module
+        else:
+            self.root = root
+        
+        # Checks whether the main menu of a window is defined and passed to this class
+        if back_callback == None:
+            self.widgets_bgColour = "white"
+            self.widgets_fgColour = "black"
+        else:
+            self.widgets_bgColour = "white"
+            self.widgets_fgColour = "black"
+            self.back_callback = back_callback
 
         # Loads the groceries
         self.groceries = self.getList()
         self.categories = self.getCategories()
 
         print("INFO: 'groceryListManager' class has been initialised successfully.")
+
+    def menu(self):
+        self.App(self.root)
 
     def getList(self):
         # Declares an empty list of groceries
@@ -59,14 +76,61 @@ class groceryListManager:
         
         return categories   # Returns the set of categories to the calling function
 
+    def isback_callbackExists(self):
+        try:
+            self.back_callback
+        except AttributeError:
+            print("INFO: 'back_callback' is not provided.")
+            return False
+        else:
+            return True
+
+    def Init_UI(self, root):
+        # Checks whether 'back_callback()' function has been provided
+        
+        if self.isback_callbackExists()  == True:
+        # if self.back_callback != None:
+            # Clears all the widgets on the current window
+            for widget in root.winfo_children():
+                widget.destroy()
+
+            # Adds a frame where the back button is located
+            notch = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
+            
+            # Adds a back button
+            Button(notch, text="Return to the main menu", command=self.back_callback).grid(row = 1, column = 1)
+
+            notch.pack(anchor="w")
+        else:
+            # Sets the property of the window
+            root.config(bg=self.widgets_bgColour)
+
+    def UI_closeWindow(self, root):
+        if self.isback_callbackExists() == True:
+            self.back_callback
+        else:
+            root.destroy()
+    
+    def UI_returnToHome(self, root):
+        if self.isback_callbackExists() == True:
+            self.App()
+        else:
+            root.destroy()
+            
     def addGrocery_UI(self, root = None):
-        if root is None:
-            root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
-            print("INFO: 'Grocery List Manager' window is opened in a new window.")
+        print("INFO: 'Grocery List Manager' window is opened in a new window.")
+
+        # Sets the variable named 'root' to the current instance of the window
+        if root == None:
+            if self.isback_callbackExists() == True:
+                root = self.root
+            else:
+                root = Toplevel()
+                root.geometry("400x300")    # Sets the size of the window
 
         root.title("Add a grocery - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
-        root.geometry("400x300")    # Sets the size of the window
-        root.config(bg="white")
+
+        self.Init_UI(root)
 
         # Sets variables for certain form controls
         groceryName = StringVar()
@@ -76,7 +140,7 @@ class groceryListManager:
         def submitForm():
             result = self.addGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get())
             if result == True:
-                root.destroy()  # Closes the window
+                self.UI_returnToHome(root)  # Closes the window
 
         header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
         form = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg=self.widgets_bgColour)
@@ -99,7 +163,7 @@ class groceryListManager:
 
         Button(form_button, text="Add now", command=submitForm).grid(row = 1, column = 1)
         # Note: 'root.destroy()' closes the active window.
-        Button(form_button, text="Cancel", command=root.destroy).grid(row = 1, column = 2)
+        Button(form_button, text="Cancel", command=lambda: self.UI_returnToHome(root)).grid(row = 1, column = 2)
 
         header.pack(anchor="w")
         form.pack(anchor="w")
@@ -166,14 +230,23 @@ class groceryListManager:
         - Tkinter cannot have multiple main instances of 'Tk()' at the same time.
           Therefore, 'Toplevel()' function is utilised so multiple instances of Tkinter windows can be opened.
         """
+        """
         if root is None:
             root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
             print("INFO: 'Grocery List Manager' window is opened in a new window.")
+        """
+        if root == None:
+            if self.isback_callbackExists() == True:
+                root = self.root
+            else:
+                root = self.root
+                root.geometry("800x600")    # Sets the size of the window
 
         root.title("Grocery List Manager - Household Management Assistant App") # Sets the title of the window
-        root.geometry("800x600")    # Sets the size of the window
-        root.configure(bg='white')  # Changes the background colour using 'configure' function
+        # root.configure(bg='white')  # Changes the background colour using 'configure' function
         
+        self.Init_UI(root)
+
         """
         Note:
         - The following code designs the user interface for the grocery list manager.
@@ -184,6 +257,7 @@ class groceryListManager:
         categories = self.getCategories() # Declares a list of options that will be displayed on the drop-down menu
         category_opt = StringVar()   # Declares a variable for the selected category
         
+        # Calls UI
         header = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
         actions = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
         search = Frame(root, bg=self.widgets_bgColour, padx=self.widgets_padx, pady=self.widgets_pady)
@@ -265,12 +339,15 @@ class groceryListManager:
         
         root.mainloop() # Runs the application with the window
 
+def Test():
+    print("INFO: 'back_callback' function has been invoked.")
+
 # Runs the grocery list manager application if no function from the class is being called
 if __name__ == "__main__":
     print("Starting Grocery List Manager...")
     # Creates a new instance from 'groceryListManager' class
     root = Tk()
-    instance = groceryListManager()
-    instance.App(root)
+    instance = groceryListManager(root)
+    instance.App()
 else:
     print("NOTE: 'groceryListManager' module has been imported.")
