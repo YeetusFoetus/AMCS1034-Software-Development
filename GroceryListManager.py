@@ -31,9 +31,6 @@ class groceryListManager:
 
         print("INFO: 'groceryListManager' class has been initialised successfully.")
 
-    def menu(self):
-        self.App(self.root)
-
     def getList(self):
         # Declares an empty list of groceries
         groceries = []
@@ -116,7 +113,55 @@ class groceryListManager:
             self.App()
         else:
             root.destroy()
-            
+
+    def addGrocery(self, name, category, quantity):
+        # Validates the grocery's information entered by the user
+        if name == "" or name == None:
+            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's name cannot be empty.")
+            return False    # Returns 'False' to the calling function
+        elif category == "" or category == None:
+            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
+            return False
+        elif quantity == "" or quantity == None:
+            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
+            return False
+        elif quantity.isnumeric() == False:   # Validates the grocery's quantity
+            tkinter.messagebox.showerror("showerror", f"'{quantity}' is an invalid quantity. It has to be an integer.")
+            return False
+        else:
+            # Creates a dictionary that contains the new grocery's information
+            metadata = {"name": name, "category": category, "quantity": quantity}
+
+            # Adds the dictionary to the end of the list
+            self.groceries.append(metadata)
+
+            # Writes the dictionary to 'groceryList.json'
+            if path.isfile("groceryList.json"):
+                try:
+                    # Opens the 'JSON' file that contains the list of groceries
+                    f = open("groceryList.json", "r+")
+
+                    # Converts the list of groceries which includes the new grocery into JSON string
+                    groceryList_json = json.dumps(self.groceries)
+
+                    # Writes 'JSON' string into 'JSON' file
+                    f.write(groceryList_json)
+
+                    # Reloads the list of the groceries from 'JSON' string
+                    self.groceries = self.getList()
+
+                    tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
+
+                    return True
+                except:
+                    print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
+                finally:
+                    # Closes 'groceryList.json' after reading the content
+                    f.close()
+            else:
+                # Warns the user that 'groceryList.json' does not exist
+                print("WARNING: 'groceryList.json' file does not exist.")
+    
     def addGrocery_UI(self, root = None):
         print("INFO: 'Grocery List Manager' window is opened in a new window.")
 
@@ -171,54 +216,6 @@ class groceryListManager:
 
         # Displays the window
         root.mainloop()
-
-    def addGrocery(self, name, category, quantity):
-        # Validates the grocery's information entered by the user
-        if name == "" or name == None:
-            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's name cannot be empty.")
-            return False    # Returns 'False' to the calling function
-        elif category == "" or category == None:
-            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
-            return False
-        elif quantity == "" or quantity == None:
-            tkinter.messagebox.showwarning("showwarning", "Sorry, but the grocery's quantity cannot be empty.")
-            return False
-        elif quantity.isnumeric() == False:   # Validates the grocery's quantity
-            tkinter.messagebox.showerror("showerror", f"'{quantity}' is an invalid quantity. It has to be an integer.")
-            return False
-        else:
-            # Creates a dictionary that contains the new grocery's information
-            metadata = {"name": name, "category": category, "quantity": quantity}
-
-            # Adds the dictionary to the end of the list
-            self.groceries.append(metadata)
-
-            # Writes the dictionary to 'groceryList.json'
-            if path.isfile("groceryList.json"):
-                try:
-                    # Opens the 'JSON' file that contains the list of groceries
-                    f = open("groceryList.json", "r+")
-
-                    # Converts the list of groceries which includes the new grocery into JSON string
-                    groceryList_json = json.dumps(self.groceries)
-
-                    # Writes 'JSON' string into 'JSON' file
-                    f.write(groceryList_json)
-
-                    # Reloads the list of the groceries from 'JSON' string
-                    self.groceries = self.getList()
-
-                    tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
-
-                    return True
-                except:
-                    print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
-                finally:
-                    # Closes 'groceryList.json' after reading the content
-                    f.close()
-            else:
-                # Warns the user that 'groceryList.json' does not exist
-                print("WARNING: 'groceryList.json' file does not exist.")
 
     def App(self, root = None):
         """
@@ -338,6 +335,9 @@ class groceryListManager:
         actions.pack(anchor="w")
         
         root.mainloop() # Runs the application with the window
+    
+    def menu(self):
+        self.App(self.root)
 
 def Test():
     print("INFO: 'back_callback' function has been invoked.")
