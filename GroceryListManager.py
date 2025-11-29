@@ -169,7 +169,11 @@ class groceryListManager:
         else:
             root.destroy()
 
-    def addEditGrocery(self, name, category, quantity, index = None):
+    def isEditing(self, index = None, oldCategory = None):
+        result = True if index != None and oldCategory != None else False
+        return result
+    
+    def addEditGrocery(self, name, category, quantity, index = None, oldCategory = None):
         # Validates the grocery's information entered by the user
         if name == "" or name == None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's name cannot be empty.")
@@ -187,28 +191,35 @@ class groceryListManager:
             # Converts the quantity to integer-type variable
             quantity = int(quantity)
 
-            if index == None:   # If the user is adding a grocery to the list
+            if self.isEditing(index, oldCategory) == False:   # If the user is adding a grocery to the list
                 # Creates a dictionary that contains the new grocery's information
                 metadata = {"name": name, "category": category, "quantity": quantity}
 
                 # Adds the dictionary to the end of the list
                 self.groceries.append(metadata)
             else:
-                self.groceries[index]["name"] = name
-                self.groceries[index]["category"] = category
-                self.groceries[index]["quantity"] = quantity
+                searchResult = self.getListByCategory(oldCategory)
+                oldInfo = searchResult[index]
+                newInfo = {"name": name, "category": category, "quantity": quantity}   # Duplicates the old information from the list
+
+                print(oldInfo)
+                print(newInfo)
+
+                self.groceries.remove(oldInfo)  # Removes the old information from the list of groceries
+                self.groceries.append(newInfo)  # Adds the old information to the list
+                
 
             # Saves the changes to a file named 'groceryList.json'
             isSuccess = self.writeFile()
 
             if isSuccess == True:
-                tkinter.messagebox.showinfo("Grocery added" if index == None else "Grocery edited", "Your grocery which is '{}' has been {} successfully.".format(name, "added" if index == None else "edited"))
+                tkinter.messagebox.showinfo("Grocery added" if self.isEditing(index, oldCategory) == False else "Grocery edited", "Your grocery which is '{}' has been {} successfully.".format(name, "added" if self.isEditing(index, oldCategory) == False else "edited"))
             else:
                 tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're adding '{name}' to the list. Please try again.")
             
             return isSuccess
     
-    def addEditGrocery_UI(self, root = None, index = None):
+    def addEditGrocery_UI(self, root = None, index = None, oldCategory = None):
         print("INFO: 'Grocery List Manager' window is opened in a new window.")
 
         # Sets the variable named 'root' to the current instance of the window
@@ -220,7 +231,7 @@ class groceryListManager:
                 homeRoot = self.root    # Remembers the instance of the home page
                 root.geometry("400x300")    # Sets the size of the window
 
-        root.title(("Add a grocery" if index == None else "Edit the grocery") + " - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
+        root.title(("Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery") + " - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
 
         self.Init_UI(root)
 
@@ -230,11 +241,14 @@ class groceryListManager:
         groceryQuantity = StringVar()
 
         # Note: 'index' is True if the user is editing an grocery
-        if index != None:
+        if self.isEditing(index, oldCategory) == True:
+            # Search the list of categories based on the category given
+            searchResult = self.getListByCategory(oldCategory)
+
             # Gets the current information about the grocery
-            oldName = self.groceries[index].get("name")
-            oldCategory = self.groceries[index].get("category")
-            oldQuantity = self.groceries[index].get("quantity")
+            oldName = searchResult[index].get("name")
+            oldCategory = searchResult[index].get("category")
+            oldQuantity = searchResult[index].get("quantity")
 
             # Displays the information of the grocery if the user is making some edits
             groceryName.set(oldName)
@@ -248,10 +262,10 @@ class groceryListManager:
                 self.UI_returnToHome(root)  # Closes the window
 
         def submitForm():
-            if index == None:
+            if self.isEditing(index, oldCategory) == False:
                 result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get())
             else:
-                result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get(), index)
+                result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get(), index, oldCategory)
             
             if result == True:
                 closeWindow()
@@ -264,7 +278,7 @@ class groceryListManager:
         Note:
         - Tkinter elements can be placed inside a frame by replacing 'root' with the frame's name.
         """
-        Label(header, text="Add a grocery" if index == None else "Edit the grocery").grid(row = 1, column = 1)
+        Label(header, text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
 
         Label(form, text="Name: ").grid(row = 1, column = 1)
         Entry(form, textvariable=groceryName).grid(row = 1, column = 2)
@@ -275,7 +289,7 @@ class groceryListManager:
         Label(form, text="Quantity: ").grid(row = 3, column = 1)
         Entry(form, textvariable=groceryQuantity).grid(row = 3, column = 2)
 
-        Button(form_button, text="Add now" if index == None else "Save now", command=submitForm).grid(row = 1, column = 1)
+        Button(form_button, text="Add now" if self.isEditing(index, oldCategory) == False else "Save now", command=submitForm).grid(row = 1, column = 1)
         # Note: 'root.destroy()' closes the active window.
         Button(form_button, text="Cancel", command=closeWindow).grid(row = 1, column = 2)
 
@@ -496,7 +510,7 @@ class groceryListManager:
                 if self.selectIndex == None:
                     tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
                 else:
-                    self.addEditGrocery_UI(index=self.selectIndex)
+                    self.addEditGrocery_UI(index=self.selectIndex, oldCategory=category_opt.get())
 
             def delGrocery():
                 if self.selectIndex == None:
