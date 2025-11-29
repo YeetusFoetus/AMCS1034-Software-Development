@@ -288,28 +288,12 @@ class groceryListManager:
             print(self.groceries)
 
             # Writing changes to the file
-            isSuccess = False
-            try:
-                f = open("groceryList.json", "w")
+            isSuccess = self.writeFile()
 
-                groceryList_json = json.dumps(self.groceries)
-
-                f.write(groceryList_json)
-
-                f.close()
-
-                isSuccess = True
-
-                # Reloads the list of the groceries from 'JSON' string
-                self.loadData()
-
+            if isSuccess == True:
                 tkinter.messagebox.showinfo("Deletion successful", f"The grocery which is '{name}' has been deleted successfully.")
-            except:
-                print("Something went wrong while writing data to 'groceryList.json' file.")
-
-                isSuccess = False
-            finally:
-                f.close()
+            else:
+                pass
 
             return isSuccess
 
