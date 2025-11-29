@@ -194,7 +194,7 @@ class groceryListManager:
             isSuccess = self.writeFile()
 
             if isSuccess == True:
-                tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
+                tkinter.messagebox.showinfo("Grocery added", f"Your grocery which is '{name}' has been added successfully.")
             else:
                 pass
             
