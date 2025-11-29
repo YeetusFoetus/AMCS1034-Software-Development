@@ -373,8 +373,11 @@ class groceryListManager:
         userActions_wwyltd.grid(row = 1, column = 1)
         button_addGrocery = Button(userActions_wwyltd, text="Add a grocery")
         button_addGrocery.grid(row = 1, column = 1)
-        button_delGrocery = Button(userActions_wwyltd, text="Delete this grocery")
-        button_delGrocery.grid(row = 1, column = 2)
+
+        def addGrocery():
+            self.addGrocery_UI()
+        
+        button_addGrocery.config(command=addGrocery)
 
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack()
@@ -382,6 +385,10 @@ class groceryListManager:
         if len(self.groceries) <= 0: # If the list is empty
             empty.pack()
         else:
+            # Adds the button that deletes or edits the groceries within the list
+            button_delGrocery = Button(userActions_wwyltd, text="Delete this grocery")
+            button_delGrocery.grid(row = 1, column = 2)
+
             # Designs the search bar
             container_category = LabelFrame(search, text="Category: ", padx=self.widgets_padx / 2, pady=self.widgets_pady)
             container_category.grid(row = 1, column = 1)
@@ -467,9 +474,6 @@ class groceryListManager:
 
             OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
 
-            def addGrocery():
-                self.addGrocery_UI()
-
             def delGrocery():
                 if self.selectIndex == None:
                     # Shows an error message
@@ -483,7 +487,6 @@ class groceryListManager:
                         # Init()
                     self.refreshUI(root, self.App)
 
-            button_addGrocery.config(command=addGrocery)
             button_delGrocery.config(command=delGrocery)
 
             Init()  # Loads the data onto the dynamic form controls for the first time
