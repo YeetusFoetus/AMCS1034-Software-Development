@@ -267,9 +267,11 @@ class groceryListManager:
         - Variables are also declared at this stage.
         """
         # Declaring variables
+        """
         groceryList = self.getList() # Loads the list of groceries by calling 'loadList' function from the current 'groceryListManager' class' instance
         groceries = (groceryList) # Note: Tuples are used to avoid any changes to the data / list.
         categories = self.getCategories() # Declares a list of options that will be displayed on the drop-down menu
+        """
         category_opt = StringVar()   # Declares a variable for the selected category
         
         # Calls UI
@@ -293,7 +295,7 @@ class groceryListManager:
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack()
 
-        if len(groceries) <= 0: # If the list is empty
+        if len(self.groceries) <= 0: # If the list is empty
             empty.pack()
         else:
             # Designs the search bar
@@ -358,7 +360,7 @@ class groceryListManager:
                 groceries_listView_quantity.delete(0, END)
 
                 # Adds the item to the list based on the selected category
-                for currIndex, grocery in enumerate(groceries):
+                for currIndex, grocery in enumerate(self.groceries):
                     if grocery.get("category") == category:
                         groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
                         groceries_listView_category.insert(currIndex + 1, category)
@@ -372,15 +374,15 @@ class groceryListManager:
 
             # Initialises the window with initial values
             def Init():
-                if(len(categories) > 0):
-                    category_opt.set(groceries[0].get("category"))  # Choose the category of the first grocery item
+                if(len(self.categories) > 0):
+                    category_opt.set(self.groceries[0].get("category"))  # Choose the category of the first grocery item
                     change_categoryView(category_opt.get())
                     pass
                 else:
                     # category_opt.set("No categories available")
                     pass
 
-            OptionMenu(container_category, category_opt, *categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
+            OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
 
             Init()  # Loads the data onto the dynamic form controls for the first time
 
