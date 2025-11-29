@@ -234,6 +234,61 @@ class groceryListManager:
         # Displays the window
         root.mainloop()
 
+    def getListByCategory(self, category):
+        groceries = (self.getList())
+        result = []
+
+        for grocery in groceries:            
+            if(grocery.get("category") == category):
+                result.append(grocery)
+
+        return result
+        
+    def delGroceryByCategory(self, index, category):
+        sortedList = (self.getListByCategory(category))
+
+        print("Index selected: {}".format(index))
+        print("Category selected: {}".format(category))
+
+        name = sortedList[index].get("name")
+        quantity = sortedList[index].get("quantity")
+        
+        isYes = tkinter.messagebox.askyesno("Confirming deletion", f"Are you sure you would like to delete {quantity} groceries named '{name}'?")
+
+        if(isYes == True):
+            self.groceries.remove(sortedList[index])
+            print(self.groceries)
+
+            # Writing changes to the file
+            isSuccess = False
+            try:
+                f = open("groceryList.json", "w")
+
+                groceryList_json = json.dumps(self.groceries)
+
+                f.write(groceryList_json)
+
+                f.close()
+
+                isSuccess = True
+
+                # Reloads the list of the groceries from 'JSON' string
+                self.groceries = self.getList()
+
+                tkinter.messagebox.showinfo("Deletion successful", f"The grocery which is '{name}' has been deleted successfully.")
+            except:
+                print("Something went wrong while writing data to 'groceryList.json' file.")
+
+                isSuccess = False
+            finally:
+                f.close()
+
+            return isSuccess
+
+        else:
+            print("INFO: The deleting operation has been cancelled by the user.")
+            return False
+        
     def App(self, root = None):
         """
         Note:
@@ -291,6 +346,8 @@ class groceryListManager:
         userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", padx=self.widgets_padx / 2, pady=self.widgets_pady)
         userActions_wwyltd.grid(row = 1, column = 1)
         Button(userActions_wwyltd, text="Add a grocery", command=self.addGrocery_UI).grid(row = 1, column = 1)
+        button_delGrocery = Button(userActions_wwyltd, text="Delete this grocery")
+        button_delGrocery.grid(row = 1, column = 2)
 
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack()
@@ -383,6 +440,16 @@ class groceryListManager:
                     pass
 
             OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
+
+            def delGrocery():
+                if self.selectIndex == None:
+                    # Shows an error message
+                    tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
+                    print("WARNING: Nothing has been selected yet.")
+                else:
+                    self.delGroceryByCategory(self.selectIndex, category_opt.get())
+        
+            button_delGrocery.config(command=delGrocery)
 
             Init()  # Loads the data onto the dynamic form controls for the first time
 
