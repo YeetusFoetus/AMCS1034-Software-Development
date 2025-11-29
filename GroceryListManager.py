@@ -476,10 +476,12 @@ class groceryListManager:
                     tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
                     print("WARNING: Nothing has been selected yet.")
                 else:
-                    status = self.delGroceryByCategory(self.selectIndex, category_opt.get())
+                    # status = self.delGroceryByCategory(self.selectIndex, category_opt.get())
+                    self.delGroceryByCategory(self.selectIndex, category_opt.get())
                     
-                    if status == True or status == False:
-                        Init()
+                    # if status == True or status == False:
+                        # Init()
+                    self.refreshUI(root, self.App)
 
             button_addGrocery.config(command=addGrocery)
             button_delGrocery.config(command=delGrocery)
