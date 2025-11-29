@@ -305,7 +305,7 @@ class groceryListManager:
         name = sortedList[index].get("name")
         quantity = sortedList[index].get("quantity")
         
-        isYes = tkinter.messagebox.askyesno("Confirming deletion", f"Are you sure you would like to delete {quantity} groceries named '{name}'?")
+        isYes = tkinter.messagebox.askyesno("Confirming deletion", "Are you sure you would like to delete {} grocer{} named '{}'?".format(quantity, "y" if quantity == 1 else "ies", name))
 
         if(isYes == True):
             self.groceries.remove(sortedList[index])
