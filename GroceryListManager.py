@@ -87,6 +87,37 @@ class groceryListManager:
         # Loads the groceries
         self.groceries = self.getList()
         self.categories = self.getCategories()
+    
+    def writeFile(self):
+        global isSuccess
+        isSuccess = False   # 'isSuccess' variable is used to indicate the status of the file's writing operation
+
+        # Writes the dictionary to 'groceryList.json'
+        try:
+            # Opens the 'JSON' file that contains the list of groceries
+            # Note: 'w' flag will create the file with the name if it does not exist.
+            f = open("groceryList.json", "w")
+
+            # Converts the list of groceries which includes the new grocery into JSON string
+            groceryList_json = json.dumps(self.groceries)
+
+            # Writes 'JSON' string into 'JSON' file
+            f.write(groceryList_json)
+
+            # Closes 'groceryList.json' after reading the content
+            f.close()
+
+            isSuccess = True
+
+            # Reloads the list of the groceries from 'JSON' string
+            self.loadData()
+        except:
+            print("Something went wrong while writing data to 'groceryList.json' file.")
+            isSuccess = False
+        finally:
+            f.close()
+
+        return isSuccess
 
     def isback_callbackExists(self):
         try:
@@ -153,43 +184,19 @@ class groceryListManager:
             tkinter.messagebox.showerror("Error", f"'{quantity}' is an invalid quantity. It has to be an integer.")
             return False
         else:
-            isSuccess = False   # 'isSuccess' variable is used to indicate the status of the file's writing operation
-
             # Creates a dictionary that contains the new grocery's information
             metadata = {"name": name, "category": category, "quantity": quantity}
 
             # Adds the dictionary to the end of the list
             self.groceries.append(metadata)
 
-            # Writes the dictionary to 'groceryList.json'
-            try:
-                # Opens the 'JSON' file that contains the list of groceries
-                # Note: 'w' flag will create the file with the name if it does not exist.
-                f = open("groceryList.json", "w")
+            # Saves the changes to a file named 'groceryList.json'
+            isSuccess = self.writeFile()
 
-                # Converts the list of groceries which includes the new grocery into JSON string
-                groceryList_json = json.dumps(self.groceries)
-
-                # Writes 'JSON' string into 'JSON' file
-                f.write(groceryList_json)
-
-                f.close()
-
-                # Closes 'groceryList.json' after reading the content
-                f.close()
-
-                isSuccess = True
-
-                # Reloads the list of the groceries from 'JSON' string
-                self.loadData()
-
+            if isSuccess == True:
                 tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
-            except:
-                print("Something went wrong while writing data to 'groceryList.json' file.")
-
-                isSuccess = False
-            finally:
-                f.close()
+            else:
+                pass
             
             return isSuccess
     
