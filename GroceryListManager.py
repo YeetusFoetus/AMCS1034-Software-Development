@@ -97,14 +97,17 @@ class groceryListManager:
         else:
             return True
 
+    def clrScrn(self, root):
+        # Clears all the widgets on the current window
+        for widget in root.winfo_children():
+            widget.destroy()
+
     def Init_UI(self, root):
         # Checks whether 'back_callback()' function has been provided
         
         if self.isback_callbackExists()  == True:
         # if self.back_callback != None:
-            # Clears all the widgets on the current window
-            for widget in root.winfo_children():
-                widget.destroy()
+            self.clrScrn(root)
         else:
             # Sets the property of the window
             root.config()
@@ -199,6 +202,7 @@ class groceryListManager:
                 root = self.root
             else:
                 root = Toplevel()
+                homeRoot = self.root    # Remembers the instance of the home page
                 root.geometry("400x300")    # Sets the size of the window
 
         root.title("Add a grocery - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
@@ -210,10 +214,16 @@ class groceryListManager:
         groceryCategory = StringVar()
         groceryQuantity = StringVar()
 
+        def closeWindow():
+            if self.isback_callbackExists() == False:
+                self.refreshUI(homeRoot, self.App)
+            else:
+                self.UI_returnToHome(root)  # Closes the window
+
         def submitForm():
             result = self.addGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get())
             if result == True:
-                self.UI_returnToHome(root)  # Closes the window
+                closeWindow()
 
         header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
         form = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
@@ -236,7 +246,7 @@ class groceryListManager:
 
         Button(form_button, text="Add now", command=submitForm).grid(row = 1, column = 1)
         # Note: 'root.destroy()' closes the active window.
-        Button(form_button, text="Cancel", command=lambda: self.UI_returnToHome(root)).grid(row = 1, column = 2)
+        Button(form_button, text="Cancel", command=closeWindow).grid(row = 1, column = 2)
 
         header.pack()
         form.pack()
@@ -299,7 +309,12 @@ class groceryListManager:
         else:
             print("INFO: The deleting operation has been cancelled by the user.")
             return False
-        
+    
+    def refreshUI(self, root, function):
+        if self.isback_callbackExists() == False:
+            self.clrScrn(root)
+            function(root)  # Reinvoke the function to reinitialise the elements of 'tkinter' elements
+
     def App(self, root = None):
         """
         Note:
@@ -356,7 +371,8 @@ class groceryListManager:
         # Defines the user actions
         userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", padx=self.widgets_padx / 2, pady=self.widgets_pady)
         userActions_wwyltd.grid(row = 1, column = 1)
-        Button(userActions_wwyltd, text="Add a grocery", command=self.addGrocery_UI).grid(row = 1, column = 1)
+        button_addGrocery = Button(userActions_wwyltd, text="Add a grocery")
+        button_addGrocery.grid(row = 1, column = 1)
         button_delGrocery = Button(userActions_wwyltd, text="Delete this grocery")
         button_delGrocery.grid(row = 1, column = 2)
 
@@ -451,6 +467,9 @@ class groceryListManager:
 
             OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
 
+            def addGrocery():
+                self.addGrocery_UI()
+
             def delGrocery():
                 if self.selectIndex == None:
                     # Shows an error message
@@ -461,7 +480,8 @@ class groceryListManager:
                     
                     if status == True or status == False:
                         Init()
-        
+
+            button_addGrocery.config(command=addGrocery)
             button_delGrocery.config(command=delGrocery)
 
             Init()  # Loads the data onto the dynamic form controls for the first time
@@ -486,7 +506,7 @@ if __name__ == "__main__":
     print("Starting Grocery List Manager...")
     # Creates a new instance from 'groceryListManager' class
     root = Tk()
-    instance = groceryListManager(root, Test)
+    instance = groceryListManager(root)
     instance.App()
 else:
     print("NOTE: 'groceryListManager' module has been imported.")
