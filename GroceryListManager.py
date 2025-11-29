@@ -318,6 +318,37 @@ class groceryListManager:
             groceries_listView_quantity = Listbox(table)
             groceries_listView_quantity.grid(row = 2, column = 3)
 
+            self.selectIndex = None
+        
+            def getSelectedGrocery_name(event):
+                print(event)
+                selections = groceries_listView_name.curselection()
+                for selected in selections:
+                    self.selectIndex = selected
+                    print("INFO: The user has chosen the following index(es) from 'name' column.")
+                    print(selected)
+            
+            def getSelectedGrocery_category(event):
+                print(event)
+                selections = groceries_listView_category.curselection()
+                for selected in selections:
+                    self.selectIndex = selected
+                    print("INFO: The user has chosen the following index(es) from 'category' column.")
+                    print(selected)
+            
+            def getSelectedGrocery_quantity(event):
+                print(event)
+                selections = groceries_listView_quantity.curselection()
+                for selected in selections:
+                    self.selectIndex = selected
+                    print("INFO: The user has chosen the following index(es) from 'quantity' column.")
+                    print(selected)
+            
+            # Note: The function in '.bind("<<ListboxSelect>>", <function>)' function will be trigerred when the user chooses anything on the list box.
+            groceries_listView_name.bind("<<ListboxSelect>>", getSelectedGrocery_name)
+            groceries_listView_category.bind("<<ListboxSelect>>", getSelectedGrocery_category)
+            groceries_listView_quantity.bind("<<ListboxSelect>>", getSelectedGrocery_quantity)
+
             # Defining the functions
             # Note: In Python, 'def' defines functions.
             def loadList(category):
