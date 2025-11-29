@@ -30,9 +30,7 @@ class groceryListManager:
         if back_callback != None:
             self.back_callback = back_callback
 
-        # Loads the groceries
-        self.groceries = self.getList()
-        self.categories = self.getCategories()
+        self.loadData()
 
         print("INFO: 'groceryListManager' class has been initialised successfully.")
 
@@ -84,6 +82,11 @@ class groceryListManager:
             categories.add(category) # Add the category into the set
         
         return categories   # Returns the set of categories to the calling function
+    
+    def loadData(self):
+        # Loads the groceries
+        self.groceries = self.getList()
+        self.categories = self.getCategories()
 
     def isback_callbackExists(self):
         try:
@@ -117,12 +120,16 @@ class groceryListManager:
             notch.pack()
 
     def UI_closeWindow(self, root):
+        self.loadData() # Refreshes the list of groceery and categories saved within the class
+
         if self.isback_callbackExists() == True:
             self.back_callback
         else:
             root.destroy()
     
     def UI_returnToHome(self, root):
+        self.loadData()
+
         if self.isback_callbackExists() == True:
             self.App()
         else:
@@ -163,7 +170,15 @@ class groceryListManager:
                 # Writes 'JSON' string into 'JSON' file
                 f.write(groceryList_json)
 
+                f.close()
+
+                # Closes 'groceryList.json' after reading the content
+                f.close()
+
                 isSuccess = True
+
+                # Reloads the list of the groceries from 'JSON' string
+                self.loadData()
 
                 tkinter.messagebox.showinfo("showinfo", f"Your grocery which is '{name}' has been added successfully.")
             except:
@@ -171,11 +186,7 @@ class groceryListManager:
 
                 isSuccess = False
             finally:
-                # Closes 'groceryList.json' after reading the content
                 f.close()
-
-                # Reloads the list of the groceries from 'JSON' string
-                self.groceries = self.getList()
             
             return isSuccess
     
@@ -273,7 +284,7 @@ class groceryListManager:
                 isSuccess = True
 
                 # Reloads the list of the groceries from 'JSON' string
-                self.groceries = self.getList()
+                self.loadData()
 
                 tkinter.messagebox.showinfo("Deletion successful", f"The grocery which is '{name}' has been deleted successfully.")
             except:
@@ -434,7 +445,6 @@ class groceryListManager:
                 if(len(self.categories) > 0):
                     category_opt.set(self.groceries[0].get("category"))  # Choose the category of the first grocery item
                     change_categoryView(category_opt.get())
-                    pass
                 else:
                     # category_opt.set("No categories available")
                     pass
@@ -447,7 +457,10 @@ class groceryListManager:
                     tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
                     print("WARNING: Nothing has been selected yet.")
                 else:
-                    self.delGroceryByCategory(self.selectIndex, category_opt.get())
+                    status = self.delGroceryByCategory(self.selectIndex, category_opt.get())
+                    
+                    if status == True or status == False:
+                        Init()
         
             button_delGrocery.config(command=delGrocery)
 
