@@ -196,7 +196,7 @@ class groceryListManager:
             if isSuccess == True:
                 tkinter.messagebox.showinfo("Grocery added", f"Your grocery which is '{name}' has been added successfully.")
             else:
-                pass
+                tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're adding '{name}' to the list. Please try again.")
             
             return isSuccess
     
@@ -293,7 +293,7 @@ class groceryListManager:
             if isSuccess == True:
                 tkinter.messagebox.showinfo("Deletion successful", f"The grocery which is '{name}' has been deleted successfully.")
             else:
-                pass
+                tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're deleting '{name}' from the list. Please try again.")
 
             return isSuccess
 
