@@ -302,9 +302,9 @@ class groceryListManager:
             return False
     
     def refreshUI(self, root, function):
-        if self.isback_callbackExists() == False:
-            self.clrScrn(root)
-            function(root)  # Reinvoke the function to reinitialise the elements of 'tkinter' elements
+        #if self.isback_callbackExists() == False:
+        self.clrScrn(root)
+        function(root)  # Reinvoke the function to reinitialise the elements of 'tkinter' elements
 
     def App(self, root = None):
         """
