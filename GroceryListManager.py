@@ -181,11 +181,11 @@ class groceryListManager:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
             return False
         elif quantity.isnumeric() == False:   # Validates the grocery's quantity
-            tkinter.messagebox.showerror("Error", f"'{quantity}' is an invalid quantity. It has to be an integer.")
+            tkinter.messagebox.showerror("Error", f"Sorry, but '{quantity}' is an invalid quantity. It has to be a positive integer.")
             return False
         else:
             # Creates a dictionary that contains the new grocery's information
-            metadata = {"name": name, "category": category, "quantity": quantity}
+            metadata = {"name": name, "category": category, "quantity": int(quantity)}
 
             # Adds the dictionary to the end of the list
             self.groceries.append(metadata)
