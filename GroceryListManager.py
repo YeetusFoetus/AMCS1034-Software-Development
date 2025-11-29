@@ -492,6 +492,8 @@ class groceryListManager:
             # Shows the groceries based on the category chosen by the user
             # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
             def change_categoryView(category):
+                self.selectIndex = None
+                
                 print(category)
                 loadList(category)    # Changes the category displayed on the option menu
 
