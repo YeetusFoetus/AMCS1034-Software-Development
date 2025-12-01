@@ -2,8 +2,9 @@ import tkinter as tk
 from tkinter import messagebox  ## popup windows
 from tkinter import ttk         ## create table
 from ChoreScheduler import ChoreScheduler
-from GroceryListManager import groceryListManager
+from groceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
+from mealPlanner import mealPlanner
 
 class App():
     def __init__(self, root):
@@ -15,6 +16,7 @@ class App():
         self.chore_module = ChoreScheduler(self.root, back_callback = self.main_menu)
         self.grocery_module = groceryListManager(self.root, back_callback = self.main_menu)
         self.budget_module = BudgetTracker(self.root, back_callback = self.main_menu)
+        self.meal_planner = mealPlanner(self.root, back_callback = self.main_menu)
 
     def main_menu(self):
         for widget in self.root.winfo_children():
@@ -42,7 +44,7 @@ class App():
         self.budget_module.menu()
 
     def open_meal(self):
-        print("Meal Planner clicked")
+        self.meal_planner.menu()
 
 
 

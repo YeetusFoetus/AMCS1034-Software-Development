@@ -8,6 +8,7 @@ class mealPlanner:
     def __init__(self, root, back_callback):
         self.root = root
         self.back_callback = back_callback
+        self.categories = ["something"]
         print("INFO: 'mealPlanner' initialised successfully.")
 
     def menu(self):
@@ -23,11 +24,13 @@ class mealPlanner:
 
         for widget in self.root.winfo_children():
             widget.destroy()
+        Label(self.root, text="Welcome to Budget Tracker").pack(pady=10)
+        self.budget_page = Frame(self.root)
+        self.budget_page.pack(pady = 20)
+        Button(self.root, text = "Placeholder1", width = 25, height = 2, command = self.back_callback).pack(pady = 20)
+        Button(self.root, text = "2", width = 25, height = 2, command = print("hi")).pack(pady = 20)
+        Button(self.root, text = "3", width = 25, height = 2, command = print("print")).pack(pady = 20)
+        Button(self.root, text = "Back", command = self.back_callback).pack(pady = 20)
 
-        self.root.title("Meal Planner - Household Management Assistant App") # Sets the title of the window
-        self.root.geometry("800x600")    # Sets the size of the window
-        self.root.configure(bg='white')  # Changes the background colour using 'configure' function
-
-        categories = []
 
         
