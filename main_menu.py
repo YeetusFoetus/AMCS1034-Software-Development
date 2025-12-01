@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox  ## popup windows
 from tkinter import ttk         ## create table
 from ChoreScheduler import ChoreScheduler
-from groceryListManager import groceryListManager
+from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
 from mealPlanner import mealPlanner
 
