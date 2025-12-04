@@ -173,7 +173,7 @@ class groceryListManager:
         result = True if index != None and oldCategory != None else False
         return result
     
-    def addEditGrocery(self, name, category, quantity, index = None, oldCategory = None):
+    def addEditGrocery(self, name, category, quantity, threshold, index = None, oldCategory = None):
         # Validates the grocery's information entered by the user
         if name == "" or name == None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's name cannot be empty.")
@@ -187,20 +187,27 @@ class groceryListManager:
         elif quantity.isnumeric() == False:   # Validates the grocery's quantity
             tkinter.messagebox.showerror("Error", f"Sorry, but '{quantity}' is an invalid quantity. It has to be a positive integer.")
             return False
+        elif threshold == "" or threshold == None:
+            tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's threshold cannot be empty.")
+            return False
+        elif threshold.isnumeric() == False:   # Validates the grocery's quantity
+            tkinter.messagebox.showerror("Error", f"Sorry, but '{threshold}' is an invalid threshold. It has to be a positive integer.")
+            return False
         else:
-            # Converts the quantity to integer-type variable
+            # Converts the quantity and threshold to integer-type variables
             quantity = int(quantity)
+            threshold = int(threshold)
 
             if self.isEditing(index, oldCategory) == False:   # If the user is adding a grocery to the list
                 # Creates a dictionary that contains the new grocery's information
-                metadata = {"name": name, "category": category, "quantity": quantity}
+                metadata = {"name": name, "category": category, "quantity": quantity, "threshold": threshold}
 
                 # Adds the dictionary to the end of the list
                 self.groceries.append(metadata)
             else:
                 searchResult = self.getListByCategory(oldCategory)
                 oldInfo = searchResult[index]
-                newInfo = {"name": name, "category": category, "quantity": quantity}   # Duplicates the old information from the list
+                newInfo = {"name": name, "category": category, "quantity": quantity, "threshold": threshold}   # Duplicates the old information from the list
 
                 print(oldInfo)
                 print(newInfo)
@@ -239,6 +246,7 @@ class groceryListManager:
         groceryName = StringVar()
         groceryCategory = StringVar()
         groceryQuantity = StringVar()
+        groceryThreshold = StringVar()
 
         # Note: 'index' is True if the user is editing an grocery
         if self.isEditing(index, oldCategory) == True:
@@ -249,11 +257,13 @@ class groceryListManager:
             oldName = searchResult[index].get("name")
             oldCategory = searchResult[index].get("category")
             oldQuantity = searchResult[index].get("quantity")
+            oldThreshold = searchResult[index].get("threshold")
 
             # Displays the information of the grocery if the user is making some edits
             groceryName.set(oldName)
             groceryCategory.set(oldCategory)
             groceryQuantity.set(oldQuantity)
+            groceryThreshold.set(oldThreshold)
 
         def closeWindow():
             if self.isback_callbackExists() == False:
@@ -263,9 +273,9 @@ class groceryListManager:
 
         def submitForm():
             if self.isEditing(index, oldCategory) == False:
-                result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get())
+                result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get(), groceryThreshold.get())
             else:
-                result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get(), index, oldCategory)
+                result = self.addEditGrocery(groceryName.get(), groceryCategory.get(), groceryQuantity.get(), groceryThreshold.get(), index, oldCategory)
             
             if result == True:
                 closeWindow()
@@ -288,6 +298,9 @@ class groceryListManager:
 
         Label(form, text="Quantity: ").grid(row = 3, column = 1)
         Entry(form, textvariable=groceryQuantity).grid(row = 3, column = 2)
+
+        Label(form, text="Threshold: ").grid(row = 5, column = 1)
+        Entry(form, textvariable=groceryThreshold).grid(row = 5, column = 2)
 
         Button(form_button, text="Add now" if self.isEditing(index, oldCategory) == False else "Save now", command=submitForm).grid(row = 1, column = 1)
         # Note: 'root.destroy()' closes the active window.
@@ -430,6 +443,7 @@ class groceryListManager:
             Label(table, text="Name").grid(row = 1, column = 1)
             Label(table, text="Category").grid(row = 1, column = 2)
             Label(table, text="Quantity").grid(row = 1, column = 3)
+            Label(table, text="Threshold").grid(row = 1, column = 4)
 
             # 'Name' column
             groceries_listView_name = Listbox(table)
@@ -442,6 +456,10 @@ class groceryListManager:
             # 'Quantity' column
             groceries_listView_quantity = Listbox(table)
             groceries_listView_quantity.grid(row = 2, column = 3)
+
+            # 'Threshold' column
+            groceries_listView_threshold = Listbox(table)
+            groceries_listView_threshold.grid(row = 2, column = 4)
 
             self.selectIndex = None
         
@@ -469,10 +487,19 @@ class groceryListManager:
                     print("INFO: The user has chosen the following index(es) from 'quantity' column.")
                     print(selected)
             
+            def getSelectedGrocery_threshold(event):
+                print(event)
+                selections = groceries_listView_threshold.curselection()
+                for selected in selections:
+                    self.selectIndex = selected
+                    print("INFO: The user has chosen the following index(es) from 'threshold' column.")
+                    print(selected)
+            
             # Note: The function in '.bind("<<ListboxSelect>>", <function>)' function will be trigerred when the user chooses anything on the list box.
             groceries_listView_name.bind("<<ListboxSelect>>", getSelectedGrocery_name)
             groceries_listView_category.bind("<<ListboxSelect>>", getSelectedGrocery_category)
             groceries_listView_quantity.bind("<<ListboxSelect>>", getSelectedGrocery_quantity)
+            groceries_listView_threshold.bind("<<ListboxSelect>>", getSelectedGrocery_threshold)
 
             # Defining the functions
             # Note: In Python, 'def' defines functions.
@@ -481,6 +508,7 @@ class groceryListManager:
                 groceries_listView_name.delete(0, END)
                 groceries_listView_category.delete(0, END)
                 groceries_listView_quantity.delete(0, END)
+                groceries_listView_threshold.delete(0, END)
 
                 # Adds the item to the list based on the selected category
                 for currIndex, grocery in enumerate(self.groceries):
@@ -488,6 +516,7 @@ class groceryListManager:
                         groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
                         groceries_listView_category.insert(currIndex + 1, category)
                         groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
+                        groceries_listView_threshold.insert(currIndex + 1, grocery.get("threshold"))
 
             # Shows the groceries based on the category chosen by the user
             # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
