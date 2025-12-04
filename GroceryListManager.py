@@ -330,6 +330,16 @@ class groceryListManager:
                 result.append(grocery)
 
         return result
+    
+    def searchList(self, name = "", category = ""):
+        groceries = (self.getList())
+        result = []
+
+        for grocery in groceries:
+            if((grocery.get("name").lower().find(name.lower()) >= 0 if name != "" else True) and (grocery.get("category") == category if category != "" else True)):
+                result.append(grocery)
+
+        return result
         
     def delGroceryByCategory(self, index, category):
         sortedList = (self.getListByCategory(category))
