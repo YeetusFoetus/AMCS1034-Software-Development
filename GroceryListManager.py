@@ -3,6 +3,7 @@ import os.path as path
 import json
 from tkinter import *
 import tkinter.messagebox
+import tkinter.simpledialog
 
 class groceryListManager:
     def __init__(self, root = None, back_callback = None):
@@ -370,6 +371,49 @@ class groceryListManager:
             print("INFO: The deleting operation has been cancelled by the user.")
             return False
     
+    def consumeGroceryByCategory(self, index, category):
+        sortedList = (self.getListByCategory(category))
+
+        print("Index selected: {}".format(index))
+        print("Category selected: {}".format(category))
+
+        name = sortedList[index].get("name")
+        quantity = sortedList[index].get("quantity")
+        
+        isSuccess = False
+
+        if quantity == 0:
+            tkinter.messagebox.showerror("Nothing to consume", f"Sorry, but the grocery named '{name}' is no more.")
+        else:
+            while True:
+                consumeNum = tkinter.simpledialog.askinteger("Consuming a grocery", "Enter the number of '{}' you have consumed.".format(name))
+
+                if consumeNum is None:
+                    print("INFO: The deleting operation has been cancelled by the user.")
+                    break
+                elif consumeNum < 0:
+                    tkinter.messagebox.showwarning("Invalid consumption", "Sorry, but the number of consumption should be positive.")
+                elif consumeNum > quantity:
+                    tkinter.messagebox.showwarning("Invalid consumption", f"Sorry, but the number of consumption should not exceed the quantity of the grocery which is {quantity}.")
+                else:
+                    self.groceries.remove(sortedList[index])
+                    sortedList[index]["quantity"] -= consumeNum
+                    self.groceries.append(sortedList[index])
+                    print(self.groceries)
+
+                    # Writing changes to the file
+                    isSuccess = self.writeFile()
+
+                    if isSuccess == True:
+                        quantity = sortedList[index].get("quantity")    # Update the quantity with the new number
+                        tkinter.messagebox.showinfo("Consumption successful", f"Now, you have {quantity} grocer{"y" if quantity == 1 else "ies"} named '{name}' left.")
+                        break
+                    else:
+                        tkinter.messagebox.showerror("Grocery failed to be consumed", f"Sorry, but there is an error occurred while we're consuming '{name}' from the list. Please try again.")
+                        break
+
+        return isSuccess
+        
     def refreshUI(self, root, function):
         #if self.isback_callbackExists() == False:
         self.clrScrn(root)
@@ -451,6 +495,9 @@ class groceryListManager:
 
             button_delGrocery = Button(userActions_wwyltd, text="Delete this grocery")
             button_delGrocery.grid(row = 1, column = 3)
+
+            button_consumeGrocery = Button(userActions_wwyltd, text="Consume this grocery")
+            button_consumeGrocery.grid(row = 1, column = 4)
 
             # Designs the search bar
             container_category = LabelFrame(search, text="Category: ", padx=self.LabelFrame_padx, pady=self.widgets_pady)
@@ -577,9 +624,23 @@ class groceryListManager:
                     # if status == True or status == False:
                         # Init()
                     self.refreshUI(root, self.App)
+            
+            def consumeGrocery():
+                if self.selectIndex is None:
+                    # Shows an error message
+                    tkinter.messagebox.showinfo("No selection", "In order to consume a grocery, you have to choose first.")
+                    print("WARNING: Nothing has been selected yet.")
+                else:
+                    # status = self.delGroceryByCategory(self.selectIndex, category_opt.get())
+                    self.consumeGroceryByCategory(self.selectIndex, category_opt.get())
+                    
+                    # if status == True or status == False:
+                        # Init()
+                    self.refreshUI(root, self.App)
 
             button_editGrocery.config(command=editGrocery)
             button_delGrocery.config(command=delGrocery)
+            button_consumeGrocery.config(command=consumeGrocery)
 
             Init()  # Loads the data onto the dynamic form controls for the first time
 
