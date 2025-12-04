@@ -312,7 +312,7 @@ class groceryListManager:
         info4user = LabelFrame(footer, text="For your information", padx=self.LabelFrame_padx, pady=self.widgets_pady)
         info4user.grid(row = 1, column = 1)
 
-        Label(info4user, text="The first character of the category will be capitalised and the rest will be lower case.\n\ne.g.: 'frUit' --> 'Fruit'").grid(row = 1, column = 1)
+        Label(info4user, text="The first character of the category will be capitalised and\nthe rest will be lower case.\n\ne.g.: 'frUit' --> 'Fruit'").grid(row = 1, column = 1)
 
         header.pack()
         form.pack()
