@@ -463,6 +463,7 @@ class groceryListManager:
 
         header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
         table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        footer = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
 
         Label(header, text="My Refill List").grid(row = 1, column = 1)
 
@@ -513,10 +514,19 @@ class groceryListManager:
                     groceries_listView_threshold.insert(currIndex + 1, threshold)
                     groceries_listView_refillAmt.insert(currIndex + 1, refillAmt)
 
+        def closeWindow():
+            if self.isback_callbackExists() == False:
+                self.refreshUI(homeRoot, self.App)
+            else:
+                self.UI_returnToHome(root)  # Closes the window
+        
+        Button(footer, text="Close", command=closeWindow).grid(row = 1, column = 1)
+
         loadList()    # Changes the category displayed on the option menu
 
         header.pack()
         table.pack()
+        footer.pack()
 
         # Displays the window
         root.mainloop()
