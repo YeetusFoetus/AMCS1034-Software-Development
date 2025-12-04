@@ -9,6 +9,7 @@ class groceryListManager:
         # Define styles for 'tkinter' elements
         self.widgets_padx = 16
         self.widgets_pady = 8
+        self.LabelFrame_padx = self.widgets_padx / 2
 
         # Checks whether there is an instance of 'root' passes to that of this class
         if root == None:
@@ -307,7 +308,7 @@ class groceryListManager:
         # Note: 'root.destroy()' closes the active window.
         Button(form_button, text="Cancel", command=closeWindow).grid(row = 1, column = 2)
 
-        info4user = LabelFrame(footer, text="For your information", padx=self.widgets_padx / 2, pady=self.widgets_pady)
+        info4user = LabelFrame(footer, text="For your information", padx=self.LabelFrame_padx, pady=self.widgets_pady)
         info4user.grid(row = 1, column = 1)
 
         Label(info4user, text="The first character of the category will be capitalised and the rest will be lower case.\n\ne.g.: 'frUit' --> 'Fruit'").grid(row = 1, column = 1)
@@ -418,7 +419,7 @@ class groceryListManager:
         # Label(root, text="Let's manage your grocery list.")
         
         # Defines the user actions
-        userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", padx=self.widgets_padx / 2, pady=self.widgets_pady)
+        userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", padx=self.LabelFrame_padx, pady=self.widgets_pady)
         userActions_wwyltd.grid(row = 1, column = 1)
         button_addGrocery = Button(userActions_wwyltd, text="Add a grocery")
         button_addGrocery.grid(row = 1, column = 1)
@@ -442,7 +443,7 @@ class groceryListManager:
             button_delGrocery.grid(row = 1, column = 3)
 
             # Designs the search bar
-            container_category = LabelFrame(search, text="Category: ", padx=self.widgets_padx / 2, pady=self.widgets_pady)
+            container_category = LabelFrame(search, text="Category: ", padx=self.LabelFrame_padx, pady=self.widgets_pady)
             container_category.grid(row = 1, column = 1)
 
             # Designs the table of groceries
