@@ -599,13 +599,13 @@ class groceryListManager:
             button_delGrocery.grid(row = 1, column = 3)
 
             button_consumeGrocery = Button(userActions_wwyltd, text="Consume this grocery")
-            button_consumeGrocery.grid(row = 1, column = 4)
+            button_consumeGrocery.grid(row = 2, column = 1)
 
             button_refillGrocery = Button(userActions_wwyltd, text="Refill this grocery")
-            button_refillGrocery.grid(row = 1, column = 5)
+            button_refillGrocery.grid(row = 2, column = 2)
 
             button_refillList = Button(userActions_wwyltd, text="Generate a refill list for me")
-            button_refillList.grid(row = 1, column = 6)
+            button_refillList.grid(row = 2, column = 3)
 
             # Designs the search bar
             container_category = LabelFrame(search, text="Category: ", padx=self.LabelFrame_padx, pady=self.widgets_pady)
