@@ -608,7 +608,7 @@ class groceryListManager:
 
             def editGrocery():
                 if self.selectIndex is None:
-                    tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
+                    tkinter.messagebox.showinfo("No selection", "In order to edit a grocery, you have to choose first.")
                 else:
                     self.addEditGrocery_UI(index=self.selectIndex, oldCategory=category_opt.get())
 
