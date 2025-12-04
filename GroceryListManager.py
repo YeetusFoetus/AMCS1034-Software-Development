@@ -365,11 +365,8 @@ class groceryListManager:
             else:
                 tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're deleting '{name}' from the list. Please try again.")
 
-            return isSuccess
-
         else:
             print("INFO: The deleting operation has been cancelled by the user.")
-            return False
     
     def consumeGroceryByCategory(self, index, category):
         sortedList = (self.getListByCategory(category))
@@ -379,8 +376,6 @@ class groceryListManager:
 
         name = sortedList[index].get("name")
         quantity = sortedList[index].get("quantity")
-        
-        isSuccess = False
 
         if quantity == 0:
             tkinter.messagebox.showerror("Nothing to consume", f"Sorry, but the grocery named '{name}' is no more.")
@@ -411,8 +406,6 @@ class groceryListManager:
                     else:
                         tkinter.messagebox.showerror("Grocery failed to be consumed", f"Sorry, but there is an error occurred while we're consuming '{name}' from the list. Please try again.")
                         break
-
-        return isSuccess
     
     def refillGroceryByCategory(self, index, category):
         sortedList = (self.getListByCategory(category))
@@ -422,8 +415,6 @@ class groceryListManager:
 
         name = sortedList[index].get("name")
         quantity = sortedList[index].get("quantity")
-        
-        isSuccess = False
 
         while True:
             consumeNum = tkinter.simpledialog.askinteger("Refilling a grocery", "Enter the number of '{}' you have refilled.".format(name))
@@ -450,8 +441,6 @@ class groceryListManager:
                 else:
                     tkinter.messagebox.showerror("Grocery failed to be refilled", f"Sorry, but there is an error occurred while we're refilling '{name}' from the list. Please try again.")
                     break
-
-        return isSuccess
         
     def refreshUI(self, root, function):
         #if self.isback_callbackExists() == False:
