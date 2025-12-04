@@ -418,6 +418,80 @@ class groceryListManager:
         #if self.isback_callbackExists() == False:
         self.clrScrn(root)
         function(root)  # Reinvoke the function to reinitialise the elements of 'tkinter' elements
+    
+    def refillList(self, root = None):
+        # Sets the variable named 'root' to the current instance of the window
+        if root is None:
+            if self.isback_callbackExists() == True:
+                root = self.root
+            else:
+                root = Toplevel()
+                homeRoot = self.root    # Remembers the instance of the home page
+                root.geometry("400x300")    # Sets the size of the window
+
+        root.title("Your refill list - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
+
+        self.Init_UI(root)
+
+        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+
+        Label(header, text="My Refill List").grid(row = 1, column = 1)
+
+        # Designs the table of grocer(ies) that need to be refilled
+        Label(table, text="Name").grid(row = 1, column = 1)
+        Label(table, text="Category").grid(row = 1, column = 2)
+        Label(table, text="Quantity").grid(row = 1, column = 3)
+        Label(table, text="Threshold").grid(row = 1, column = 4)
+        Label(table, text="You need to refill…").grid(row = 1, column = 5)
+
+        # 'Name' column
+        groceries_listView_name = Listbox(table)
+        groceries_listView_name.grid(row = 2, column = 1)
+
+        # 'Category' column
+        groceries_listView_category = Listbox(table)
+        groceries_listView_category.grid(row = 2, column = 2)
+
+        # 'Quantity' column
+        groceries_listView_quantity = Listbox(table)
+        groceries_listView_quantity.grid(row = 2, column = 3)
+
+        # 'Threshold' column
+        groceries_listView_threshold = Listbox(table)
+        groceries_listView_threshold.grid(row = 2, column = 4)
+
+        # 'You need to refill' column
+        groceries_listView_refillAmt = Listbox(table)
+        groceries_listView_refillAmt.grid(row = 2, column = 5)
+        
+        # Defining necessary functions
+        def loadList():
+            # Gets the list of groceries
+            searchResult = self.groceries
+
+            # Adds the item to the list based on the selected category
+            for currIndex, grocery in enumerate(searchResult):
+                quantity = grocery.get("quantity")
+                threshold = grocery.get("threshold")
+
+                if quantity < threshold:
+                    # Calculates the number of the grocery that needs to be refilled
+                    refillAmt = threshold - quantity
+
+                    groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
+                    groceries_listView_category.insert(currIndex + 1, grocery.get("category"))
+                    groceries_listView_quantity.insert(currIndex + 1, quantity)
+                    groceries_listView_threshold.insert(currIndex + 1, threshold)
+                    groceries_listView_refillAmt.insert(currIndex + 1, refillAmt)
+
+        loadList()    # Changes the category displayed on the option menu
+
+        header.pack()
+        table.pack()
+
+        # Displays the window
+        root.mainloop()
 
     def App(self, root = None):
         """
@@ -498,6 +572,9 @@ class groceryListManager:
 
             button_consumeGrocery = Button(userActions_wwyltd, text="Consume this grocery")
             button_consumeGrocery.grid(row = 1, column = 4)
+
+            button_refillList = Button(userActions_wwyltd, text="Generate a refill list for me")
+            button_refillList.grid(row = 1, column = 5)
 
             # Designs the search bar
             container_category = LabelFrame(search, text="Category: ", padx=self.LabelFrame_padx, pady=self.widgets_pady)
@@ -637,10 +714,14 @@ class groceryListManager:
                     # if status == True or status == False:
                         # Init()
                     self.refreshUI(root, self.App)
+            
+            def refillList():
+                self.refillList()
 
             button_editGrocery.config(command=editGrocery)
             button_delGrocery.config(command=delGrocery)
             button_consumeGrocery.config(command=consumeGrocery)
+            button_refillList.config(command=refillList)
 
             Init()  # Loads the data onto the dynamic form controls for the first time
 
