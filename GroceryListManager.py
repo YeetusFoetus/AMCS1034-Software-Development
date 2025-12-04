@@ -504,6 +504,9 @@ class groceryListManager:
             # Defining the functions
             # Note: In Python, 'def' defines functions.
             def loadList(category):
+                # Gets the groceries based on the category given
+                searchResult = self.getListByCategory(category)
+
                 # Clears the list
                 groceries_listView_name.delete(0, END)
                 groceries_listView_category.delete(0, END)
@@ -511,12 +514,11 @@ class groceryListManager:
                 groceries_listView_threshold.delete(0, END)
 
                 # Adds the item to the list based on the selected category
-                for currIndex, grocery in enumerate(self.groceries):
-                    if grocery.get("category") == category:
-                        groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
-                        groceries_listView_category.insert(currIndex + 1, category)
-                        groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
-                        groceries_listView_threshold.insert(currIndex + 1, grocery.get("threshold"))
+                for currIndex, grocery in enumerate(searchResult):
+                    groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
+                    groceries_listView_category.insert(currIndex + 1, category)
+                    groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
+                    groceries_listView_threshold.insert(currIndex + 1, grocery.get("threshold"))
 
             # Shows the groceries based on the category chosen by the user
             # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
