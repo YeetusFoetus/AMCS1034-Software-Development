@@ -389,7 +389,7 @@ class groceryListManager:
                 consumeNum = tkinter.simpledialog.askinteger("Consuming a grocery", "Enter the number of '{}' you have consumed.".format(name))
 
                 if consumeNum is None:
-                    print("INFO: The deleting operation has been cancelled by the user.")
+                    print("INFO: The consuming operation has been cancelled by the user.")
                     break
                 elif consumeNum < 0:
                     tkinter.messagebox.showwarning("Invalid consumption", "Sorry, but the number of consumption should be positive.")
@@ -411,6 +411,45 @@ class groceryListManager:
                     else:
                         tkinter.messagebox.showerror("Grocery failed to be consumed", f"Sorry, but there is an error occurred while we're consuming '{name}' from the list. Please try again.")
                         break
+
+        return isSuccess
+    
+    def refillGroceryByCategory(self, index, category):
+        sortedList = (self.getListByCategory(category))
+
+        print("Index selected: {}".format(index))
+        print("Category selected: {}".format(category))
+
+        name = sortedList[index].get("name")
+        quantity = sortedList[index].get("quantity")
+        
+        isSuccess = False
+
+        while True:
+            consumeNum = tkinter.simpledialog.askinteger("Refilling a grocery", "Enter the number of '{}' you have refilled.".format(name))
+
+            if consumeNum is None:
+                print("INFO: The refilling operation has been cancelled by the user.")
+                break
+            elif consumeNum < 0:
+                tkinter.messagebox.showwarning("Invalid refill", f"Sorry, but the number of refilled grocery named '{name}' should be positive.")
+            else:
+                self.groceries.remove(sortedList[index])
+                sortedList[index]["quantity"] += consumeNum
+                self.groceries.append(sortedList[index])
+
+                print(self.groceries)
+
+                # Writing changes to the file
+                isSuccess = self.writeFile()
+
+                if isSuccess == True:
+                    quantity = sortedList[index].get("quantity")    # Update the quantity with the new number
+                    tkinter.messagebox.showinfo("Refill successful", f"Now, you have {quantity} grocer{"y" if quantity == 1 else "ies"} named '{name}' left.")
+                    break
+                else:
+                    tkinter.messagebox.showerror("Grocery failed to be refilled", f"Sorry, but there is an error occurred while we're refilling '{name}' from the list. Please try again.")
+                    break
 
         return isSuccess
         
@@ -573,8 +612,11 @@ class groceryListManager:
             button_consumeGrocery = Button(userActions_wwyltd, text="Consume this grocery")
             button_consumeGrocery.grid(row = 1, column = 4)
 
+            button_refillGrocery = Button(userActions_wwyltd, text="Refill this grocery")
+            button_refillGrocery.grid(row = 1, column = 5)
+
             button_refillList = Button(userActions_wwyltd, text="Generate a refill list for me")
-            button_refillList.grid(row = 1, column = 5)
+            button_refillList.grid(row = 1, column = 6)
 
             # Designs the search bar
             container_category = LabelFrame(search, text="Category: ", padx=self.LabelFrame_padx, pady=self.widgets_pady)
@@ -715,12 +757,26 @@ class groceryListManager:
                         # Init()
                     self.refreshUI(root, self.App)
             
+            def refillGrocery():
+                if self.selectIndex is None:
+                    # Shows an error message
+                    tkinter.messagebox.showinfo("No selection", "In order to refill a grocery, you have to choose first.")
+                    print("WARNING: Nothing has been selected yet.")
+                else:
+                    # status = self.delGroceryByCategory(self.selectIndex, category_opt.get())
+                    self.refillGroceryByCategory(self.selectIndex, category_opt.get())
+                    
+                    # if status == True or status == False:
+                        # Init()
+                    self.refreshUI(root, self.App)
+            
             def refillList():
                 self.refillList()
 
             button_editGrocery.config(command=editGrocery)
             button_delGrocery.config(command=delGrocery)
             button_consumeGrocery.config(command=consumeGrocery)
+            button_refillGrocery.config(command=refillGrocery)
             button_refillList.config(command=refillList)
 
             Init()  # Loads the data onto the dynamic form controls for the first time
