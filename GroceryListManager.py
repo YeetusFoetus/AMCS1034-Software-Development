@@ -12,14 +12,14 @@ class groceryListManager:
         self.LabelFrame_padx = self.widgets_padx / 2
 
         # Checks whether there is an instance of 'root' passes to that of this class
-        if root == None:
+        if root is None:
             self.root = Tk()  # Creates a new instance of Tkinter window since the function is called by another Python module
         else:
             self.root = root
         
         # Checks whether the main menu of a window is defined and passed to this class
         """
-        if back_callback == None:
+        if back_callback is None:
             # Sets to customised styles
             self.widgets_bgColour = "white"
             self.widgets_fgColour = "black"
@@ -176,19 +176,19 @@ class groceryListManager:
     
     def addEditGrocery(self, name, category, quantity, threshold, index = None, oldCategory = None):
         # Validates the grocery's information entered by the user
-        if name == "" or name == None:
+        if name == "" or name is None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's name cannot be empty.")
             return False    # Returns 'False' to the calling function
-        elif category == "" or category == None:
+        elif category == "" or category is None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
             return False
-        elif quantity == "" or quantity == None:
+        elif quantity == "" or quantity is None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
             return False
         elif quantity.isnumeric() == False:   # Validates the grocery's quantity
             tkinter.messagebox.showerror("Error", f"Sorry, but '{quantity}' is an invalid quantity. It has to be a positive integer.")
             return False
-        elif threshold == "" or threshold == None:
+        elif threshold == "" or threshold is None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's threshold cannot be empty.")
             return False
         elif threshold.isnumeric() == False:   # Validates the grocery's quantity
@@ -231,7 +231,7 @@ class groceryListManager:
         print("INFO: 'Grocery List Manager' window is opened in a new window.")
 
         # Sets the variable named 'root' to the current instance of the window
-        if root == None:
+        if root is None:
             if self.isback_callbackExists() == True:
                 root = self.root
             else:
@@ -390,7 +390,7 @@ class groceryListManager:
             root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
             print("INFO: 'Grocery List Manager' window is opened in a new window.")
         """
-        if root == None:
+        if root is None:
             if self.isback_callbackExists() == True:
                 root = self.root
             else:
@@ -560,13 +560,13 @@ class groceryListManager:
             OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
 
             def editGrocery():
-                if self.selectIndex == None:
+                if self.selectIndex is None:
                     tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
                 else:
                     self.addEditGrocery_UI(index=self.selectIndex, oldCategory=category_opt.get())
 
             def delGrocery():
-                if self.selectIndex == None:
+                if self.selectIndex is None:
                     # Shows an error message
                     tkinter.messagebox.showinfo("No selection", "In order to delete a grocery, you have to choose first.")
                     print("WARNING: Nothing has been selected yet.")
