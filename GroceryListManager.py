@@ -528,8 +528,10 @@ class groceryListManager:
 
             # Initialises the window with initial values
             def Init():
-                if(len(self.categories) > 0):
-                    category_opt.set(self.groceries[0].get("category"))  # Choose the category of the first grocery item
+                if(len(self.categories) > 0):   # If the list of groceries is not empty
+                    if category_opt.get() not in self.categories: # If the selected category does not exist
+                        category_opt.set(self.groceries[0].get("category"))  # Choose the category of the first grocery item
+
                     change_categoryView(category_opt.get())
                 else:
                     # category_opt.set("No categories available")
