@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox  ## popup windows
 from tkinter import ttk         ## create table
+import ttkbootstrap as tb
+from ttkbootstrap.constants import *
 from ChoreScheduler import ChoreScheduler
 from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
@@ -10,8 +12,7 @@ class App():
     def __init__(self, root):
         self.root = root
         self.root.title("Household Management Assistant App")
-        self.root.geometry("400x300")
-        self.root.configure(bg="lightyellow")
+        self.root.geometry("800x500")
         self.main_menu()   ## call to return to main menu
 
         self.chore_module = ChoreScheduler(self.root, back_callback = self.main_menu)
@@ -23,19 +24,22 @@ class App():
         for widget in self.root.winfo_children():
             widget.destroy()
 
-        btn_grocery = tk.Button(self.root, text = "Grocery List Manager", width = 25, height = 2, command = self.open_grocery)
+        frame_main_menu = tb.Frame(self.root, bootstyle="warning")
+        frame_main_menu.pack(fill="both", expand=True)
+
+        btn_grocery = tb.Button(frame_main_menu, text = "Grocery List Manager", bootstyle="info", width = 20, command = self.open_grocery)
         btn_grocery.pack(pady = 5)
 
-        btn_chore = tk.Button(self.root, text = "Chore Scheduler", width = 25, height = 2, command = self.open_chore)
+        btn_chore = tb.Button(frame_main_menu, text = "Chore Scheduler", bootstyle="info", width = 20, command = self.open_chore)
         btn_chore.pack(pady = 5)
 
-        btn_budget = tk.Button(self.root, text = "Budget Tracker", width = 25, height = 2, command = self.open_budget)
+        btn_budget = tb.Button(frame_main_menu, text = "Budget Tracker", bootstyle="info", width = 20, command = self.open_budget)
         btn_budget.pack(pady = 5)
 
-        btn_meal = tk.Button(self.root, text = "Meal Planner", width = 25, height = 2, command = self.open_meal)
+        btn_meal = tb.Button(frame_main_menu, text = "Meal Planner", bootstyle="info", width = 20, command = self.open_meal)
         btn_meal.pack(pady = 5)
 
-        btn_notebook = tk.Button(self.root, text = "Notebook", width = 25, height = 2, command = self.open_notebook)
+        btn_notebook = tb.Button(frame_main_menu, text = "Notebook", bootstyle="info", width = 20, command = self.open_notebook)
         btn_notebook.pack(pady = 5)
 
     def open_grocery(self):
@@ -56,6 +60,6 @@ class App():
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = tb.Window(themename="flatly")
     app = App(root)
     root.mainloop()
