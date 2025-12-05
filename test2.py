@@ -37,7 +37,7 @@ class main_menu():
         cs_frame = ttk.Frame(main_frame)
         cs_frame.pack() 
         tb.Label(cs_frame, text = "Placeholder")
-        tb.Button(cs_frame, text="Chore Scheduler", width=20, ootstyle="primary", style = 'custom.TButton').pack(pady=10, fill="both", expand=True)
+        tb.Button(cs_frame, text="Chore Scheduler", width=20, bootstyle="primary", style = 'custom.TButton').pack(pady=10, fill="both", expand=True)
         
         bt_frame = ttk.Frame(main_frame)
         bt_frame.pack()
