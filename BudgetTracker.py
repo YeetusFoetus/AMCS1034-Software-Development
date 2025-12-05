@@ -21,10 +21,6 @@ class BudgetTracker:
         self.entry_amount = None
         self.current_budget_view = None
 
-
-    def back_to_menu(self):
-        self.budget_page.pack_forget()
-
     def open_budget_page(self):
         tk.Label(self.window, text="Welcome to Budget Tracker").pack(pady=10)
         self.budget_page = tk.Frame(self.window)
@@ -88,7 +84,7 @@ class BudgetTracker:
                                 anchor="nw", padx=10, bg="#F0F0F0")
         self.report_content.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_to_menu).pack(side="bottom", pady=10)
+        tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_callback).pack(side="bottom", pady=10)
 
         self.switch_budget_view("input")
         
