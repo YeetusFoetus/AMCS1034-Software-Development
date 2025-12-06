@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox  ## popup windows
 from tkinter import ttk         ## create table
-import ttkbootstrap as tb
-from ttkbootstrap.constants import *
 from ChoreScheduler import ChoreScheduler
 from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
@@ -24,22 +22,22 @@ class App():
         for widget in self.root.winfo_children():
             widget.destroy()
 
-        frame_main_menu = tb.Frame(self.root, bootstyle="warning")
+        frame_main_menu = ttk.Frame(self.root)
         frame_main_menu.pack(fill="both", expand=True)
 
-        btn_grocery = tb.Button(frame_main_menu, text = "Grocery List Manager", bootstyle="info", width = 20, command = self.open_grocery)
+        btn_grocery = tk.Button(frame_main_menu, text = "Grocery List Manager",  width = 20, command = self.open_grocery)
         btn_grocery.pack(pady = 5)
 
-        btn_chore = tb.Button(frame_main_menu, text = "Chore Scheduler", bootstyle="info", width = 20, command = self.open_chore)
+        btn_chore = tk.Button(frame_main_menu, text = "Chore Scheduler",  width = 20, command = self.open_chore)
         btn_chore.pack(pady = 5)
 
-        btn_budget = tb.Button(frame_main_menu, text = "Budget Tracker", bootstyle="info", width = 20, command = self.open_budget)
+        btn_budget = tk.Button(frame_main_menu, text = "Budget Tracker",  width = 20, command = self.open_budget)
         btn_budget.pack(pady = 5)
 
-        btn_meal = tb.Button(frame_main_menu, text = "Meal Planner", bootstyle="info", width = 20, command = self.open_meal)
+        btn_meal = tk.Button(frame_main_menu, text = "Meal Planner",  width = 20, command = self.open_meal)
         btn_meal.pack(pady = 5)
 
-        btn_notebook = tb.Button(frame_main_menu, text = "Notebook", bootstyle="info", width = 20, command = self.open_notebook)
+        btn_notebook = tk.Button(frame_main_menu, text = "Notebook",  width = 20, command = self.open_notebook)
         btn_notebook.pack(pady = 5)
 
     def open_grocery(self):
@@ -60,6 +58,6 @@ class App():
 
 
 if __name__ == "__main__":
-    root = tb.Window(themename="flatly")
+    root = tk.Tk()
     app = App(root)
     root.mainloop()
