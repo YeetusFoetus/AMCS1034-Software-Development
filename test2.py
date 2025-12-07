@@ -8,16 +8,20 @@ from PIL import Image, ImageTk
 class main_menu():
     def __init__(self, root):
         self.root = root
+
+        ctk.set_appearance_mode("Light")
+
+        ctk.CTkLabel(self.root, text="Welcome to HomeLife").pack(side="top")
         
         #IMAGES
         chore_img = Image.open("chore.png")
-        chore_icon = chore_img.resize((300, 300), Image.Resampling.LANCZOS)
+        chore_icon = chore_img.resize((240, 240), Image.Resampling.LANCZOS)
         grocery_img = Image.open("grocery.png")
-        grocery_icon = grocery_img.resize((300, 300), Image.Resampling.LANCZOS)
+        grocery_icon = grocery_img.resize((240, 240), Image.Resampling.LANCZOS)
         budget_img = Image.open("budget.png")
-        budget_icon = budget_img.resize((300, 300), Image.Resampling.LANCZOS)
+        budget_icon = budget_img.resize((240, 240), Image.Resampling.LANCZOS)
         meal_img = Image.open("meal.png")
-        meal_icon = meal_img.resize((300, 300), Image.Resampling.LANCZOS)
+        meal_icon = meal_img.resize((240, 240), Image.Resampling.LANCZOS)
         photo1 = ImageTk.PhotoImage(chore_icon)
         photo2 = ImageTk.PhotoImage(grocery_icon)
         photo3 = ImageTk.PhotoImage(budget_icon)
@@ -43,47 +47,59 @@ class main_menu():
         #------
 
         #FRAME FOR BUTTONS
-        main_frame1 = ttk.Frame(self.root)
-        main_frame1.place(relx=0.01, rely=0.25, relwidth=0.24, relheight=0.9)
-        main_frame2 = ttk.Frame(self.root)
-        main_frame2.place(relx=0.2, rely=0.25, relwidth=0.24, relheight=0.9)
+        main_frame1 = ctk.CTkFrame(self.root, fg_color="white")
+        main_frame1.place(relx=0, rely=0.35, relwidth=1, relheight=0.3)
+        ##main_frame2 = ctk.CTkFrame(self.root)
+        ##main_frame2.place(relx=0.6, rely=0.25, relwidth=0.25, relheight=0.9)
         #------
 
         #BUTTONS
-        glm_frame = ttk.Frame(main_frame1)
-        glm_frame.pack()
-        tk.Label(glm_frame, text = "Grocery List Manager").pack()
-        glm_button = tk.Button(glm_frame, text="     ", width=5,  image=photo2)
+        glm_frame = ctk.CTkFrame(main_frame1)
+        glm_frame.pack(side="left", padx=75)
+        ctk.CTkLabel(glm_frame, text = "Grocery List Manager").pack()
+        glm_button = ctk.CTkButton(glm_frame, text="     ", width=5,  image=photo2)
         glm_button.image = photo2
-        glm_button.pack(pady=10, fill="both", expand=True)
+        glm_button.pack(pady=10)
         
-        cs_frame = ttk.Frame(main_frame1)
-        cs_frame.pack() 
-        tk.Label(cs_frame, text = "Chore Scheduler").pack()
-        cs_button = tk.Button(cs_frame, text="     ", width=5,  image=photo1)
+        cs_frame = ctk.CTkFrame(main_frame1)
+        cs_frame.pack(side="left", padx=75) 
+        ctk.CTkLabel(cs_frame, text = "Chore Scheduler").pack()
+        cs_button = ctk.CTkButton(cs_frame, text="     ", width=5, image=photo1)
         cs_button.image = photo1
-        cs_button.pack(pady=10, fill="both", expand=True)
+        cs_button.pack(pady=10)
         
-        bt_frame = ttk.Frame(main_frame2)
-        bt_frame.pack()
-        tk.Label(bt_frame, text = "Budget Tracker").pack()
-        bt_button = tk.Button(bt_frame, text="     ", width=5,  image=photo3)
+        bt_frame = ctk.CTkFrame(main_frame1)
+        bt_frame.pack(side="left", padx=75)
+        ctk.CTkLabel(bt_frame, text = "Budget Tracker").pack()
+        bt_button = ctk.CTkButton(bt_frame, text="     ", width=5,  image=photo3)
         bt_button.image = photo3
         bt_button.pack(pady=10, fill="both", expand=True)
         
-        mp_frame = ttk.Frame(main_frame2)
-        mp_frame.pack()
-        tk.Label(mp_frame, text="Meal Planner").pack()
-        mp_button = tk.Button(mp_frame, text="     ", width=5,  image=photo4)
+        mp_frame = ctk.CTkFrame(main_frame1)
+        mp_frame.pack(side="left", padx=75)
+        ctk.CTkLabel(mp_frame, text="Meal Planner").pack()
+        mp_button = ctk.CTkButton(mp_frame, text="     ", width=5,  image=photo4)
         mp_button.image = photo4
         mp_button.pack(pady=10, fill="both", expand=True)
 
         quit = ctk.CTkButton(self.root, text = "Exit")
-        quit.pack(side="bottom")
+        quit.pack(pady=60, side="bottom")
         #------
 
 
+##note: title bar icon does not work
 if __name__ == "__main__":
     root = ctk.CTk()
+    root.title("HomeLife")
+    
+    #title bar icon
+    icon_image = Image.open("house.png")
+    icon_image = icon_image.resize((16, 16), Image.Resampling.LANCZOS)
+    icon_image.save("house.ico", format="ICO")
+    root.root_icon = ImageTk.PhotoImage(icon_image)
+    root.iconphoto(True, root.root_icon)
+    #------ 
+
+    root.configure(fg_color="white")
     app = main_menu(root)
     root.mainloop()
