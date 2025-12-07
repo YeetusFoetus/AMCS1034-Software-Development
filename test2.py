@@ -1,8 +1,9 @@
 import os, sys
 import customtkinter as ctk
 import tkinter as tk
+import ctypes
+import tkinter.font as tkfont
 from tkinter import ttk
-from tkinter.font import nametofont
 from PIL import Image, ImageTk
 
 class main_menu():
@@ -11,7 +12,15 @@ class main_menu():
 
         ctk.set_appearance_mode("Light")
 
-        ctk.CTkLabel(self.root, text="Welcome to HomeLife").pack(side="top")
+        #WELCOME TITLE
+        #load ttf file into Windows at runtime(running with 'file=' couldn't work)
+        ctypes.windll.gdi32.AddFontResourceExW(
+            r"Nunito/static/Nunito-SemiBold.ttf",
+            16,
+            0
+        )
+        ctk.CTkLabel(self.root, text="Welcome to HomeLife", font=("Nunito SemiBold", 40)).pack(pady=60, side="top")
+        #------
         
         #IMAGES
         chore_img = Image.open("chore.png")
@@ -22,8 +31,8 @@ class main_menu():
         budget_icon = budget_img.resize((240, 240), Image.Resampling.LANCZOS)
         meal_img = Image.open("meal.png")
         meal_icon = meal_img.resize((240, 240), Image.Resampling.LANCZOS)
-        photo1 = ImageTk.PhotoImage(chore_icon)
-        photo2 = ImageTk.PhotoImage(grocery_icon)
+        photo1 = ImageTk.PhotoImage(grocery_icon)
+        photo2 = ImageTk.PhotoImage(chore_icon)
         photo3 = ImageTk.PhotoImage(budget_icon)
         photo4 = ImageTk.PhotoImage(meal_icon)
         #------
@@ -47,38 +56,38 @@ class main_menu():
         #------
 
         #FRAME FOR BUTTONS
-        main_frame1 = ctk.CTkFrame(self.root, fg_color="white")
+        main_frame1 = ctk.CTkFrame(self.root, fg_color="#c3b091")
         main_frame1.place(relx=0, rely=0.35, relwidth=1, relheight=0.3)
         ##main_frame2 = ctk.CTkFrame(self.root)
         ##main_frame2.place(relx=0.6, rely=0.25, relwidth=0.25, relheight=0.9)
         #------
 
         #BUTTONS
-        glm_frame = ctk.CTkFrame(main_frame1)
+        glm_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
         glm_frame.pack(side="left", padx=75)
-        ctk.CTkLabel(glm_frame, text = "Grocery List Manager").pack()
-        glm_button = ctk.CTkButton(glm_frame, text="     ", width=5,  image=photo2)
-        glm_button.image = photo2
+        ctk.CTkLabel(glm_frame, text = "Grocery List Manager", font=("Nunito Semibold", 24)).pack()
+        glm_button = ctk.CTkButton(glm_frame, text="     ", width=5,  image=photo1, fg_color="#f7e7ce")
+        glm_button.image = photo1
         glm_button.pack(pady=10)
         
-        cs_frame = ctk.CTkFrame(main_frame1)
+        cs_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
         cs_frame.pack(side="left", padx=75) 
-        ctk.CTkLabel(cs_frame, text = "Chore Scheduler").pack()
-        cs_button = ctk.CTkButton(cs_frame, text="     ", width=5, image=photo1)
-        cs_button.image = photo1
+        ctk.CTkLabel(cs_frame, text = "Chore Scheduler", font=("Nunito SemiBold", 24)).pack()
+        cs_button = ctk.CTkButton(cs_frame, text="     ", width=5, image=photo2, fg_color="#f7e7ce")
+        cs_button.image = photo2
         cs_button.pack(pady=10)
         
-        bt_frame = ctk.CTkFrame(main_frame1)
+        bt_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
         bt_frame.pack(side="left", padx=75)
-        ctk.CTkLabel(bt_frame, text = "Budget Tracker").pack()
-        bt_button = ctk.CTkButton(bt_frame, text="     ", width=5,  image=photo3)
+        ctk.CTkLabel(bt_frame, text = "Budget Tracker", font=("Nunito SemiBold", 24)).pack()
+        bt_button = ctk.CTkButton(bt_frame, text="     ", width=5,  image=photo3, fg_color="#f7e7ce")
         bt_button.image = photo3
         bt_button.pack(pady=10, fill="both", expand=True)
         
-        mp_frame = ctk.CTkFrame(main_frame1)
+        mp_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
         mp_frame.pack(side="left", padx=75)
-        ctk.CTkLabel(mp_frame, text="Meal Planner").pack()
-        mp_button = ctk.CTkButton(mp_frame, text="     ", width=5,  image=photo4)
+        ctk.CTkLabel(mp_frame, text="Meal Planner", font=("Nunito SemiBold", 24)).pack()
+        mp_button = ctk.CTkButton(mp_frame, text="     ", width=5,  image=photo4, fg_color="#f7e7ce")
         mp_button.image = photo4
         mp_button.pack(pady=10, fill="both", expand=True)
 
@@ -96,10 +105,9 @@ if __name__ == "__main__":
     icon_image = Image.open("house.png")
     icon_image = icon_image.resize((16, 16), Image.Resampling.LANCZOS)
     icon_image.save("house.ico", format="ICO")
-    root.root_icon = ImageTk.PhotoImage(icon_image)
-    root.iconphoto(True, root.root_icon)
+    root.iconbitmap("house.ico")
     #------ 
 
-    root.configure(fg_color="white")
+    root.configure(fg_color="#c3b091")
     app = main_menu(root)
     root.mainloop()
