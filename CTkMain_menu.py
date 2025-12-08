@@ -5,7 +5,7 @@ import ctypes
 import tkinter.font as tkfont
 from tkinter import ttk
 from PIL import Image, ImageTk
-from ChoreScheduler import ChoreScheduler
+from ChoreScheduler_test import ChoreScheduler
 from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
 

@@ -17,8 +17,8 @@ class ChoreScheduler:
 
         #ctk.CTkTabview(self.root).pack(fill="both", expand=True)
 
-        tk.Button(self.root, text = "Archive", width = 25, height = 2, command = self.archive).pack(pady = 20)
-        tk.Button(self.root, text = "Today's Chore List", width = 25, height = 2).pack(pady = 20)
+        tk.Button(self.root, text = "Tasks", width = 25, height = 2, command = self.archive).pack(pady = 20)
+        tk.Button(self.root, text = "Locations", width = 25, height = 2).pack(pady = 20)
         tk.Button(self.root, text = "Members", width = 25, height = 2).pack(pady = 20)
         tk.Button(self.root, text = "Back", command = self.back_callback).pack(pady = 20)
 

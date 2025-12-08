@@ -4,7 +4,7 @@ from tkinter import ttk         ## create table
 from ChoreScheduler import ChoreScheduler
 from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
-from test import Test
+from ctkNotebook_test import Test
 
 class App():
     def __init__(self, root):
