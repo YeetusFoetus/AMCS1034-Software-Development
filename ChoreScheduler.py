@@ -1,6 +1,7 @@
 import os.path as path
 import json
 import tkinter as tk
+import customtkinter as ctk
 from tkinter import ttk
 
 
@@ -9,13 +10,12 @@ class ChoreScheduler:
         self.root = root
         self.chore_list = {}
         self.back_callback = back_callback ## function to call to go back to main menu 
-        self.tree_archive = ttk.Treeview(self.root, columns = "Chore", show = "headings")
-        self.tree_archive.heading("Chore", text = "Chore")
-
 
     def menu(self):
         for widget in self.root.winfo_children():
             widget.destroy()
+
+        #ctk.CTkTabview(self.root).pack(fill="both", expand=True)
 
         tk.Button(self.root, text = "Archive", width = 25, height = 2, command = self.archive).pack(pady = 20)
         tk.Button(self.root, text = "Today's Chore List", width = 25, height = 2).pack(pady = 20)
@@ -35,30 +35,39 @@ class ChoreScheduler:
             self.store_archive()
 
     def store_archive(self):
-        self.tree_archive.pack()
+        table_frame = ctk.CTkFrame(self.root)
+        table_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        for chore in self.chore_list:
-            self.tree_archive.insert('', 'end', 'chore', values = chore)
-        '''selected = self.tree_archive.selection()
-        if selected:
-            for id in selected:
-                chore_data = self.tree_archive.item(id)'''
+        self.tree_archive = ttk.Treeview(table_frame, columns=("Chore", "Status"), show="headings", height=10)
+        self.tree_archive.heading("Chore", text = "Chore")
+        self.tree_archive.heading("Status", text = "Status")
+
+        for item in self.tree_archive.get_children():
+            self.tree_archive.delete(item)
+
+        for index, chore in enumerate(self.chore_list.keys()):
+            self.tree_archive.insert("", "end", iid=str(index), values=(chore, self.chore_list[chore]))
+        
+        self.tree_archive.pack()
 
         tk.Label(self.root, text = "Archive", font = ("Arial", 24, "bold")).pack(pady = 5)
         tk.Button(self.root, text = "Back", command = self.menu).pack(side = "bottom")
         tk.Button(self.root, text = "Delete Chore", command = self.delete_chore).pack(side="bottom")
         tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "bottom")
 
-        for chore in self.chore_list:
-            tk.Label(self.root, text = chore).pack()
-
     def save_chore(self):
-        self.chore_list[self.entry.get()] = "Pending"
+        new_chore = self.entry.get().strip()
+        if new_chore:
+            self.chore_list[new_chore] = "Pending"
         self.archive()
 
     def delete_chore(self):
-        for chore in self.chore_list:
-            del self.chore_list[chore]
+        selected = self.tree_archive.selection()
+        if selected:
+            for iid in selected:
+                chore_name = self.tree_archive.item(iid)["values"][0]
+                del self.chore_list[chore_name]
+                self.tree_archive.delete(iid)
 
     def add_chore_form(self):
         for widget in self.root.winfo_children():
