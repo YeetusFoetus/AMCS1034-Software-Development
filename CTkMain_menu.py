@@ -118,7 +118,6 @@ class main_menu():
     def exit_program(self):
         self.root.destroy()
 
-##note: title bar icon does not work
 if __name__ == "__main__":
     root = ctk.CTk()
     root.title("HomeLife")

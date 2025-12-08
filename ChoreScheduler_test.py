@@ -9,8 +9,8 @@ class ChoreScheduler:
     def __init__(self, root, back_callback):
         self.root = root
         self.chore_list = []
-        self.locations = []
-        self.members = []
+        self.locations_list = []
+        self.members_list = []
         self.back_callback = back_callback ## function to call to go back to main menu 
 
     def menu(self):
@@ -35,6 +35,10 @@ class ChoreScheduler:
             add_task.grid(row=1, column=5, padx=20, pady=20)
             back = ctk.CTkButton(self.menu_tabview.tab("Today's Tasks"), text = "Back", command = self.back_callback)
             back.grid(row=2, column=5, padx=20, pady=20)
+        if len(self.members_list) == 0:
+            ctk.CTkLabel(self.menu_tabview.tab("Members"), text="No members yet? Add one now!").pack()
+        if len(self.locations_list) == 0:
+            ctk.CTkLabel(self.menu_tabview.tab("Locations"), text="No locations yet? Add one now!").pack()
         else:
             self.store_archive()
 
@@ -119,3 +123,5 @@ class ChoreScheduler:
         tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "left")
         tk.Button(self.root, text = "Back", command = self.menu).pack(side = "right")
         tk.Button(self.root, text = "Update Status").pack(pady = 20)
+
+    
