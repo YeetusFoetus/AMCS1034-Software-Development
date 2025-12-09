@@ -24,6 +24,8 @@ class main_menu():
         for widget in self.root.winfo_children():
             widget.destroy()
 
+        root.configure(fg_color="#c3b091")
+
         #WELCOME TITLE
         #load ttf file into Windows at runtime(running with 'file=' couldn't work)
         ctypes.windll.gdi32.AddFontResourceExW(
@@ -49,18 +51,18 @@ class main_menu():
         photo4 = ImageTk.PhotoImage(meal_icon)
         #------
 
-        #SET DEFAULT WINDOW SIZE TO FULL SCREEN 
+        #SET DEFAULT WINDOW SIZE 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight() 
 
-        width = int(screen_width * 1)
-        height = int(screen_height * 1)
+        width = int(screen_width * 0.7)
+        height = int(screen_height * 0.7)
 
         x = (screen_width - width) // 2
         y = (screen_height - height) // 2
 
         self.root.geometry(f"{width}x{height}+{x}+{y}")
-        self.root.minsize(600, 400)
+        self.root.minsize(400, 300)
         #------
 
         #FRAME FOR BUTTONS
@@ -99,7 +101,7 @@ class main_menu():
         mp_button.image = photo4
         mp_button.pack(pady=10, fill="both", expand=True)
 
-        exit = ctk.CTkButton(self.root, text = "Exit", command=self.exit_program)
+        exit = ctk.CTkButton(self.root, text = "Exit", fg_color="red", command=self.exit_program)
         exit.pack(pady=60, side="bottom")
         #------
 

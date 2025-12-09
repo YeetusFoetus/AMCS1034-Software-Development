@@ -8,6 +8,7 @@ from tkinter import ttk
 class ChoreScheduler:
     def __init__(self, root, back_callback):
         self.root = root
+        self.toplevel_window3 = None
         self.chore_list = []
         self.locations_list = []
         self.members_list = []
@@ -16,6 +17,8 @@ class ChoreScheduler:
     def menu(self):
         for widget in self.root.winfo_children():
             widget.destroy()  
+
+        self.root.configure(fg_color="red"),
 
         #------------------------TABVIEW-----------------------------
         self.menu_tabview = ctk.CTkTabview(self.root,
@@ -28,6 +31,7 @@ class ChoreScheduler:
         self.menu_tabview.add("Locations")
         self.menu_tabview.add("Members")
 
+        #------------------------FIRST TAB-----------------------------
         if len(self.chore_list) == 0:
             no_tasks = ctk.CTkLabel(self.menu_tabview.tab("Today's Tasks"), text = "No tasks yet")
             no_tasks.grid(row=0, column=5, padx=20, pady=20)
@@ -35,16 +39,22 @@ class ChoreScheduler:
             add_task.grid(row=1, column=5, padx=20, pady=20)
             back = ctk.CTkButton(self.menu_tabview.tab("Today's Tasks"), text = "Back", command = self.back_callback)
             back.grid(row=2, column=5, padx=20, pady=20)
-        if len(self.members_list) == 0:
-            ctk.CTkLabel(self.menu_tabview.tab("Members"), text="No members yet? Add one now!").pack()
-        if len(self.locations_list) == 0:
-            ctk.CTkLabel(self.menu_tabview.tab("Locations"), text="No locations yet? Add one now!").pack()
         else:
             self.store_archive()
 
-    def tasks_table(self):
-        ttk.Treeview(self.frame)
+        #---------------------------SECOND TAB---------------------------
+        if len(self.locations_list) == 0:
+            ctk.CTkLabel(self.menu_tabview.tab("Locations"), text="No locations yet? Add one now!").pack()
+            ctk.CTkButton(self.menu_tabview.tab("Locations"), text="Add location", command=self.add_locations).pack()
+            self.toplevel_window2 = None
 
+        #----------------------------THIRD TAB--------------------------
+        if len(self.members_list) == 0:
+            ctk.CTkLabel(self.menu_tabview.tab("Members"), text="No members yet? Add one now!").pack()
+            ctk.CTkButton(self.menu_tabview.tab("Members"), text="Add member").pack()
+    
+
+    #-------------------------TODAY'S TASKS---------------------------------------------
     def store_archive(self):
         table_frame = ctk.CTkFrame(self.menu_tabview.tab("Today's Tasks"))
         table_frame.pack(fill="both", expand=True, padx=10, pady=10)
@@ -102,26 +112,12 @@ class ChoreScheduler:
         tk.Button(self.root, text = "Save", command = self.save_chore).pack(pady=5)
         tk.Button(self.root, text = "Back", command = self.menu).pack(pady = 10)
 
-    ## ---------------Tdy List-----------------
-    def chore_table(self):
-        tk.Label(self.root, text = "Today's List of Chores")
-        table_frame = tk.Frame(self.root)
-        table_frame.pack(fill = "both", expand = "True")
+    #--------------------LOCATIONS--------------------------
+    def add_locations(self):
+        if self.toplevel_window2 == None or not self.toplevel_window2.winfo_exists():
+            self.toplevel_window2 = ctk.CTkToplevel(self)
+        else:
+            self.toplevel_window2.focus()
 
-        columns = ("Chore", "Status")
-        tree = ttk.Treeview(self.root, columns = columns, show = "headings")
-
-        tree.heading("Chore", text = "Chore")
-        tree.heading("Status", text = "Status")
-        
-        tree.pack(side = "top", fill = "both", expand = True)
-
-        for chore in self.chore_list:
-            self.tree_archive.insert("", "end", values=(chore, ))
-
-
-        tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "left")
-        tk.Button(self.root, text = "Back", command = self.menu).pack(side = "right")
-        tk.Button(self.root, text = "Update Status").pack(pady = 20)
 
     
