@@ -3,6 +3,7 @@ from tkinter import messagebox
 import csv
 import os
 import datetime
+import customtkinter as ctk
 
 # --- Global Variables and Data File Setup ---
 
@@ -22,12 +23,14 @@ class BudgetTracker:
         self.current_budget_view = None
 
     def open_budget_page(self):
-        tk.Label(self.window, text="Welcome to Budget Tracker").pack(pady=10)
-        self.budget_page = tk.Frame(self.window)
+        tk.Label(self.window, text="Welcome to Budget Tracker", font=("Microsoft HaYei",40,"bold")).pack(pady=10)
+        self.budget_page = tk.Frame(self.window,width=400,height=1000)
         self.budget_page.pack()
+        self.budget_page.pack_propagate(False)
 
         # Budget page
-        self.budget_switch_btn = tk.Button(self.budget_page, text="View Report", command=lambda: self.switch_budget_view("report"),bg='#ADD8E6', width=15)
+        self.budget_switch_btn = ctk.CTkButton(self.budget_page, text="View Report")
+        #, command=lambda: self.switch_budget_view("report"),bg='#ADD8E6', width=15
         self.budget_switch_btn.pack(pady=5)
 
         # --- 2. Input View Frame ---
