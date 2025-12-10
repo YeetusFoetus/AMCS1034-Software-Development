@@ -3,6 +3,8 @@ import json
 import tkinter as tk
 import customtkinter as ctk
 from tkinter import ttk
+from PIL import Image, ImageTk, ImageFilter
+
 
 
 class ChoreScheduler:
@@ -18,6 +20,10 @@ class ChoreScheduler:
         for widget in self.root.winfo_children():
             widget.destroy()  
 
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        self.bg_photo = ImageTk.PhotoImage(bg_image)
+        
         self.root.configure(fg_color="red"),
 
         #------------------------TABVIEW-----------------------------

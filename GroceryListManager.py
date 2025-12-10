@@ -4,6 +4,7 @@ import json
 from tkinter import *
 import tkinter.messagebox
 import tkinter.simpledialog
+import customtkinter as ctk
 
 class groceryListManager:
     def __init__(self, root = None, back_callback = None):

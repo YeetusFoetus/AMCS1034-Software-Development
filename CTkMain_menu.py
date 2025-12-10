@@ -55,8 +55,8 @@ class main_menu():
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight() 
 
-        width = int(screen_width * 0.7)
-        height = int(screen_height * 0.7)
+        width = int(screen_width * 1)
+        height = int(screen_height * 1)
 
         x = (screen_width - width) // 2
         y = (screen_height - height) // 2
