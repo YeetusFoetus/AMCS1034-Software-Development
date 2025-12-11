@@ -22,47 +22,78 @@ class ChoreScheduler:
 
         bg_image = Image.open("house_interior.png")
         bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
-        self.bg_photo = ImageTk.PhotoImage(bg_image)
-        
-        self.root.configure(fg_color="red"),
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.root, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   # send it behind everything
 
-        #------------------------TABVIEW-----------------------------
-        self.menu_tabview = ctk.CTkTabview(self.root,
-                                      text_color="black",
-                                      segmented_button_selected_color="#f7e7ce",
-                                      segmented_button_selected_hover_color="white",
-                                      fg_color="#c3b091")
-        self.menu_tabview.pack(expand=True, fill="both")
+        #---------------------FRAMES---------------------
+        self.OverBG = ctk.CTkFrame(self.root, width=700, height=765, fg_color="#c3b091")
+        self.OverBG.pack(side='top', anchor='center', pady=10)
+        self.OverBG.pack_propagate(False)
+        tabframe = ctk.CTkFrame(self.OverBG)
+        tabframe.pack(side='top', anchor='center', padx=5, pady=10)
+        #------------------------BUTTONS-----------------------------
+        '''self.menu_tabview = ctk.CTkTabview(frame,
+                                           #width=700,
+                                           #height=850,
+                                           corner_radius=0,
+                                           text_color="black",
+                                           segmented_button_selected_color="#f7e7ce",
+                                           segmented_button_selected_hover_color="white",
+                                           fg_color="#c3b091")
+        self.menu_tabview.pack(padx=20, pady=20)
+        self.menu_tabview.pack_propagate(False)
         self.menu_tabview.add("Today's Tasks")
         self.menu_tabview.add("Locations")
-        self.menu_tabview.add("Members")
+        self.menu_tabview.add("Members")'''
 
-        #------------------------FIRST TAB-----------------------------
+        b_button = ctk.CTkButton(self.OverBG, text='Back', command=self.back_callback)
+        b_button.pack(side='bottom', pady=20, anchor='center')
+
+        tt_button = ctk.CTkButton(tabframe, text="Today's Tasks", command=self.first_tab)
+        tt_button.pack(side='left', padx=5, pady=10)
+
+        l_button = ctk.CTkButton(tabframe, text="Locations", command=self.second_tab)
+        l_button.pack(side='left', padx=5, pady=10)
+
+        m_button = ctk.CTkButton(tabframe, text="Members", command=self.third_tab)
+        m_button.pack(side='left', padx=5, pady=10)
+       
+    #------------------------FIRST TAB-----------------------------
+    def first_tab(self):
         if len(self.chore_list) == 0:
-            no_tasks = ctk.CTkLabel(self.menu_tabview.tab("Today's Tasks"), text = "No tasks yet")
+            no_tasks = ctk.CTkLabel(self.OverBG, text = "No tasks yet")
             no_tasks.grid(row=0, column=5, padx=20, pady=20)
-            add_task = ctk.CTkButton(self.menu_tabview.tab("Today's Tasks"), text = "Add task", command = self.add_chore_form)
+            add_task = ctk.CTkButton(self.OverBG, text = "Add task", command = self.add_chore_form)
             add_task.grid(row=1, column=5, padx=20, pady=20)
-            back = ctk.CTkButton(self.menu_tabview.tab("Today's Tasks"), text = "Back", command = self.back_callback)
+            back = ctk.CTkButton(self.OverBG, text = "Back", command = self.back_callback)
             back.grid(row=2, column=5, padx=20, pady=20)
         else:
             self.store_archive()
 
-        #---------------------------SECOND TAB---------------------------
+    #---------------------------SECOND TAB---------------------------
+    def second_tab(self):    
         if len(self.locations_list) == 0:
-            ctk.CTkLabel(self.menu_tabview.tab("Locations"), text="No locations yet? Add one now!").pack()
-            ctk.CTkButton(self.menu_tabview.tab("Locations"), text="Add location", command=self.add_locations).pack()
+            for widget in self.OverBG.winfo_children():
+                widget.destroy()
+            ctk.CTkLabel(self.OverBG, text="No locations yet? Add one now!").pack()
+            ctk.CTkButton(self.OverBG, text="Add location", command=self.add_locations).pack()
             self.toplevel_window2 = None
 
-        #----------------------------THIRD TAB--------------------------
+    #----------------------------THIRD TAB--------------------------
+    def third_tab(self):
         if len(self.members_list) == 0:
-            ctk.CTkLabel(self.menu_tabview.tab("Members"), text="No members yet? Add one now!").pack()
-            ctk.CTkButton(self.menu_tabview.tab("Members"), text="Add member").pack()
+            for widget in self.OverBG.winfo_children():
+                widget.destroy()
+            ctk.CTkLabel(self.OverBG, text="No members yet? Add one now!").pack()
+            ctk.CTkButton(self.OverBG, text="Add member").pack()
     
 
     #-------------------------TODAY'S TASKS---------------------------------------------
     def store_archive(self):
-        table_frame = ctk.CTkFrame(self.menu_tabview.tab("Today's Tasks"))
+        table_frame = ctk.CTkFrame(self.OverBG)
         table_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         self.tree_archive = ttk.Treeview(table_frame, 
@@ -85,7 +116,7 @@ class ChoreScheduler:
         
         self.tree_archive.pack(fill="both", expand=True)
 
-        button_frame = ctk.CTkFrame(self.menu_tabview.tab("Today's Tasks"), fg_color="#c3b091")
+        button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
         button_frame.pack(fill="x", pady=5)
 
         ctk.CTkButton(button_frame, text = "Back", command = self.back_callback).pack(side = "bottom")
