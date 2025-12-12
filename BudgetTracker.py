@@ -96,7 +96,6 @@ class BudgetTracker:
         for widget in self.window.winfo_children():
             widget.destroy()
 
-##        self.App()
         self.open_budget_page()
 
 ##    def App(self):
