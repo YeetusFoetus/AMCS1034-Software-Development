@@ -6,7 +6,6 @@ from tkinter import ttk
 from PIL import Image, ImageTk, ImageFilter
 
 
-
 class ChoreScheduler:
     def __init__(self, root, back_callback):
         self.root = root
@@ -32,8 +31,8 @@ class ChoreScheduler:
         self.OverBG = ctk.CTkFrame(self.root, width=700, height=765, fg_color="#c3b091")
         self.OverBG.pack(side='top', anchor='center', pady=10)
         self.OverBG.pack_propagate(False)
-        tabframe = ctk.CTkFrame(self.OverBG)
-        tabframe.pack(side='top', anchor='center', padx=5, pady=10)
+        self.tabframe = ctk.CTkFrame(self.OverBG, fg_color='red')
+        self.tabframe.pack(side='top', anchor='center', padx=5, pady=10)
         #------------------------BUTTONS-----------------------------
         '''self.menu_tabview = ctk.CTkTabview(frame,
                                            #width=700,
@@ -49,38 +48,62 @@ class ChoreScheduler:
         self.menu_tabview.add("Locations")
         self.menu_tabview.add("Members")'''
 
-        b_button = ctk.CTkButton(self.OverBG, text='Back', command=self.back_callback)
-        b_button.pack(side='bottom', pady=20, anchor='center')
+        self.b_button = ctk.CTkButton(self.OverBG, text='Back', command=self.back_callback)
+        self.b_button.pack(side='bottom', pady=20, anchor='center')
 
-        tt_button = ctk.CTkButton(tabframe, text="Today's Tasks", command=self.first_tab)
-        tt_button.pack(side='left', padx=5, pady=10)
+        self.tt_button = ctk.CTkButton(self.tabframe, text="Today's Tasks", command=self.first_tab)
+        self.tt_button.pack(side='left', padx=5, pady=10)
 
-        l_button = ctk.CTkButton(tabframe, text="Locations", command=self.second_tab)
-        l_button.pack(side='left', padx=5, pady=10)
+        self.l_button = ctk.CTkButton(self.tabframe, text="Locations", command=self.second_tab)
+        self.l_button.pack(side='left', padx=5, pady=10)
 
-        m_button = ctk.CTkButton(tabframe, text="Members", command=self.third_tab)
-        m_button.pack(side='left', padx=5, pady=10)
+        self.m_button = ctk.CTkButton(self.tabframe, text="Members", command=self.third_tab)
+        self.m_button.pack(side='left', padx=5, pady=10)
        
     #------------------------FIRST TAB-----------------------------
     def first_tab(self):
+        self.frametb1 = ctk.CTkFrame(self.OverBG).grid(sticky='nsew')
         if len(self.chore_list) == 0:
-            no_tasks = ctk.CTkLabel(self.OverBG, text = "No tasks yet")
+            no_tasks = ctk.CTkLabel(self.frametb1, text = "No tasks yet")
             no_tasks.grid(row=0, column=5, padx=20, pady=20)
-            add_task = ctk.CTkButton(self.OverBG, text = "Add task", command = self.add_chore_form)
+            
+            add_task = ctk.CTkButton(self.frametb1, text = "Add task", command = self.add_chore_form)
             add_task.grid(row=1, column=5, padx=20, pady=20)
-            back = ctk.CTkButton(self.OverBG, text = "Back", command = self.back_callback)
+
+            back = ctk.CTkButton(self.frametb1, text = "Back", command = self.back_callback)
             back.grid(row=2, column=5, padx=20, pady=20)
         else:
             self.store_archive()
 
     #---------------------------SECOND TAB---------------------------
-    def second_tab(self):    
-        if len(self.locations_list) == 0:
-            for widget in self.OverBG.winfo_children():
-                widget.destroy()
-            ctk.CTkLabel(self.OverBG, text="No locations yet? Add one now!").pack()
-            ctk.CTkButton(self.OverBG, text="Add location", command=self.add_locations).pack()
+    def second_tab(self):  
+        for widget in self.OverBG.winfo_children():
+                if widget is not self.tabframe:
+                    widget.destroy()
+
+        if len(self.locations_list) == 0:                        
+            self.frametb2 = tk.Frame(self.OverBG, width=200, height=200)
+            self.frametb2.pack()
+            self.frametb2.pack_propagate(False)
+            ctk.CTkLabel(self.frametb2, text="No locations yet? Add one now!").pack()
+            ctk.CTkButton(self.frametb2, text="Add location", command=self.add_locations).pack()
             self.toplevel_window2 = None
+
+        else:
+            location_table = ttk.Treeview(self.frametb2,
+                                          columns=("Locations"), 
+                                          show="headings",
+                                          height=10)
+            location_table.heading("Locations", text="Locations")
+            
+            for location in self.locations_list:
+                location_table.insert("", "end", values=location)
+
+            location_table.pack(anchor='center')
+
+        ctk.CTkButton(self.frametb2, text='Back', command=self.back_callback).pack(side='bottom', pady=10)
+        ctk.CTkButton(self.frametb2, text='Delete').pack(side='bottom', pady=10)
+        ctk.CTkButton(self.frametb2, text='Add').pack(side='bottom', pady=10)
 
     #----------------------------THIRD TAB--------------------------
     def third_tab(self):
@@ -149,12 +172,27 @@ class ChoreScheduler:
         tk.Button(self.root, text = "Save", command = self.save_chore).pack(pady=5)
         tk.Button(self.root, text = "Back", command = self.menu).pack(pady = 10)
 
-    #--------------------LOCATIONS--------------------------
+    #--------------------LOCATIONS--------------------------        
     def add_locations(self):
         if self.toplevel_window2 == None or not self.toplevel_window2.winfo_exists():
-            self.toplevel_window2 = ctk.CTkToplevel(self)
+            self.toplevel_window2 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window2.after(10, lambda: self.toplevel_window2.focus_force())
+            self.toplevel_window2.grab_set()
+            self.toplevel_window2.title("Add a location")
+            self.toplevel_window2.minsize(300, 300)
+            self.location_entry = ctk.CTkEntry(self.toplevel_window2)
+            self.location_entry.pack(pady=20)
+            button = ctk.CTkButton(self.toplevel_window2, text='Add', command=self.get_location)
+            button.pack(side='bottom', anchor='center')
         else:
             self.toplevel_window2.focus()
+
+    def get_location(self):
+        location = self.location_entry.get()
+        self.locations_list.append(location)
+        self.toplevel_window2.destroy()
+        print(location)
+
 
 
     

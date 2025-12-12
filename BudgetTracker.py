@@ -4,12 +4,13 @@ import csv
 import os
 import datetime
 import customtkinter as ctk
-
-# --- Global Variables and Data File Setup ---
+from PIL import Image, ImageTk, ImageFilter
 
 
 class BudgetTracker:
     def __init__(self, window, back_callback):
+        
+        # --- Global Variables and Data File Setup ---
         self.window = window
         self.back_callback = back_callback
         self.budget_switch_btn = None
@@ -26,7 +27,14 @@ class BudgetTracker:
         for widget in self.window.winfo_children():
             widget.destroy()
 
-        #self.root.configure(fg_colour='red') <------- Add image to this later
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.window, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   # send it behind everything
+
         self.open_budget_page()     
 
     def open_budget_page(self):
