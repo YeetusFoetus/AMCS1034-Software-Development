@@ -383,7 +383,7 @@ class BudgetTracker:
         
         report_text = [
             "  --- SPENDING SUMMARY & BUDGET ---",           
-            f"{'Category':<12} {'Budget':>8} {'Spent':>8} {'Remain':>8} {'% of Total':>10}"
+            f"{'Category':<12}\t{'Budget':>8}\t{'Spent':>8}\t{'Remain':>8}\t{'% of Total':>10}"
         ]
         
         all_categories = sorted(list(set(self.CATEGORIES))) 
@@ -404,11 +404,7 @@ class BudgetTracker:
                 remain_str = f"{remaining:8.2f}"
             
             report_text.append(
-                f"{category:<12} "
-                f"RM {budget_str} "
-                f"RM {spent_str} "
-                f"RM {remain_str} "
-                f"({percentage:4.1f}%)"
+                f"{category:<12}\tRM {budget_str}\tRM {spent_str}\tRM {remain_str}\t({percentage:4.1f}%)"
             )
         
         return "\n".join(report_text)
