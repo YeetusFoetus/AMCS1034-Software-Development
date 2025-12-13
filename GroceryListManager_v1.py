@@ -1,0 +1,232 @@
+# Import all the definitions from 'tkinter' library
+import os.path as path
+import json
+from tkinter import *
+
+class groceryListManager:
+    def __init__(self, root, back_callback):
+        self.root = root
+        self.back_callback = back_callback
+        print("INFO: 'groceryListManager' class has been initialised successfully.")
+
+    def menu(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+        
+        self.App()
+
+    def getList(self):
+        # Declares an empty list of groceries
+        groceries = []
+
+        if path.isfile("groceryList.json"):
+            try:
+                # Opens the 'JSON' file that contains the list of groceries
+                f = open("groceryList.json", "r+")
+
+                # Creates a list of groceries
+                groceryList_json = f.read()
+
+                # Closes 'groceryList.json' after reading the content
+                f.close()
+
+                # Loads the list of the groceries from 'JSON' string
+                groceries = json.loads(groceryList_json)
+            except:
+                print("Something went wrong while opening 'groceryList.json' file. It seems that the file does not exist.")
+        else:
+            # Warns the user that 'groceryList.json' does not exist
+            print("WARNING: 'groceryList.json' file does not exist.")
+        
+        # Returns the 'groceries' list to the calling function
+        return groceries
+    
+    def App(self):  #deleted "self.root = None" after self
+        """
+        Note:
+        - Every window must be initialised with the following code.
+
+        - 'Tk()' function creates the main window.
+
+        - Tkinter cannot have multiple main instances of 'Tk()' at the same time.
+          Therefore, 'Toplevel()' function is utilised so multiple instances of Tkinter windows can be opened.
+        """
+        # Sets the style of Grocery List Manager's window
+        style_widgets_bgColour = "white"
+        style_widgets_fgColour = "black"
+        style_widgets_font = "Arial 12"
+
+        #if self.root is None:
+        #    self.root = Toplevel()  # Creates a new instance of Tkinter window since the function is called by another Python module
+        #    print("INFO: 'Grocery List Manager' window is opened in a new window.")
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+        self.root.title("Grocery List Manager - Household Management Assistant App") # Sets the title of the window
+        self.root.geometry("800x600")    # Sets the size of the window
+        self.root.configure(bg='white')  # Changes the background colour using 'configure' function
+        
+        """
+        Note:
+        - The following code designs the user interface for the grocery list manager.
+        - Variables are also declared at this stage.
+        """
+        groceries = self.getList() # Loads the list of groceries by calling 'loadList' function from the current 'groceryListManager' class' instance
+        
+        categories = [] # Declares a list of options that will be displayed on the drop-down menu
+        
+        # 'label_appTitle' greets the user
+        # Note: For labels in Tkinter, their inner text MUST be declared with StringVar() first.
+        label_appTitle_text = StringVar()
+        label_appTitle_text.set("Hi there!")
+        label_appTitle = Label(self.root,
+                               textvariable=label_appTitle_text,
+                               bg=style_widgets_bgColour,
+                               fg=style_widgets_fgColour,
+                               font=("Arial", 28, "bold")
+                               )
+        
+        # 'label_appDescription' explains users about the context of the current window
+        label_appDescription_text = StringVar()
+        label_appDescription_text.set("Let's manage your grocery list.")
+        label_appDescription = Label(self.root,
+                                     textvariable=label_appDescription_text,
+                                     bg=style_widgets_bgColour,
+                                     fg=style_widgets_fgColour,
+                                     font=style_widgets_font
+                                     )
+        
+        container_category = LabelFrame(self.root,
+                                        text="Category: ",
+                                        bg=style_widgets_bgColour,
+                                        fg=style_widgets_fgColour,
+                                        font=style_widgets_font
+                                        )
+        # This frame arranges the list boxes horizontally to make them look like a table
+        groceries_table = LabelFrame(self.root,
+                                     text="Your list of groceries",
+                                     bg=style_widgets_bgColour,
+                                     fg=style_widgets_fgColour,
+                                     font=style_widgets_font)
+
+        groceries_table_name = LabelFrame(self.root,
+                                          text="Name",
+                                          bg=style_widgets_bgColour,
+                                          fg=style_widgets_fgColour,
+                                          font=style_widgets_font + " bold",
+                                          bd=0)
+        
+        groceries_table_category = LabelFrame(self.root,
+                                          text="Category",
+                                          bg=style_widgets_bgColour,
+                                          fg=style_widgets_fgColour,
+                                          font=style_widgets_font + " bold",
+                                          bd=0)
+        
+        groceries_table_quantity = LabelFrame(self.root,
+                                          text="Quantity",
+                                          bg=style_widgets_bgColour,
+                                          fg=style_widgets_fgColour,
+                                          font=style_widgets_font + " bold",
+                                          bd=0)
+        
+        # Creates a drop-down menu that consists of the groceries
+        # 'Name' column
+        groceries_listView_name = Listbox(self.root,
+                              bg=style_widgets_bgColour,
+                              fg=style_widgets_fgColour,
+                              font=style_widgets_font,
+                              )
+        
+        # 'Category' column
+        groceries_listView_category = Listbox(self.root,
+                                              bg=style_widgets_bgColour,
+                                              fg=style_widgets_fgColour,
+                                              font=style_widgets_font
+                                              )
+        
+        # 'Quantity' column
+        groceries_listView_quantity = Listbox(self.root,
+                                              bg=style_widgets_bgColour,
+                                              fg=style_widgets_fgColour,
+                                              font=style_widgets_font
+                                              )
+        
+        Button(self.root, text = "Back", command = self.back_callback).pack(side="bottom")
+        
+        # Note: In Python, 'def' defines functions.
+        def loadList(category):
+            # Clears the list
+            groceries_listView_name.delete(0, END)
+            groceries_listView_category.delete(0, END)
+            groceries_listView_quantity.delete(0, END)
+
+            # Adds the item to the list based on the selected category
+            for currIndex, grocery in enumerate(groceries):
+                if grocery.get("category") == category:
+                    groceries_listView_name.insert(currIndex + 1, grocery.get("name"))  # Note: To get the value of a key in a dictionary, 'get()' function is used.
+                    groceries_listView_category.insert(currIndex + 1, category)
+                    groceries_listView_quantity.insert(currIndex + 1, grocery.get("quantity"))
+        
+        def loadCategories():
+            for grocery in groceries:
+                category = grocery.get("category")
+                if(category not in categories): # If the category does not exist in the list of categories
+                    categories.append(category) # Add the category into the list
+        
+        category_opt = StringVar()   # Declares a variable for the selected category
+        
+        # Shows the groceries based on the category chosen by the user
+        # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
+        def change_categoryView(category):
+            print(category)
+            loadList(category)    # Changes the category displayed on the option menu
+        
+        # Initialises the window with initial values
+        def Init():
+            if(len(categories) > 0):
+                category_opt.set(categories[0])
+                change_categoryView(category_opt.get())
+            else:
+                category_opt.set("No categories available")
+                pass
+            
+        loadCategories()    # Loads the categories from the list of groceries
+        
+        Init()  # Loads the data onto the dynamic form controls for the first time
+        
+        category = OptionMenu(self.root,
+                              category_opt,
+                              *categories,
+                              command=change_categoryView)  # Creates an option menu that lists out all the categories
+        
+        # Note: Remember to show the control on the window with 'pack' function.
+        label_appTitle.pack()
+        label_appDescription.pack()
+        
+        category.pack(in_=container_category)
+
+        groceries_listView_name.pack(in_=groceries_table_name)
+        groceries_listView_category.pack(in_=groceries_table_category)
+        groceries_listView_quantity.pack(in_=groceries_table_quantity)
+        
+        # Containers
+        container_category.pack()
+
+        # The table that shows the list of groceries
+        groceries_table_name.pack(in_=groceries_table, side="left")
+        groceries_table_category.pack(in_=groceries_table, side="left")
+        groceries_table_quantity.pack(in_=groceries_table, side="left")
+        groceries_table.pack()
+        
+        self.root.mainloop() # Runs the application with the window
+
+# Runs the grocery list manager application if no function from the class is being called
+if __name__ == "__main__":
+    print("Starting Grocery List Manager...")
+    # Creates a new instance from 'groceryListManager' class
+    root = Tk()
+    instance = groceryListManager()
+    instance.App(root)
+else:
+    print("NOTE: 'groceryListManager' module has been imported.")
