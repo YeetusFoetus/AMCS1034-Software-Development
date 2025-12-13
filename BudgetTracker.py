@@ -85,7 +85,7 @@ class BudgetTracker:
         # --- LEFT SIDE: Budget Setting Area (MONTHLY BUDGET) ---
         # -----------------------------------------------------------------------------------
         
-        self.frame_budget_set = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1)
+        self.frame_budget_set = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="#FFFFFF")
         self.frame_budget_set.grid(row=0, column=0, padx=15, sticky='nsew')
 
         tk.Label(self.frame_budget_set, text="Set Monthly Budget Goal:", font=('Arial', 10, 'bold')).pack(pady=(0, 5))
@@ -94,7 +94,7 @@ class BudgetTracker:
 
         # Display Category and Entry for budget input
         for cat in self.CATEGORIES:
-            frame_row = tk.Frame(self.frame_budget_set)
+            frame_row = tk.Frame(self.frame_budget_set, bg="#FFFFFF")
             frame_row.pack(fill='x', padx=5, pady=2)
 
             tk.Label(frame_row, text=f"{cat}:", width=15, anchor='w').grid(row=0, column=0, sticky='w') 
@@ -114,8 +114,8 @@ class BudgetTracker:
         # --- RIGHT SIDE: Transaction List and Total (TRANSACTIONS) ---
         # -----------------------------------------------------------------------------------
         
-        self.frame_transactions = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1)
-        self.frame_transactions.grid(row=0, column=1, padx=15, sticky='nsew') # sticky='nsew' 使其填充整个单元格
+        self.frame_transactions = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="#FFFFFF")
+        self.frame_transactions.grid(row=0, column=1, padx=15, sticky='nsew')
         self.frame_transactions.grid_rowconfigure(1, weight=1)
         self.frame_transactions.grid_columnconfigure(0, weight=1)
         
