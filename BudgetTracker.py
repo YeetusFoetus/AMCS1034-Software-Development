@@ -1,4 +1,3 @@
-##hello
 import tkinter as tk
 from tkinter import messagebox
 import csv
@@ -433,7 +432,12 @@ if __name__ == '__main__':
         print("Back to main menu logic executed.")
         root.destroy()
         
+<<<<<<< HEAD
     app = BudgetTracker(root, dummy_back_callback)
     app.open_budget_page()
     
     root.mainloop()
+=======
+        report_text.append("\n" + f"{'TOTAL':<12} : RM {grand_total:6.2f}")
+        report_label.config(text="\n".join(report_text), justify=tk.LEFT, font=("Courier", 10))
+>>>>>>> 0ea599a1958fd70a8cdae8045093fa114a69081d
