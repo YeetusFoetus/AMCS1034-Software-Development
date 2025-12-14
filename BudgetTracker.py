@@ -274,7 +274,7 @@ class BudgetTracker:
             self.load_expenses() 
             
             if self.budget_switch_btn:
-                self.budget_switch_btn.config(
+                self.budget_switch_btn.configure(
                     text="View Report", 
                     command=lambda: self.switch_budget_view("report")
                 )
@@ -285,7 +285,7 @@ class BudgetTracker:
             self.report_content.config(text=self.generate_report_text()) 
             
             if self.budget_switch_btn:
-                self.budget_switch_btn.config(
+                self.budget_switch_btn.configure(
                     text="Back to Input", 
                     command=lambda: self.switch_budget_view("input")
                 )
