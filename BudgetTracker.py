@@ -85,7 +85,7 @@ class BudgetTracker:
         # --- LEFT SIDE: Budget Setting Area (MONTHLY BUDGET) ---
         # -----------------------------------------------------------------------------------
         
-        self.frame_budget_set = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="#FFFFFF")
+        self.frame_budget_set = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="#414DFF")
         self.frame_budget_set.grid(row=0, column=0, padx=15, sticky='nsew')
 
         tk.Label(self.frame_budget_set, text="Set Monthly Budget Goal:", font=('Arial', 10, 'bold')).pack(pady=(0, 5))
@@ -94,7 +94,7 @@ class BudgetTracker:
 
         # Display Category and Entry for budget input
         for cat in self.CATEGORIES:
-            frame_row = tk.Frame(self.frame_budget_set, bg="#FFFFFF")
+            frame_row = tk.Frame(self.frame_budget_set, bg="#0013BF")
             frame_row.pack(fill='x', padx=5, pady=2)
 
             tk.Label(frame_row, text=f"{cat}:", width=15, anchor='w').grid(row=0, column=0, sticky='w') 
@@ -104,11 +104,7 @@ class BudgetTracker:
             self.budget_entries[cat] = entry
 
         tk.Button(
-            self.frame_budget_set, 
-            text="Save Budgets", 
-            command=self.set_budgets, 
-            bg='#90EE90'
-        ).pack(pady=10)
+            self.frame_budget_set, text="Save Budgets", command=self.set_budgets, bg='#90EE90').pack(pady=10)
         
         # -----------------------------------------------------------------------------------
         # --- RIGHT SIDE: Transaction List and Total (TRANSACTIONS) ---
@@ -124,19 +120,14 @@ class BudgetTracker:
         self.listbox_expenses.grid(row=1, column=0, pady=5, sticky='nsew')
 
         # MODIFIED: Use Net Balance Label
-        self.net_balance_label = tk.Label(self.frame_transactions, 
-                                          text="Net Balance: RM 0.00", 
-                                          font=("Arial", 12, "bold"), 
-                                          bg='#E0FFFF') 
+        self.net_balance_label = tk.Label(self.frame_transactions, text="Net Balance: RM 0.00", font=("Arial", 12, "bold"), bg='#E0FFFF') 
         self.net_balance_label.grid(row=2, column=0, pady=10)
 
         # --- 3. Report View Frame ---
         self.report_view = tk.Frame(self.budget_page) 
         tk.Label(self.report_view, text="Spending Insights Report", font=("Arial", 14, "bold")).pack(pady=10)
         
-        self.report_content = tk.Label(self.report_view, text="Click 'View Report' to view data.", 
-                                 justify=tk.LEFT, font=("Courier", 10), 
-                                 anchor="nw", padx=10, bg="#F0F0F0")
+        self.report_content = tk.Label(self.report_view, text="Click 'View Report' to view data.", justify=tk.LEFT, font=("Courier", 10), anchor="nw", padx=10, bg="#F0F0F0")
         self.report_content.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_callback).pack(side="bottom", pady=10)
@@ -382,8 +373,8 @@ class BudgetTracker:
         new_budget_balance = total_monthly_budget - grand_total_expense
         
         report_text = [
-            "  --- SPENDING SUMMARY & BUDGET ---",           
-            f"{'Category':<12}\t{'Budget':>8}\t{'Spent':>8}\t{'Remain':>8}\t{'% of Total':>10}"
+            "  --- SPENDING SUMMARY & BUDGET ---",
+            f"{'Category':<12}\t {'Budget':>8}\t {'Spent':>8}\t {'Remain':>8}\t {'% of Total':>10}"
         ]
         
         all_categories = sorted(list(set(self.CATEGORIES))) 
@@ -399,10 +390,10 @@ class BudgetTracker:
             spent_str = f"{spent:8.2f}"
             
             if remaining < 0:
-                remain_str = f"({abs(remaining):5.2f})" 
+                remain_str = f"{remaining:8.2f}" 
             else:
                 remain_str = f"{remaining:8.2f}"
-            
+
             report_text.append(
                 f"{category:<12}\tRM {budget_str}\tRM {spent_str}\tRM {remain_str}\t({percentage:4.1f}%)"
             )
