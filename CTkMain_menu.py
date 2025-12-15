@@ -4,7 +4,7 @@ import tkinter as tk
 import ctypes
 import tkinter.font as tkfont
 from tkinter import ttk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFilter
 from ChoreScheduler_test import ChoreScheduler
 from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
@@ -24,7 +24,13 @@ class main_menu():
         for widget in self.root.winfo_children():
             widget.destroy()
 
-        root.configure(fg_color="#c3b091")
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.root, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   # send it behind everything
 
         #WELCOME TITLE
         #load ttf file into Windows at runtime(running with 'file=' couldn't work)
@@ -33,8 +39,17 @@ class main_menu():
             16,
             0
         )
-        ctk.CTkLabel(self.root, text="Welcome to HomeLife", font=("Nunito SemiBold", 40)).pack(pady=60, side="top")
-        #------
+        label_frame = ctk.CTkFrame(self.root, width=497, height=47, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
+        label_frame.pack(pady=20, side="top")
+        label_frame.pack_propagate(False)
+        
+        label = ctk.CTkLabel(label_frame, 
+                     text="HomeLife", 
+                     font=("Nunito SemiBold", 40)
+                    )
+        label.pack(pady=5)
+        label.pack_propagate(False)
+        #-------------
         
         #IMAGES
         chore_img = Image.open("chore.png")
@@ -66,43 +81,93 @@ class main_menu():
         #------
 
         #FRAME FOR BUTTONS
-        main_frame1 = ctk.CTkFrame(self.root, fg_color="#c3b091")
-        main_frame1.place(relx=0, rely=0.35, relwidth=1, relheight=0.3)
-        ##main_frame2 = ctk.CTkFrame(self.root)
-        ##main_frame2.place(relx=0.6, rely=0.25, relwidth=0.25, relheight=0.9)
+        main_frame0 = ctk.CTkFrame(self.root, 
+                                   width=950, 
+                                   height=550, 
+                                   corner_radius=0, 
+                                   border_width=2, 
+                                   border_color="black", 
+                                   fg_color="#c3b091"
+                                   )
+        
+        main_frame0.pack(pady=(40, 0), anchor='center')
+        main_frame0.pack_propagate(False)
+
+        #c3b091
+        main_frame2 = ctk.CTkFrame(main_frame0, fg_color="#c3b091")
+        main_frame2.pack(side='bottom', pady=35, anchor='center')
+
+        main_frame1 = ctk.CTkFrame(main_frame0, fg_color="#c3b091")
+        main_frame1.pack(side="bottom", pady=(15, 35), anchor='center')
         #------
 
         #BUTTONS
-        glm_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
-        glm_frame.pack(side="left", padx=75)
-        ctk.CTkLabel(glm_frame, text = "Grocery List Manager", font=("Nunito Semibold", 24)).pack()
-        glm_button = ctk.CTkButton(glm_frame, text="     ", width=5,  image=photo1, fg_color="#f7e7ce", command=self.open_grocery)
+        #glm_frame = ctk.CTkFrame(main_frame1, fg_color="red")
+        #glm_frame.pack(side="left", padx=75)
+        #ctk.CTkLabel(glm_frame, text = "Grocery List ", font=("Nunito Semibold", 24)).pack()
+        glm_button = ctk.CTkButton(main_frame1, 
+                                   text="Grocery List\nManager", 
+                                   width=5,  
+                                   image=photo1, 
+                                   fg_color="#f7e7ce",
+                                   hover_color="#e6d5b8", 
+                                   text_color="black",
+                                   command=self.open_grocery)
         glm_button.image = photo1
-        glm_button.pack(pady=10)
+        glm_button.pack(side="left", padx=75)
+        #glm_button.pack(pady=10)
         
-        cs_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
-        cs_frame.pack(side="left", padx=75) 
-        ctk.CTkLabel(cs_frame, text = "Chore Scheduler", font=("Nunito SemiBold", 24)).pack()
-        cs_button = ctk.CTkButton(cs_frame, text="     ", width=5, image=photo2, fg_color="#f7e7ce", command=self.open_chore)
+        #cs_frame = ctk.CTkFrame(main_frame1, fg_color="blue")
+        #cs_frame.pack(side="left", padx=75) 
+        #ctk.CTkLabel(cs_frame, text = "Chore Scheduler", font=("Nunito SemiBold", 24)).pack()
+        cs_button = ctk.CTkButton(main_frame1, 
+                                  text="   Chore\n   Scheduler", 
+                                  width=5, image=photo2, 
+                                  fg_color="#f7e7ce",
+                                  hover_color="#e6d5b8", 
+                                  text_color="black", 
+                                  command=self.open_chore)
         cs_button.image = photo2
-        cs_button.pack(pady=10)
+        cs_button.pack(side="left", padx=75)
+        #cs_button.pack(pady=10)
         
-        bt_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
-        bt_frame.pack(side="left", padx=75)
-        ctk.CTkLabel(bt_frame, text = "Budget Tracker", font=("Nunito SemiBold", 24)).pack()
-        bt_button = ctk.CTkButton(bt_frame, text="     ", width=5,  image=photo3, fg_color="#f7e7ce", command=self.open_budget)
+        #bt_frame = ctk.CTkFrame(main_frame2, fg_color="#f7e7ce")
+        #bt_frame.pack(anchor='n', side="left", padx=75)
+        #ctk.CTkLabel(bt_frame, text = "Budget Tracker", font=("Nunito SemiBold", 24)).pack()
+        bt_button = ctk.CTkButton(main_frame2, 
+                                  text="        Budget\n        Tracker", 
+                                  width=5,  image=photo3, 
+                                  fg_color="#f7e7ce", 
+                                  hover_color="#e6d5b8", 
+                                  text_color="black", 
+                                  command=self.open_budget)
         bt_button.image = photo3
-        bt_button.pack(pady=10, fill="both", expand=True)
+        bt_button.pack(side="left", padx=75)
+        #bt_button.pack(pady=10, fill="both", expand=True)
         
-        mp_frame = ctk.CTkFrame(main_frame1, fg_color="#f7e7ce")
-        mp_frame.pack(side="left", padx=75)
-        ctk.CTkLabel(mp_frame, text="Meal Planner", font=("Nunito SemiBold", 24)).pack()
-        mp_button = ctk.CTkButton(mp_frame, text="     ", width=5,  image=photo4, fg_color="#f7e7ce", command=self.open_meal)
+        #mp_frame = ctk.CTkFrame(main_frame2, fg_color="#f7e7ce")
+        #mp_frame.pack(anchor='n', side='left', padx=75)
+        #ctk.CTkLabel(mp_frame, text="Meal Planner", font=("Nunito SemiBold", 24)).pack()
+        mp_button = ctk.CTkButton(main_frame2, 
+                                  text="        Meal\n        Planner", 
+                                  width=5,  image=photo4, 
+                                  fg_color="#f7e7ce", 
+                                  hover_color="#e6d5b8", 
+                                  text_color="black", 
+                                  command=self.open_meal)
         mp_button.image = photo4
-        mp_button.pack(pady=10, fill="both", expand=True)
+        mp_button.pack(side="left", padx=75)
+        #mp_button.pack(pady=10, fill="both", expand=True)
 
-        exit = ctk.CTkButton(self.root, text = "Exit", fg_color="red", command=self.exit_program)
-        exit.pack(pady=60, side="bottom")
+        exit = ctk.CTkButton(self.root, 
+                             text = "Exit", 
+                             text_color="red", 
+                             fg_color="#f7e7ce", 
+                             border_width=2,
+                             border_color='red',
+                             hover_color="#e6d5b8",
+                             command=self.exit_program)
+        exit.pack(pady=(0, 60), side="bottom")
         #------
 
     def open_grocery(self):

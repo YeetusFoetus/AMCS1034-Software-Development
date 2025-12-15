@@ -6,36 +6,30 @@ import datetime
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageFilter
 
-
 class BudgetTracker:
     def __init__(self, window, back_callback):
-        
+
         # --- Global Variables and Data File Setup ---
         self.window = window
         self.back_callback = back_callback
         self.budget_switch_btn = None
         self.DATA_FILE = "expenses.csv"
+        self.BUDGET_FILE = "budgets.csv" 
+        
         self.CATEGORIES = ["Food", "Transport", "Housing", "Bills", "Entertainment", "Other"]
         self.current_category = ""
         self.category_buttons = {}
+        self.budgets = {}
         self.listbox_expenses = None
         self.total_label = None
         self.entry_amount = None
         self.current_budget_view = None
-
-    def menu(self):
-        for widget in self.window.winfo_children():
-            widget.destroy()
-
-        bg_image = Image.open("house_interior.png")
-        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
-        bg_photo = ImageTk.PhotoImage(bg_image)
-        bg_label = ctk.CTkLabel(self.window, image=bg_photo, text="")
-        bg_label.image = bg_photo
-        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
-        bg_label.lower()   # send it behind everything
-
-        self.open_budget_page()     
+        
+        # UI Elements for switching views
+        self.input_view = None
+        self.report_view = None
+        self.report_content = None
+        self.net_balance_label = None
 
     def open_budget_page(self):
         tk.Label(self.window, text="Welcome to Budget Tracker", font=("Microsoft HaYei",40,"bold")).pack(pady=10)
@@ -53,7 +47,7 @@ class BudgetTracker:
 
         # Category Selection
         self.frame_category = tk.Frame(self.input_view, width=500, height=170, bg='orange')
-        self.frame_category.pack(pady=10)
+        self.frame_category.pack(pady=5)
         self.frame_category.pack_propagate(False)
 
         tk.Label(self.frame_category, text="Select Category:").pack(side=tk.TOP, pady=(0, 5))
@@ -113,7 +107,80 @@ class BudgetTracker:
         self.switch_budget_view("input")
         
         self.load_expenses() 
-        self.switch_budget_view("input")   
+        self.switch_budget_view("input") 
+
+    def switch_budget_view(self, view_name):
+        """Switches between the input view and the report view and updates the switch button."""
+        
+        if self.current_budget_view is not None:
+            self.current_budget_view.pack_forget()
+
+        if view_name == "input":
+            self.current_budget_view = self.input_view
+            self.input_view.pack(fill=tk.BOTH, expand=True)
+            self.load_expenses() 
+            
+            if self.budget_switch_btn:
+                self.budget_switch_btn.configure(
+                    text="View Report", 
+                    command=lambda: self.switch_budget_view("report")
+                )
+            
+        elif view_name == "report":
+            self.current_budget_view = self.report_view
+            self.report_view.pack(fill=tk.BOTH, expand=True)
+            self.report_content.config(text=self.generate_report_text()) 
+            
+            if self.budget_switch_btn:
+                self.budget_switch_btn.configure(
+                    text="Back to Input", 
+                    command=lambda: self.switch_budget_view("input")
+                )
+
+    def menu(self):
+        for widget in self.window.winfo_children():
+            widget.destroy()
+
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.window, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   # send it behind everything
+
+        self.open_budget_page()     
+
+    def set_budgets(self):
+        """Reads all budget entries and saves them to the budget file."""
+        valid_budgets = 0
+        budgets_saved = False
+
+        for category, entry in self.budget_entries.items():
+            amount_str = entry.get().strip()
+            
+            if amount_str:
+                try:
+                    amount_float = float(amount_str)
+                    if amount_float >= 0:
+                        self.save_budget(category, amount_float)
+                        valid_budgets += 1
+                        budgets_saved = True
+                    else:
+                        tk.messagebox.showerror("Error", f"Budget for {category} must be non-negative.")
+                        return
+                except ValueError:
+                    tk.messagebox.showerror("Error", f"Please enter a valid number for {category} budget.")
+                    return
+        
+        if valid_budgets > 0:
+            tk.messagebox.showinfo("Success", f"Successfully saved {valid_budgets} budget goals.")
+        else:
+            tk.messagebox.showinfo("Info", "No budget goals were set.")          
+        if budgets_saved:
+            self.update_net_balance_label() 
+        if self.current_budget_view == self.report_view:
+            self.switch_budget_view("report")
 
     # --- Data Persistence Functions ---
 
@@ -150,6 +217,32 @@ class BudgetTracker:
 
         self.update_total()
 
+    def load_budgets(self):
+        """Loads budget goals from the budget CSV file."""
+        self.budgets = {}
+        if os.path.exists(self.BUDGET_FILE):
+            with open(self.BUDGET_FILE, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader, None)
+                for row in reader:
+                    if len(row) == 2:
+                        category, amount_str = row
+                        try:
+                            self.budgets[category] = float(amount_str)
+                        except ValueError:
+                            continue 
+
+    def save_budget(self, category, amount):
+        """Saves a single budget goal to the budget CSV file."""
+        
+        self.budgets[category] = amount
+        
+        with open(self.BUDGET_FILE, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Category", "Budget"])
+            for cat, amt in self.budgets.items():
+                writer.writerow([cat, amt])
+
     def update_total(self):
         """Calculates and updates the total spending currently displayed in the Listbox."""
         if self.total_label is None: return
@@ -164,6 +257,22 @@ class BudgetTracker:
                 pass 
         
         self.total_label.config(text=f"Total Expenses: RM {total:.2f}")
+
+    def update_net_balance_label(self):
+        """Updates the Net Balance label in the input view to display Total Monthly Budget, Total Expense and Balance."""
+        if self.net_balance_label is None: return
+        
+        grand_total_expense = self.update_total() 
+        total_monthly_budget = sum(self.budgets.values())
+        new_budget_balance = total_monthly_budget - grand_total_expense
+        
+        color = 'green' if new_budget_balance >= 0 else 'red'
+        
+        text = (f"Total Monthly Budget: RM {total_monthly_budget:.2f}\n"
+                f"Total Expense: RM {grand_total_expense:.2f}\n"
+                f"Balance: RM {new_budget_balance:.2f}")
+                
+        self.net_balance_label.config(text=text, fg=color)
 
     def select_category(self, category):
         """Sets the current selected category and updates the indicator."""
@@ -262,34 +371,6 @@ class BudgetTracker:
         
         return "\n".join(report_text)
 
-    def switch_budget_view(self, view_name):
-        """Switches between the input view and the report view and updates the switch button."""
-        
-        if self.current_budget_view is not None:
-            self.current_budget_view.pack_forget()
-
-        if view_name == "input":
-            self.current_budget_view = self.input_view
-            self.input_view.pack(fill=tk.BOTH, expand=True)
-            self.load_expenses() 
-            
-            if self.budget_switch_btn:
-                self.budget_switch_btn.configure(
-                    text="View Report", 
-                    command=lambda: self.switch_budget_view("report")
-                )
-            
-        elif view_name == "report":
-            self.current_budget_view = self.report_view
-            self.report_view.pack(fill=tk.BOTH, expand=True)
-            self.report_content.config(text=self.generate_report_text()) 
-            
-            if self.budget_switch_btn:
-                self.budget_switch_btn.configure(
-                    text="Back to Input", 
-                    command=lambda: self.switch_budget_view("input")
-                )
-
     def display_spending_report(self):
         """Formats and displays the report."""
         global report_label
@@ -308,3 +389,17 @@ class BudgetTracker:
         
         report_text.append("\n" + f"{'TOTAL':<12} : RM {grand_total:6.2f}")
         report_label.config(text="\n".join(report_text), justify=tk.LEFT, font=("Courier", 10))
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    root.title("Budget Tracker")
+    root.geometry("1000x650")
+    
+    def dummy_back_callback():
+        print("Back to main menu logic executed.")
+        root.destroy()
+        
+    app = BudgetTracker(root, dummy_back_callback)
+    app.open_budget_page()
+    
+    root.mainloop()

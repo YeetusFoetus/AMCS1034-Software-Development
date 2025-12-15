@@ -4,6 +4,8 @@ import json
 from tkinter import *
 import tkinter.messagebox
 import tkinter.simpledialog
+import customtkinter as ctk
+from PIL import Image, ImageTk, ImageFilter
 
 class groceryListManager:
     def __init__(self, root = None, back_callback = None):
@@ -175,7 +177,7 @@ class groceryListManager:
     def UI_addBackButton(self, root):
         if self.isback_callbackExists() == True:
             # Adds a frame where the back button is located
-            notch = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='red')
+            notch = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='red')
             
             # Adds a back button
             Button(notch, text="Return to the main menu", command=self.back_callback).grid(row = 1, column = 1)
@@ -275,6 +277,16 @@ class groceryListManager:
         root.title(("Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery") + " - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
 
         self.Init_UI(root)
+
+        # Configure background image
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        
+        bg_label = ctk.CTkLabel(root, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   
 
         # Declares necessary flags (variables)
         self.gotoEdit = False
@@ -624,15 +636,26 @@ class groceryListManager:
         categories = self.getCategories() # Declares a list of options that will be displayed on the drop-down menu
         """
         category_opt = StringVar()   # Declares a variable for the selected category
+
+        # Configure background image
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        
+        bg_label = ctk.CTkLabel(root, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   
         
         # Calls UI
+        self.UI = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, width=700, height=900, bg='white')
         header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='yellow')
-        empty = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='green')
-        actions = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='blue')
-        search = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='indigo')
-        table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='violet')
+        empty = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='green')
+        actions = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='blue')
+        search = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='indigo')
+        table = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='violet')
 
-        Label(header, text="Grocery List Manager").grid(row = 1, column = 1)
+        Label(header, font=("Microsoft HaYei",40,"bold"), text="Grocery List Manager").grid(row = 1, column = 1)
         Label(empty, text="Your list is empty. Let's add your first grocery to your first grocery list!").grid(row = 1, column = 1)
         
         # 'label_appDescription' explains users about the context of the current window
@@ -651,6 +674,8 @@ class groceryListManager:
 
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack()
+        self.UI.pack()
+        self.UI.pack_propagate(False)
 
         if len(self.groceries) <= 0: # If the list is empty
             empty.pack()
@@ -672,7 +697,7 @@ class groceryListManager:
             button_refillList.grid(row = 2, column = 3)
 
             # Designs the search bar
-            container_category = LabelFrame(search, text="Category: ", padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='orange')
+            container_category = LabelFrame(search, text="Category: ", font=("Arial", 24), padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='orange')
             container_category.grid(row = 1, column = 1)
 
             # Designs the table of groceries
@@ -844,6 +869,7 @@ class groceryListManager:
         root.mainloop() # Runs the application with the window
     
     def menu(self):
+              
         self.App(self.root)
 
 def Test():

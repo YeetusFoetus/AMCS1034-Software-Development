@@ -3,11 +3,13 @@ from tkinter import messagebox
 import csv
 import os
 import datetime
-
-# --- Global Variables and Data File Setup ---
+import customtkinter as ctk
+from PIL import Image, ImageTk, ImageFilter
 
 class BudgetTracker:
     def __init__(self, window, back_callback):
+
+        # --- Global Variables and Data File Setup ---
         self.window = window
         self.back_callback = back_callback
         self.budget_switch_btn = None
@@ -30,29 +32,32 @@ class BudgetTracker:
         self.net_balance_label = None
 
     def open_budget_page(self):
-        tk.Label(self.window, text="Welcome to Budget Tracker").pack(pady=10)
-        self.budget_page = tk.Frame(self.window)
+        tk.Label(self.window, text="Welcome to Budget Tracker", font=("Microsoft HaYei",40,"bold")).pack(pady=10)
+        self.budget_page = tk.Frame(self.window,width=700,height=900, bg='red')
         self.budget_page.pack()
+        self.budget_page.pack_propagate(False)
 
         # Budget page
-        self.budget_switch_btn = tk.Button(self.budget_page, text="View Report", command=lambda: self.switch_budget_view("report"),bg='#ADD8E6', width=15)
+        self.budget_switch_btn = ctk.CTkButton(self.budget_page, text="View Report", command=lambda: self.switch_budget_view("report"))
+        #,bg='#ADD8E6', width=15
         self.budget_switch_btn.pack(pady=5)
 
         # --- 2. Input View Frame ---
-        self.input_view = tk.Frame(self.budget_page) 
+        self.input_view = tk.Frame(self.budget_page, bg='orange') 
 
-        # Category Selection and Expense Input (Kept at the top, spanning width)
-        self.frame_category = tk.Frame(self.input_view)
+        # Category Selection
+        self.frame_category = tk.Frame(self.input_view, width=500, height=170, bg='yellow')
         self.frame_category.pack(pady=5)
+        self.frame_category.pack_propagate(False)
 
         tk.Label(self.frame_category, text="Select Category:").pack(side=tk.TOP, pady=(0, 5))
 
-        self.frame_buttons = tk.Frame(self.frame_category)
+        self.frame_buttons = tk.Frame(self.frame_category, bg='green')
         self.frame_buttons.pack()
 
         for i, cat in enumerate(self.CATEGORIES):
-            btn = tk.Button(
-                self.frame_buttons, text=cat, command=lambda c=cat: self.select_category(c), width=10, height=2, padx=10
+            btn = ctk.CTkButton(
+                self.frame_buttons, text=cat, command=lambda c=cat: self.select_category(c), width=120, height=40
             )
             btn.grid(row=i // 3, column=i % 3, padx=3, pady=3)
             self.category_buttons[cat] = btn
@@ -62,7 +67,7 @@ class BudgetTracker:
         self.category_label_indicator.pack(pady=5)
 
         # Amount Input and Add/Clear Button Area (EXPENSE)
-        self.frame_input = tk.Frame(self.input_view)
+        self.frame_input = tk.Frame(self.input_view, bg='blue')
         self.frame_input.pack(pady=10)
 
         tk.Label(self.frame_input, text="Amount:").grid(row=0, column=0, padx=5, pady=5)
@@ -76,7 +81,7 @@ class BudgetTracker:
         self.btn_clear.grid(row=2, column=0, columnspan=2, pady=5)
 
         # --- NEW: Layout Frame for Side-by-Side Content (Budget Left, Transactions Right) ---
-        self.frame_side_by_side = tk.Frame(self.input_view)
+        self.frame_side_by_side = tk.Frame(self.input_view, bg='indigo')
         self.frame_side_by_side.pack(pady=10, fill=tk.X, expand=True) 
         self.frame_side_by_side.grid_columnconfigure(0, weight=1)
         self.frame_side_by_side.grid_columnconfigure(1, weight=1)
@@ -85,7 +90,7 @@ class BudgetTracker:
         # --- LEFT SIDE: Budget Setting Area (MONTHLY BUDGET) ---
         # -----------------------------------------------------------------------------------
         
-        self.frame_budget_set = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="#FFFFFF")
+        self.frame_budget_set = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="violet")
         self.frame_budget_set.grid(row=0, column=0, padx=15, sticky='nsew')
 
         tk.Label(self.frame_budget_set, text="Set Monthly Budget Goal:", font=('Arial', 10, 'bold')).pack(pady=(0, 5))
@@ -94,7 +99,7 @@ class BudgetTracker:
 
         # Display Category and Entry for budget input
         for cat in self.CATEGORIES:
-            frame_row = tk.Frame(self.frame_budget_set, bg="#FFFFFF")
+            frame_row = tk.Frame(self.frame_budget_set, bg="red")
             frame_row.pack(fill='x', padx=5, pady=2)
 
             tk.Label(frame_row, text=f"{cat}:", width=15, anchor='w').grid(row=0, column=0, sticky='w') 
@@ -114,7 +119,7 @@ class BudgetTracker:
         # --- RIGHT SIDE: Transaction List and Total (TRANSACTIONS) ---
         # -----------------------------------------------------------------------------------
         
-        self.frame_transactions = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="#FFFFFF")
+        self.frame_transactions = tk.Frame(self.frame_side_by_side, pady=10, padx=10, relief=tk.GROOVE, bd=1, bg="orange")
         self.frame_transactions.grid(row=0, column=1, padx=15, sticky='nsew')
         self.frame_transactions.grid_rowconfigure(1, weight=1)
         self.frame_transactions.grid_columnconfigure(0, weight=1)
@@ -131,7 +136,7 @@ class BudgetTracker:
         self.net_balance_label.grid(row=2, column=0, pady=10)
 
         # --- 3. Report View Frame ---
-        self.report_view = tk.Frame(self.budget_page) 
+        self.report_view = tk.Frame(self.budget_page, bg='yellow') 
         tk.Label(self.report_view, text="Spending Insights Report", font=("Arial", 14, "bold")).pack(pady=10)
         
         self.report_content = tk.Label(self.report_view, text="Click 'View Report' to view data.", 
@@ -162,17 +167,25 @@ class BudgetTracker:
         
         if view_name == "input":
             self.input_view.pack(fill=tk.BOTH, expand=True)
-            self.budget_switch_btn.config(text="View Report", command=lambda: self.switch_budget_view("report"))
+            self.budget_switch_btn.configure(text="View Report", command=lambda: self.switch_budget_view("report"))
             self.current_budget_view = self.input_view
         elif view_name == "report":
             self.report_view.pack(fill=tk.BOTH, expand=True)
             self.display_spending_report() 
-            self.budget_switch_btn.config(text="Go Back", command=lambda: self.switch_budget_view("input"))
+            self.budget_switch_btn.configure(text="Go Back", command=lambda: self.switch_budget_view("input"))
             self.current_budget_view = self.report_view
             
     def menu(self):
         for widget in self.window.winfo_children():
             widget.destroy()
+
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.window, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   # send it behind everything
 
         self.open_budget_page()
         
@@ -294,18 +307,18 @@ class BudgetTracker:
                 f"Total Expense: RM {grand_total_expense:.2f}\n"
                 f"Balance: RM {new_budget_balance:.2f}")
                 
-        self.net_balance_label.config(text=text, fg=color)
+        self.net_balance_label.configure(text=text, fg=color)
 
     def select_category(self, category):
         """Sets the current selected category and updates the indicator."""
         self.current_category = category
         for btn in self.category_buttons.values():
-            if btn.cget("text") == category:
-                btn.config(relief=tk.SUNKEN, bg='lightblue')
+            '''if btn.cget("text") == category:
+                btn.configure(fg_color='lightblue')
             else:
-                btn.config(relief=tk.RAISED, bg='SystemButtonFace')
+                btn.configure(fg_color=None)'''
         
-        self.category_label_indicator.config(text=f"Selected Category: {self.current_category}")
+        self.category_label_indicator.configure(text=f"Selected Category: {self.current_category}")
 
     def add_expense(self):
         """Adds the expense to the list, saves it to the file, and updates total."""
@@ -415,7 +428,7 @@ class BudgetTracker:
         
         report_text = self.generate_report_text()
         
-        self.report_content.config(text=report_text, justify=tk.LEFT, font=("Courier", 10))
+        self.report_content.configure(text=report_text, justify=tk.LEFT, font=("Courier", 10))
 
 
 # --- Main Application Setup (for testing) ---
