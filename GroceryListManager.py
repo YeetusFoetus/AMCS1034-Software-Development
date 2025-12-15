@@ -7,6 +7,9 @@ import tkinter.simpledialog
 
 class groceryListManager:
     def __init__(self, root = None, back_callback = None):
+        # Prints a message regarding the debugging information
+        print("DEBUGGING INFORMATION\n=====================")
+
         # Define styles for 'tkinter' elements
         self.widgets_padx = 16
         self.widgets_pady = 8
@@ -33,6 +36,10 @@ class groceryListManager:
             self.back_callback = back_callback
 
         self.loadData()
+
+        # Declares necessary variables for 'App()'
+        self.selectCategory = ""
+        self.selectIndex = None
 
         print("INFO: 'groceryListManager' class has been initialised successfully.")
 
@@ -84,6 +91,26 @@ class groceryListManager:
             categories.add(category) # Add the category into the set
         
         return categories   # Returns the set of categories to the calling function
+    
+    def isGroceryExists(self, name, category):    # Checks whether a grocery with the given name and category exists
+        # Makes 'name' look like a title
+        name = name.title()
+
+        isExists = False if self.getGrocery(name, category) == {} else True
+        
+        return isExists
+    
+    def getGrocery(self, name, category):
+        list_categoryBased = self.getListByCategory(category)
+
+        result = {}
+
+        for index, grocery in enumerate(list_categoryBased):
+            if grocery.get("name") == name:
+                grocery["index"] = index    # Adds the index of the grocery to the search result
+                result = grocery
+
+        return result
     
     def loadData(self):
         # Loads the groceries
@@ -196,6 +223,10 @@ class groceryListManager:
             tkinter.messagebox.showerror("Error", f"Sorry, but '{threshold}' is an invalid threshold. It has to be a positive integer.")
             return False
         else:
+            # Capitalises the first letter of the grocery's name and category and converts the rest of that to lower cases.
+            name = name.title()
+            category = category.title()
+            
             # Converts the quantity and threshold to integer-type variables
             quantity = int(quantity)
             threshold = int(threshold)
@@ -224,7 +255,7 @@ class groceryListManager:
             if isSuccess == True:
                 tkinter.messagebox.showinfo("Grocery added" if self.isEditing(index, oldCategory) == False else "Grocery edited", "Your grocery which is '{}' has been {} successfully.".format(name, "added" if self.isEditing(index, oldCategory) == False else "edited"))
             else:
-                tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're adding '{name}' to the list. Please try again.")
+                tkinter.messagebox.showerror("Grocery failed to be added" if self.isEditing(index, oldCategory) == False else "Grocery failed to be edited", "Sorry, but there is an error occurred while we're {} '{}' to the list. Please try again.".format("adding" if self.isEditing(index, oldCategory) == False else "editing", name))
             
             return isSuccess
     
@@ -232,17 +263,21 @@ class groceryListManager:
         print("INFO: 'Grocery List Manager' window is opened in a new window.")
 
         # Sets the variable named 'root' to the current instance of the window
-        if root is None:
-            if self.isback_callbackExists() == True:
-                root = self.root
-            else:
-                root = Toplevel()
-                homeRoot = self.root    # Remembers the instance of the home page
-                root.geometry("400x300")    # Sets the size of the window
+        if root is None and self.isback_callbackExists() == False:
+            root = Toplevel()
+            homeRoot = self.root    # Remembers the instance of the home page
+            # root.geometry("400x300")    # Sets the size of the window
+        elif root is not None and self.isback_callbackExists() == False:
+            homeRoot = self.root
+        else:   # self.isback_callbackExists() == True
+            root = self.root    # 'self.root' is defined during the initialisation of this class
 
         root.title(("Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery") + " - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
 
         self.Init_UI(root)
+
+        # Declares necessary flags (variables)
+        self.gotoEdit = False
 
         # Sets variables for certain form controls
         groceryName = StringVar()
@@ -274,10 +309,39 @@ class groceryListManager:
                 self.UI_returnToHome(root)  # Closes the window
 
         def submitForm():
+            result = False
+
+            # Assigns the strings from StringVar() to variables
+            name = groceryName.get().title()
+            category = groceryCategory.get().title()
+            quantity = groceryQuantity.get()
+            threshold = groceryThreshold.get()
+
+            existingGrocery = self.getGrocery(name, category)   # Checks for any existing groceries
+
             if self.isEditing(index, oldCategory) == False:
-                result = self.addEditGrocery(groceryName.get(), groceryCategory.get().title(), groceryQuantity.get(), groceryThreshold.get())
+                if self.isGroceryExists(name, category) == True:
+                    self.gotoEdit = tkinter.messagebox.askyesno("Grocery conflicted", f"The grocery named '{name}' which is categorised as '{category}', already exists within your list of groceries.\n\nWould you like to edit it instead?\n\nOtherwise, click 'No' to cancel and give the new grocery a new name.")
+                else:
+                    result = self.addEditGrocery(name, category, quantity, threshold)
             else:
-                result = self.addEditGrocery(groceryName.get(), groceryCategory.get().title(), groceryQuantity.get(), groceryThreshold.get(), index, oldCategory)
+                if existingGrocery != {}:   # If no groceries match the current edit
+                    if existingGrocery["name"] == name and existingGrocery["category"] == category: # If the found grocery has the same information as the current edit
+                        if existingGrocery["index"] == index:   # If the found grocery is actually the grocery that is being edited
+                            result = self.addEditGrocery(name, category, quantity, threshold, index, oldCategory)
+                        else:    
+                            self.gotoEdit = tkinter.messagebox.askyesno("Grocery conflicted", f"The grocery named '{name}' is categorised as '{category}'.\n\nWould you like to edit it instead?\n\nOtherwise, click 'No' to cancel and give the grocery another category.")    
+                    else:
+                        result = self.addEditGrocery(name, category, quantity, threshold, index, oldCategory)
+                else:
+                    result = self.addEditGrocery(name, category, quantity, threshold, index, oldCategory)
+                
+            if self.gotoEdit == True:
+                self.gotoEdit = False    # Sets 'self.gotoEdit' flag to 'false' to avoid duplicated windows
+
+                # Edits the grocery that exists within the list
+                self.clrScrn(root)
+                self.addEditGrocery_UI(root, existingGrocery["index"], existingGrocery["category"])
             
             if result == True:
                 closeWindow()
@@ -312,7 +376,7 @@ class groceryListManager:
         info4user = LabelFrame(footer, text="For your information", padx=self.LabelFrame_padx, pady=self.widgets_pady)
         info4user.grid(row = 1, column = 1)
 
-        Label(info4user, text="The first character of the category will be capitalised and\nthe rest will be lower case.\n\ne.g.: 'frUit' --> 'Fruit'").grid(row = 1, column = 1)
+        Label(info4user, text="The first character of the name and category will be capitalised and the rest will be lower case.\n\ne.g.: 'cEreAl gRain' --> 'Cereal Grain'").grid(row = 1, column = 1)
 
         header.pack()
         form.pack()
@@ -328,16 +392,6 @@ class groceryListManager:
 
         for grocery in groceries:            
             if(grocery.get("category") == category):
-                result.append(grocery)
-
-        return result
-    
-    def searchList(self, name = "", category = ""):
-        groceries = (self.getList())
-        result = []
-
-        for grocery in groceries:
-            if((grocery.get("name").lower().find(name.lower()) >= 0 if name != "" else True) and (grocery.get("category") == category if category != "" else True)):
                 result.append(grocery)
 
         return result
@@ -363,7 +417,7 @@ class groceryListManager:
             if isSuccess == True:
                 tkinter.messagebox.showinfo("Deletion successful", f"The grocery which is '{name}' has been deleted successfully.")
             else:
-                tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're deleting '{name}' from the list. Please try again.")
+                tkinter.messagebox.showerror("Grocery failed to be deleted", f"Sorry, but there is an error occurred while we're deleting '{name}' from the list. Please try again.")
 
         else:
             print("INFO: The deleting operation has been cancelled by the user.")
@@ -455,7 +509,7 @@ class groceryListManager:
             else:
                 root = Toplevel()
                 homeRoot = self.root    # Remembers the instance of the home page
-                root.geometry("400x300")    # Sets the size of the window
+                # root.geometry("400x300")    # Sets the size of the window
 
         root.title("Your refill list - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
 
@@ -463,6 +517,7 @@ class groceryListManager:
 
         header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
         table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
+        footer = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady)
 
         Label(header, text="My Refill List").grid(row = 1, column = 1)
 
@@ -513,10 +568,19 @@ class groceryListManager:
                     groceries_listView_threshold.insert(currIndex + 1, threshold)
                     groceries_listView_refillAmt.insert(currIndex + 1, refillAmt)
 
+        def closeWindow():
+            if self.isback_callbackExists() == False:
+                self.refreshUI(homeRoot, self.App)
+            else:
+                self.UI_returnToHome(root)  # Closes the window
+        
+        Button(footer, text="Close", command=closeWindow).grid(row = 1, column = 1)
+
         loadList()    # Changes the category displayed on the option menu
 
         header.pack()
         table.pack()
+        footer.pack()
 
         # Displays the window
         root.mainloop()
@@ -541,7 +605,7 @@ class groceryListManager:
                 root = self.root
             else:
                 root = self.root
-                root.geometry("800x600")    # Sets the size of the window
+                # root.geometry("800x600")    # Sets the size of the window
 
         root.title("Grocery List Manager - Household Management Assistant App") # Sets the title of the window
         # root.configure(bg='white')  # Changes the background colour using 'configure' function
@@ -633,8 +697,6 @@ class groceryListManager:
             # 'Threshold' column
             groceries_listView_threshold = Listbox(table)
             groceries_listView_threshold.grid(row = 2, column = 4)
-
-            self.selectIndex = None
         
             def getSelectedGrocery_name(event):
                 print(event)
@@ -696,17 +758,19 @@ class groceryListManager:
             # Shows the groceries based on the category chosen by the user
             # Note: 'command' passes the arguments (like in this case, category) to the function that is being called.
             def change_categoryView(category):
+                self.selectCategory = category  # Sets the selected category
                 self.selectIndex = None
                 
-                print(category)
-                loadList(category)    # Changes the category displayed on the option menu
+                print(self.selectCategory)
+                loadList(self.selectCategory)    # Changes the category displayed on the option menu
 
             # Initialises the window with initial values
-            def Init():
+            def Init(): # category_opt.get()
                 if(len(self.categories) > 0):   # If the list of groceries is not empty
-                    if category_opt.get() not in self.categories: # If the selected category does not exist
-                        category_opt.set(self.groceries[0].get("category"))  # Choose the category of the first grocery item
-
+                    if self.selectCategory == "" or (self.selectCategory != "" and self.selectCategory not in self.categories):   # If a category is not selected or if a category is selected but the selected category does not exist
+                        self.selectCategory = self.groceries[0].get("category") # Choose the category of the first grocery item
+                        
+                    category_opt.set(self.selectCategory)
                     change_categoryView(category_opt.get())
                 else:
                     # category_opt.set("No categories available")
