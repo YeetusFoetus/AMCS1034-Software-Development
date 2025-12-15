@@ -177,12 +177,12 @@ class groceryListManager:
     def UI_addBackButton(self, root):
         if self.isback_callbackExists() == True:
             # Adds a frame where the back button is located
-            notch = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='red')
+            notch = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
             
             # Adds a back button
-            Button(notch, text="Return to the main menu", command=self.back_callback).grid(row = 1, column = 1)
+            Button(notch, font=("Arial", 11), text="Return to the main menu", command=self.back_callback).grid(row = 1, column = 1)
 
-            notch.pack()
+            notch.pack(pady=20)
 
     def UI_closeWindow(self, root):
         self.loadData() # Refreshes the list of groceery and categories saved within the class
@@ -267,10 +267,10 @@ class groceryListManager:
         # Sets the variable named 'root' to the current instance of the window
         if root is None and self.isback_callbackExists() == False:
             root = Toplevel()
-            homeRoot = self.root    # Remembers the instance of the home page
+            self.root = self.root    # Remembers the instance of the home page
             # root.geometry("400x300")    # Sets the size of the window
         elif root is not None and self.isback_callbackExists() == False:
-            homeRoot = self.root
+            self.root = self.root
         else:   # self.isback_callbackExists() == True
             root = self.root    # 'self.root' is defined during the initialisation of this class
 
@@ -316,7 +316,7 @@ class groceryListManager:
 
         def closeWindow():
             if self.isback_callbackExists() == False:
-                self.refreshUI(homeRoot, self.App)
+                self.refreshUI(self.root, self.App)
             else:
                 self.UI_returnToHome(root)  # Closes the window
 
@@ -367,7 +367,7 @@ class groceryListManager:
         Note:
         - Tkinter elements can be placed inside a frame by replacing 'root' with the frame's name.
         """
-        Label(header, text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
+        Label(header, font=("Arial", 11), text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
 
         Label(form, text="Name: ").grid(row = 1, column = 1)
         Entry(form, textvariable=groceryName).grid(row = 1, column = 2)
@@ -514,50 +514,52 @@ class groceryListManager:
         function(root)  # Reinvoke the function to reinitialise the elements of 'tkinter' elements
     
     def refillList(self, root = None):
+        root = Toplevel(self.root)
         # Sets the variable named 'root' to the current instance of the window
-        if root is None:
+        '''if root is None:
             if self.isback_callbackExists() == True:
                 root = self.root
             else:
                 root = Toplevel()
-                homeRoot = self.root    # Remembers the instance of the home page
+                self.root = self.root'''    # Remembers the instance of the home page
                 # root.geometry("400x300")    # Sets the size of the window
 
         root.title("Your refill list - Grocery List Manager (Household Management Assistant App)") # Sets the title of the window
+        root.config(bg="#c3b091")
 
         self.Init_UI(root)
 
-        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='violet')
-        table = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='red')
-        footer = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='orange')
+        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
+        table = Frame(root, width=200, height=200, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
+        footer = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
 
-        Label(header, text="My Refill List").grid(row = 1, column = 1)
+        Label(header, font=("Arial", 12), text="My Refill List").grid(row = 1, column = 1)
 
         # Designs the table of grocer(ies) that need to be refilled
-        Label(table, text="Name").grid(row = 1, column = 1)
-        Label(table, text="Category").grid(row = 1, column = 2)
-        Label(table, text="Quantity").grid(row = 1, column = 3)
-        Label(table, text="Threshold").grid(row = 1, column = 4)
-        Label(table, text="You need to refill…").grid(row = 1, column = 5)
+        Label(table, width=21, font=("Arial", 11), text="Name").grid(row = 1, column = 1)
+        Label(table, width=21, font=("Arial", 11), text="Category").grid(row = 1, column = 2)
+        Label(table, width=21, font=("Arial", 11), text="Quantity").grid(row = 1, column = 3)
+        Label(table, width=21, font=("Arial", 11), text="Threshold").grid(row = 1, column = 4)
+        Label(table, width=21, font=("Arial", 11), text="You need to refill…").grid(row = 1, column = 5)
 
         # 'Name' column
-        groceries_listView_name = Listbox(table)
+        groceries_listView_name = Listbox(table, font=("Arial", 11), width=24)
         groceries_listView_name.grid(row = 2, column = 1)
 
         # 'Category' column
-        groceries_listView_category = Listbox(table)
+        groceries_listView_category = Listbox(table, font=("Arial", 11), width=24)
         groceries_listView_category.grid(row = 2, column = 2)
 
         # 'Quantity' column
-        groceries_listView_quantity = Listbox(table)
+        groceries_listView_quantity = Listbox(table, font=("Arial", 11), width=24)
         groceries_listView_quantity.grid(row = 2, column = 3)
 
         # 'Threshold' column
-        groceries_listView_threshold = Listbox(table)
+        groceries_listView_threshold = Listbox(table, font=("Arial", 11), width=24)
         groceries_listView_threshold.grid(row = 2, column = 4)
 
         # 'You need to refill' column
-        groceries_listView_refillAmt = Listbox(table)
+        groceries_listView_refillAmt = Listbox(table, font=("Arial", 11), width=24)
         groceries_listView_refillAmt.grid(row = 2, column = 5)
         
         # Defining necessary functions
@@ -582,7 +584,7 @@ class groceryListManager:
 
         def closeWindow():
             if self.isback_callbackExists() == False:
-                self.refreshUI(homeRoot, self.App)
+                self.refreshUI(self.root, self.App)
             else:
                 self.UI_returnToHome(root)  # Closes the window
         
@@ -590,12 +592,15 @@ class groceryListManager:
 
         loadList()    # Changes the category displayed on the option menu
 
-        header.pack()
-        table.pack()
-        footer.pack()
+        header.pack(pady=10)
+        table.pack(pady=10)
+        footer.pack(pady=10)
+        header.pack_propagate(False)
+        table.pack_propagate(False)
+        footer.pack_propagate(False)
 
         # Displays the window
-        root.mainloop()
+        #root.mainloop()
 
     def App(self, root = None):
         """
@@ -648,23 +653,30 @@ class groceryListManager:
         bg_label.lower()   
         
         # Calls UI
-        self.UI = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, width=700, height=900, bg='white')
-        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='yellow')
+        self.UI = ctk.CTkFrame(root, 
+                               corner_radius=0,
+                               width=700, height=550, 
+                               border_width=2, border_color="black", 
+                               fg_color='#c3b091'
+                               )
+        header = ctk.CTkFrame(root, width=497, height=50, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
+        header.pack(pady=20, side="top")
+        header.pack_propagate(False)
         empty = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='green')
-        actions = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='blue')
-        search = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='indigo')
-        table = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='violet')
+        actions = Frame(self.UI, width=530, height=123, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
+        search = Frame(self.UI, width=200, height=100, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
+        table = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
 
-        Label(header, font=("Microsoft HaYei",40,"bold"), text="Grocery List Manager").grid(row = 1, column = 1)
+        ctk.CTkLabel(header, text="Grocery List Manager", text_color="black", font=("Nunito SemiBold", 35)).pack(padx=5, pady=5)
         Label(empty, text="Your list is empty. Let's add your first grocery to your first grocery list!").grid(row = 1, column = 1)
         
         # 'label_appDescription' explains users about the context of the current window
         # Label(root, text="Let's manage your grocery list.")
         
         # Defines the user actions
-        userActions_wwyltd = LabelFrame(actions, text="What would you like to do?", padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='red')
-        userActions_wwyltd.grid(row = 1, column = 1)
-        button_addGrocery = Button(userActions_wwyltd, text="Add a grocery")
+        userActions_wwyltd = LabelFrame(actions, font=("Arial", 11), text="What would you like to do?", padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='#f7e7ce')
+        userActions_wwyltd.pack(anchor='center', fill='both', expand=True)
+        button_addGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Add a grocery", bg='light green')
         button_addGrocery.grid(row = 1, column = 1)
 
         def addEditGrocery():
@@ -674,54 +686,55 @@ class groceryListManager:
 
         # Note: Remember to show the control on the window with 'pack' function.
         header.pack()
-        self.UI.pack()
+        self.UI.pack(padx=self.widgets_padx, pady=75)
         self.UI.pack_propagate(False)
 
         if len(self.groceries) <= 0: # If the list is empty
             empty.pack()
         else:
             # Adds the button that deletes and edits the groceries within the list
-            button_editGrocery = Button(userActions_wwyltd, text="Edit this grocery")
+            button_editGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Edit this grocery", bg='light blue')
             button_editGrocery.grid(row = 1, column = 2)
 
-            button_delGrocery = Button(userActions_wwyltd, text="Delete this grocery")
+            button_delGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Delete this grocery", bg='pink')
             button_delGrocery.grid(row = 1, column = 3)
 
-            button_consumeGrocery = Button(userActions_wwyltd, text="Consume this grocery")
-            button_consumeGrocery.grid(row = 2, column = 1)
+            button_consumeGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Consume this grocery")
+            button_consumeGrocery.grid(pady=10, padx=3, row = 2, column = 1)
 
-            button_refillGrocery = Button(userActions_wwyltd, text="Refill this grocery")
-            button_refillGrocery.grid(row = 2, column = 2)
+            button_refillGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Refill this grocery")
+            button_refillGrocery.grid(padx=3, row = 2, column = 2)
 
-            button_refillList = Button(userActions_wwyltd, text="Generate a refill list for me")
+            button_refillList = Button(userActions_wwyltd, font=("Arial", 11), text="Generate a refill list for me")
             button_refillList.grid(row = 2, column = 3)
 
             # Designs the search bar
-            container_category = LabelFrame(search, text="Category: ", font=("Arial", 24), padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='orange')
-            container_category.grid(row = 1, column = 1)
+            container_category = LabelFrame(search, text="Category: ", font=("Arial", 14), padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='#f7e7ce')
+            container_category.pack(anchor='center', fill='both', expand=True)
 
             # Designs the table of groceries
             # This frame arranges the list boxes horizontally to make them look like a table
-            Label(table, text="Name").grid(row = 1, column = 1)
-            Label(table, text="Category").grid(row = 1, column = 2)
-            Label(table, text="Quantity").grid(row = 1, column = 3)
-            Label(table, text="Threshold").grid(row = 1, column = 4)
+            Label(table, width=21, font=("Arial", 11), text="Name").grid(row = 5, column = 1)
+            Label(table, width=21, font=("Arial", 11), text="Category").grid(row = 5, column = 2)
+            Label(table, width=21, font=("Arial", 11), text="Quantity").grid(row = 5, column = 3)
+            Label(table, width=21, font=("Arial", 11), text="Threshold").grid(row = 5, column = 4)
 
             # 'Name' column
-            groceries_listView_name = Listbox(table)
-            groceries_listView_name.grid(row = 2, column = 1)
+            groceries_listView_name = Listbox(table, font=("Fira Code", 11), width=24)
+            groceries_listView_name.grid(row = 6, column = 1)
+            groceries_listView_name.grid_propagate(False)
 
             # 'Category' column
-            groceries_listView_category = Listbox(table)
-            groceries_listView_category.grid(row = 2, column = 2)
+            groceries_listView_category = Listbox(table, font=("Arial", 11), width=24)
+            groceries_listView_category.grid(row = 6, column = 2)
 
             # 'Quantity' column
-            groceries_listView_quantity = Listbox(table)
-            groceries_listView_quantity.grid(row = 2, column = 3)
+            groceries_listView_quantity = Listbox(table, font=("Arial", 11), width=24)
+            groceries_listView_quantity.grid(row = 6, column = 3)
 
             # 'Threshold' column
-            groceries_listView_threshold = Listbox(table)
-            groceries_listView_threshold.grid(row = 2, column = 4)
+            groceries_listView_threshold = Listbox(table, font=("Arial", 11), width=24)
+            groceries_listView_threshold.grid(row = 6, column = 4)
         
             def getSelectedGrocery_name(event):
                 print(event)
@@ -801,7 +814,10 @@ class groceryListManager:
                     # category_opt.set("No categories available")
                     pass
 
-            OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView).grid(row = 1, column = 1)  # Creates a drop-down menu that lists out all the groceries
+            option = OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView)
+            option.config(font=("Arial", 12))
+            option["menu"].config(font=("Arial", 12))
+            option.pack(anchor='center')  # Creates a drop-down menu that lists out all the groceries
 
             def editGrocery():
                 if self.selectIndex is None:
@@ -859,10 +875,12 @@ class groceryListManager:
 
             Init()  # Loads the data onto the dynamic form controls for the first time
 
-            search.pack()
-            table.pack()
+            search.pack(pady=(20, 10))
+            search.pack_propagate(False)
+            table.pack(pady=(30, 30))
         
-        actions.pack()
+        actions.pack(pady=(0, 10))
+        actions.pack_propagate(False)
 
         self.UI_addBackButton(root)
         
