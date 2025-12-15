@@ -109,7 +109,7 @@ class MealPlanner:
             row_idx += 1
 
         # --- Daily Planner (System Show vs User Input) ---
-        frame_planning = tk.LabelFrame(self.content_frame, text="Part 3: Daily Intake Tracker", font=("Arial", 12, "bold"), fg="green", padx=10, pady=10)
+        frame_planning = tk.LabelFrame(self.content_frame, text="Daily Intake Tracker", font=("Arial", 12, "bold"), fg="green", padx=10, pady=10)
         frame_planning.pack(fill="both", expand=True, pady=10)
         
         tk.Label(frame_planning, text="Category", font=("Arial", 10, "bold")).grid(row=0, column=0, padx=10, pady=5)
@@ -141,7 +141,7 @@ class MealPlanner:
                   command=lambda: self.generate_report(data["targets"])).grid(row=row_idx, column=0, columnspan=5, pady=20)
         
         tk.Button(self.content_frame, 
-                  text="← Back to Goal Selection (Part 1)", 
+                  text="← Back to Goal Selection", 
                   command=lambda: self.content_frame.destroy() or self.open_planner_page()).pack(pady=10)
         
     def show_report_page(self, report_details, final_msg, all_good):
