@@ -3,105 +3,373 @@ import json
 import tkinter as tk
 import customtkinter as ctk
 from tkinter import ttk
+from PIL import Image, ImageTk, ImageFilter
 
 
 class ChoreScheduler:
     def __init__(self, root, back_callback):
         self.root = root
-        self.chore_list = {}
+        self.chore_list = []
+        self.locations_list = []
+        self.members_list = []
         self.back_callback = back_callback ## function to call to go back to main menu 
+        self.status = 5
 
     def menu(self):
         for widget in self.root.winfo_children():
-            widget.destroy()
-
-        #ctk.CTkTabview(self.root).pack(fill="both", expand=True)
-
-        tk.Button(self.root, text = "Tasks", width = 25, height = 2, command = self.archive).pack(pady = 20)
-        tk.Button(self.root, text = "Locations", width = 25, height = 2).pack(pady = 20)
-        tk.Button(self.root, text = "Members", width = 25, height = 2).pack(pady = 20)
-        tk.Button(self.root, text = "Back", command = self.back_callback).pack(pady = 20)
-
-    ##----------------Chore Archive-------------------
-    def archive(self):
-        for widget in self.root.winfo_children():
             widget.destroy()  
 
-        if len(self.chore_list) == 0:
-            tk.Label(self.root, text = "No chores saved yet").pack(pady = 20)
-            tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(pady = 20)
-            tk.Button(self.root, text = "Back", command = self.menu).pack(pady = 20)
-        else:
-            self.store_archive()
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.root, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()   # send it behind everything
 
-    def store_archive(self):
-        table_frame = ctk.CTkFrame(self.root)
+        #---------------------FRAMES---------------------
+        self.OverBG = ctk.CTkFrame(self.root, width=700, height=765, fg_color="#c3b091")
+        self.OverBG.pack(side='top', anchor='center', pady=10)
+        self.OverBG.pack_propagate(False)
+        self.tabframe = ctk.CTkFrame(self.OverBG, fg_color='red')
+        self.tabframe.pack(side='top', anchor='center', padx=5, pady=10)
+        #------------------------TABVIEW-----------------------------
+        '''self.menu_tabview = ctk.CTkTabview(frame,
+                                           #width=700,
+                                           #height=850,
+                                           corner_radius=0,
+                                           text_color="black",
+                                           segmented_button_selected_color="#f7e7ce",
+                                           segmented_button_selected_hover_color="white",
+                                           fg_color="#c3b091")
+        self.menu_tabview.pack(padx=20, pady=20)
+        self.menu_tabview.pack_propagate(False)
+        self.menu_tabview.add("Today's Tasks")
+        self.menu_tabview.add("Locations")
+        self.menu_tabview.add("Members")'''
+
+        self.b_button = ctk.CTkButton(self.OverBG, text='Back', command=self.back_callback)
+        self.b_button.pack(side='bottom', pady=20, anchor='center')
+
+        self.tt_button = ctk.CTkButton(self.tabframe, text="Today's Tasks", command=self.first_tab)
+        self.tt_button.pack(side='left', padx=5, pady=10)
+
+        self.l_button = ctk.CTkButton(self.tabframe, text="Locations", command=self.second_tab)
+        self.l_button.pack(side='left', padx=5, pady=10)
+
+        self.m_button = ctk.CTkButton(self.tabframe, text="Members", command=self.third_tab)
+        self.m_button.pack(side='left', padx=5, pady=10)
+       
+        self.first_tab()
+    #------------------------FIRST TAB-----------------------------
+    def first_tab(self):
+        for widget in self.OverBG.winfo_children():
+                if widget not in (self.tabframe, self.b_button):
+                    widget.destroy()
+
+        self.frametb1 = tk.Frame(self.OverBG, width=550, height=575)
+        self.frametb1.pack()
+        self.frametb1.pack_propagate(False)
+
+        if len(self.chore_list) == 0:
+            no_tasks = ctk.CTkLabel(self.frametb1, text = "No tasks yet")
+            no_tasks.pack(pady=10)
+            
+            add_task = ctk.CTkButton(self.frametb1, text = "Add task", command = self.add_chore_form)
+            add_task.pack(pady=10)
+
+            self.toplevel_window1 = None
+        else:
+            self.task_table()
+
+    #---------------------------SECOND TAB---------------------------
+    def second_tab(self):  
+        for widget in self.OverBG.winfo_children():
+                if widget not in (self.tabframe, self.b_button):
+                    widget.destroy()
+
+        self.frametb2 = tk.Frame(self.OverBG, width=550, height=575)
+        self.frametb2.pack()
+        self.frametb2.pack_propagate(False)
+
+        if len(self.locations_list) == 0:                        
+            ctk.CTkLabel(self.frametb2, text="No locations yet? Add one now!").pack(anchor='center')
+            self.toplevel_window2 = None
+
+        else:
+            self.location_table = ttk.Treeview(self.frametb2,
+                                          columns=("Locations"), 
+                                          show="headings",
+                                          height=10)
+            self.location_table.heading("Locations", text="Locations")
+            
+            for location in self.locations_list:
+                self.location_table.insert("", "end", values=location)
+
+            self.location_table.pack(anchor='center')
+
+        ctk.CTkButton(self.frametb2, text='Delete', command=self.delete_location).pack(side='bottom', pady=10)
+        ctk.CTkButton(self.frametb2, text="Add", command=self.add_locations).pack(side='bottom', pady=10)
+
+    #----------------------------THIRD TAB--------------------------
+    def third_tab(self):
+        for widget in self.OverBG.winfo_children():
+                if widget not in (self.tabframe, self.b_button):
+                    widget.destroy()
+
+        self.frametb3 = tk.Frame(self.OverBG, width=550, height=575)
+        self.frametb3.pack()
+        self.frametb3.pack_propagate(False)
+
+        if len(self.members_list) == 0:                        
+            ctk.CTkLabel(self.frametb3, text="No members yet? Add one now!").pack(anchor='center')
+            self.toplevel_window3 = None
+
+        else:
+            self.member_table = ttk.Treeview(self.frametb3,
+                                          columns=("Members"), 
+                                          show="headings",
+                                          height=10)
+            self.member_table.heading("Members", text="Members")
+            
+            for member in self.members_list:
+                self.member_table.insert("", "end", values=member)
+
+            self.member_table.pack(anchor='center')
+
+        ctk.CTkButton(self.frametb3, text='Delete', command=self.delete_member).pack(side='bottom', pady=10)
+        ctk.CTkButton(self.frametb3, text="Add", command=self.add_members).pack(side='bottom', pady=10)
+    
+
+    #-------------------------TODAY'S TASKS---------------------------------------------
+    def add_chore_form(self):
+        if self.toplevel_window1 == None or not self.toplevel_window1.winfo_exists():
+            self.toplevel_window1 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window1.after(10, lambda: self.toplevel_window1.focus_force())
+            self.toplevel_window1.grab_set()
+            self.toplevel_window1.title("Add a task")
+            self.toplevel_window1.minsize(300, 300)
+
+            frame_addchore1 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore1.pack(pady=5)
+            frame_addchore2 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore2.pack(pady=5)
+            frame_addchore3 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore3.pack(pady=5)
+            frame_addchore4 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore4.pack(pady=5)
+            frame_addchore5 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore5.pack(pady=5)
+
+            ctk.CTkLabel(frame_addchore1, text='Chore: ').pack(side='left', padx=5, pady=5)
+            self.task_entry = ctk.CTkEntry(frame_addchore1)
+            self.task_entry.pack(side='left', pady=5)
+
+            ctk.CTkLabel(frame_addchore2, text='Location: ').pack(side='left', padx=5, pady=5)
+            self.location_menu = ctk.CTkOptionMenu(frame_addchore2, values=self.locations_list) 
+            self.location_menu.pack(fill="x", padx=5, pady=5)   
+
+            ctk.CTkLabel(frame_addchore3, text='Member: ').pack(side='left', padx=5, pady=5)
+            self.member_menu = ctk.CTkOptionMenu(frame_addchore3, values=self.members_list)
+            self.member_menu.pack(fill="x", padx=5, pady=5)  
+
+            ctk.CTkLabel(frame_addchore4, text='Due By: ').pack(side='left', padx=5, pady=5)
+            self.date_entry = ctk.CTkEntry(frame_addchore4)
+            self.date_entry.pack(side='left', pady=5)
+
+            ctk.CTkLabel(frame_addchore5, text='Repeat: ').pack(side='left', padx=5, pady=5)
+            self.repeat_entry = ctk.CTkEntry(frame_addchore5)
+            self.repeat_entry.pack(side='left', pady=5)    
+            
+            button = ctk.CTkButton(self.toplevel_window1, text='Add', command=self.save_chore)
+            button.pack(side='bottom', anchor='center', pady=5)            
+        else:
+            self.toplevel_window1.focus()
+        
+    def task_table(self):
+        for widget in self.OverBG.winfo_children():
+                if widget not in (self.tabframe, self.b_button):
+                    widget.destroy()
+
+        table_frame = ctk.CTkFrame(self.OverBG)
         table_frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.tree_archive = ttk.Treeview(table_frame, columns=("Chore", "Status"), show="headings", height=10)
+        self.tree_archive = ttk.Treeview(table_frame, 
+                                         columns=("Chore", "Location", "Member", "Due By", "Repeat", "Status"), 
+                                         show="headings", 
+                                         height=10)
+        
         self.tree_archive.heading("Chore", text = "Chore")
+        self.tree_archive.heading("Location", text = "Location")
+        self.tree_archive.heading("Member", text="Member")
+        self.tree_archive.heading("Due By", text = "Due By")
+        self.tree_archive.heading("Repeat", text="Repeat")
         self.tree_archive.heading("Status", text = "Status")
 
         for item in self.tree_archive.get_children():
             self.tree_archive.delete(item)
 
-        for index, chore in enumerate(self.chore_list.keys()):
-            self.tree_archive.insert("", "end", iid=str(index), values=(chore, self.chore_list[chore]))
+        for chore in self.chore_list:
+            self.tree_archive.insert("", "end", values=chore)
         
-        self.tree_archive.pack()
+        self.tree_archive.pack(fill="both", expand=True)
 
-        tk.Label(self.root, text = "Archive", font = ("Arial", 24, "bold")).pack(pady = 5)
-        tk.Button(self.root, text = "Back", command = self.menu).pack(side = "bottom")
-        tk.Button(self.root, text = "Delete Chore", command = self.delete_chore).pack(side="bottom")
-        tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "bottom")
+        button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
+        button_frame.pack(fill="x", pady=5)
 
+        ctk.CTkButton(button_frame, text = "Delete Task", command = self.delete_chore).pack(side="bottom")
+        ctk.CTkButton(button_frame, text = "Update Task", command = self.update_chore).pack(side="bottom")
+        ctk.CTkButton(button_frame, text = "Add Task", command = self.add_chore_form).pack(side = "bottom")
+    
     def save_chore(self):
-        new_chore = self.entry.get().strip()
-        if new_chore:
-            self.chore_list[new_chore] = "Pending"
-        self.archive()
+        task_name = self.task_entry.get().strip()
+        location_name = self.location_menu.get()
+        member_name = self.member_menu.get()
+        due_date = self.date_entry.get()
+        repetition = self.repeat_entry.get()
 
+        if not task_name:
+            self.toplevel_window_error1 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window_error1.after(10, lambda: self.toplevel_window_error1.focus_force())
+            self.toplevel_window_error1.grab_set()
+            self.toplevel_window_error1.title("Error")
+
+            ctk.CTkLabel(self.toplevel_window_error1, text="Please enter a task name first").pack()
+
+            return
+        
+        self.chore = [task_name, location_name, member_name, due_date, repetition, "Pending"]
+
+        self.chore_list.append(self.chore)
+        self.toplevel_window1.destroy()
+        self.first_tab()
+
+    def update_chore(self):
+        selected = self.tree_archive.selection()
+        if not selected:
+            return
+
+        for iid in selected:
+            # Get current row values from Treeview
+            values = list(self.tree_archive.item(iid)["values"])
+            chore_name = values[0]
+            current_status = values[5]
+
+            # Toggle status
+            new_status = "Done" if current_status == "Pending" else "Pending"
+            values[5] = new_status
+
+            # Update data list
+            for chore in self.chore_list:
+                if chore[0] == chore_name:
+                    chore[5] = new_status
+                    break
+
+            # Update Treeview row
+            self.tree_archive.item(iid, values=values)
+        
     def delete_chore(self):
         selected = self.tree_archive.selection()
         if selected:
-            for iid in selected:
-                chore_name = self.tree_archive.item(iid)["values"][0]
-                del self.chore_list[chore_name]
-                self.tree_archive.delete(iid)
+            for id in selected: 
+                chore_name = self.tree_archive.item(id)["values"][0] 
 
-    def add_chore_form(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
+                for chore in self.chore_list:
+                    if chore[0] == chore_name:
+                        self.chore_list.remove(chore)
+                        self.tree_archive.delete(id)
+                        break
+                
+    #--------------------LOCATIONS--------------------------        
+    def add_locations(self):
+        if self.toplevel_window2 == None or not self.toplevel_window2.winfo_exists():
+            self.toplevel_window2 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window2.after(10, lambda: self.toplevel_window2.focus_force())
+            self.toplevel_window2.grab_set()
+            self.toplevel_window2.title("Add a location")
+            self.toplevel_window2.minsize(300, 300)
+            self.location_entry = ctk.CTkEntry(self.toplevel_window2)
+            self.location_entry.pack(pady=20)
+            button = ctk.CTkButton(self.toplevel_window2, text='Add', command=self.get_location)
+            button.pack(side='bottom', anchor='center')
+        else:
+            self.toplevel_window2.focus()
 
-        tk.Label(self.root, text = "Enter new chore: ").pack(pady = 10)
+    def get_location(self):
+        location = self.location_entry.get().strip()
+        if not location:
+            self.toplevel_window_error2 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window_error2.after(10, lambda: self.toplevel_window_error2.focus_force())
+            self.toplevel_window_error2.grab_set()
+            self.toplevel_window_error2.title("Error")
+
+            ctk.CTkLabel(self.toplevel_window_error2, text="Please enter a location first").pack()
+
+            return
+        else:
+            self.locations_list.append(location)
+            self.toplevel_window2.destroy()
+            self.second_tab()
+
+    def delete_location(self):
+        selected = self.location_table.selection()
+        if selected:
+            for id in selected:
+                location_name = self.location_table.item(id)["values"][0] 
+
+                for location in self.locations_list:
+                    print(location)
+                    if location == location_name:
+                        self.locations_list.remove(location)
+                        self.location_table.delete(id)
+                        break
+                    print(location, "test")
+
+
+    #-------------------MEMBERS--------------------
+    def add_members(self):
+        if self.toplevel_window3 == None or not self.toplevel_window3.winfo_exists():
+            self.toplevel_window3 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window3.after(10, lambda: self.toplevel_window3.focus_force())
+            self.toplevel_window3.grab_set()
+            self.toplevel_window3.title("Add a location")
+            self.toplevel_window3.minsize(300, 300)
+            self.member_entry = ctk.CTkEntry(self.toplevel_window3)
+            self.member_entry.pack(pady=20)
+            button = ctk.CTkButton(self.toplevel_window3, text='Add', command=self.get_member)
+            button.pack(side='bottom', anchor='center')
+        else:
+            self.toplevel_window3.focus()
+
+    def get_member(self):
+        member = self.member_entry.get().strip()
+        if not member:
+            self.toplevel_window_error3 = ctk.CTkToplevel(self.OverBG)
+            self.toplevel_window_error3.after(10, lambda: self.toplevel_window_error3.focus_force())
+            self.toplevel_window_error3.grab_set()
+            self.toplevel_window_error3.title("Error")
+
+            ctk.CTkLabel(self.toplevel_window_error3, text="Please enter a member first").pack()
+
+            return
+        else:
+            self.members_list.append(member)
+            self.toplevel_window3.destroy()
+            self.third_tab()
+
+
+    def delete_member(self):
+        selected = self.member_table.selection()
+        if selected:
+            for id in selected:
+                member_name = self.member_table.item(id)["values"][0]
+
+                for member in self.members_list:
+                    if member == member_name:
+                        self.members_list.remove(member)
+                        self.member_table.delete(id)
+                        break 
         
-        self.entry = ttk.Entry(self.root, width=25)
-        self.entry.pack(pady=5)
-
-        tk.Button(self.root, text = "Save", command = self.save_chore).pack(pady=5)
-        tk.Button(self.root, text = "Back", command = self.archive).pack(pady = 10)
-    ## ------------------------------------------------
-
-    ## ---------------Tdy List-----------------
-    def chore_table(self):
-        tk.Label(self.root, text = "Today's List of Chores")
-        table_frame = tk.Frame(self.root)
-        table_frame.pack(fill = "both", expand = "True")
-
-        columns = ("Chore", "Status")
-        tree = ttk.Treeview(self.root, columns = columns, show = "headings")
-
-        tree.heading("Chore", text = "Chore")
-        tree.heading("Status", text = "Status")
         
-        tree.pack(side = "top", fill = "both", expand = True)
 
-        for chore in self.chore_list:
-            tree.insert("", tk.END, values = (chore, "Pending"))
-
-        tk.Button(self.root, text = "Add Chore", command = self.add_chore_form).pack(side = "left")
-        tk.Button(self.root, text = "Back", command = self.menu).pack(side = "right")
-        tk.Button(self.root, text = "Update Status").pack(pady = 20)
-    ## ------------------------------------------
-    ## ---------------Members---------------------
-    ## ----------------------------------------------
+    
