@@ -10,17 +10,77 @@ from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
 from MealPlanner import MealPlanner
 
+class SplashScreen:
+    def __init__(self, master, duration_ms, callback):
+        self.master = master
+        self.duration_ms = duration_ms
+        self.callback = callback
+        
+        # 1. Create a new top-level window (Toplevel is often used for splash screens)
+        self.splash = tk.Toplevel(master)
+        
+        # 2. Set window style and content
+        self.splash.overrideredirect(True) # Remove window border and title bar
+        self.splash.config(bg="#f0f0f0") 
+        
+        # Welcome Text
+        tk.Label(self.splash, 
+                 text="Welcome to Household Management Assistant", 
+                 font=("Arial", 18, "bold"), 
+                 fg="#333333",
+                 bg="#f0f0f0").pack(padx=50, pady=50)
+        
+        # Simulated Loading Progress
+        tk.Label(self.splash, 
+                 text="Loading...", 
+                 font=("Arial", 10),
+                 fg="#555555",
+                 bg="#f0f0f0").pack(pady=(0, 20))
+        
+        # 3. Center the window on the screen
+        self.center_window()
+        
+        # 4. Set delay, call the close function after the duration
+        self.splash.after(self.duration_ms, self.close_splash)
+
+    def center_window(self):
+        self.splash.update_idletasks()
+        
+        width = self.splash.winfo_width()
+        height = self.splash.winfo_height()
+        
+        screen_width = self.splash.winfo_screenwidth()
+        screen_height = self.splash.winfo_screenheight()
+        
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+        
+        self.splash.geometry(f'{width}x{height}+{x}+{y}')
+
+    def close_splash(self):
+        self.splash.destroy()
+        self.callback()
+
 class main_menu():
     def __init__(self, root):
         self.root = root
-        self.main_menu()   ## call to return to main menu
+        #self.main_menu()   ## call to return to main menu
 
-        self.chore_module = ChoreScheduler(self.root, back_callback = self.main_menu)
-        self.grocery_module = groceryListManager(self.root, back_callback = self.main_menu)
-        self.budget_module = BudgetTracker(self.root, back_callback = self.main_menu)
-        self.meal_module = MealPlanner(self.root, back_callback = self.main_menu)
+        self.root.withdraw()
+
+        splash_duration = 2000 
+        self.splash_screen = SplashScreen(self.root, splash_duration, self.initialize_main_menu)
+
+        self.chore_module = ChoreScheduler(self.root, back_callback = self.initialize_main_menu)
+        self.grocery_module = groceryListManager(self.root, back_callback = self.initialize_main_menu)
+        self.budget_module = BudgetTracker(self.root, back_callback = self.initialize_main_menu)
+        self.meal_module = MealPlanner(self.root, back_callback = self.initialize_main_menu)
 
         ctk.set_appearance_mode("Light")
+
+    def initialize_main_menu(self):
+        self.root.deiconify()     # 🔑 SHOW THE WINDOW
+        self.main_menu()
 
     def main_menu(self):
         for widget in self.root.winfo_children():

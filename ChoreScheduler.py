@@ -32,11 +32,11 @@ class ChoreScheduler:
         label_frame.pack(pady=20)
         label_frame.pack_propagate(False)
 
-        self.OverBG = ctk.CTkFrame(self.root, width=700, height=765, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
-        self.OverBG.pack(anchor='center', pady=10)
+        self.OverBG = ctk.CTkFrame(self.root, width=1000, height=500, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
+        self.OverBG.pack(anchor='center', pady=100)
         self.OverBG.pack_propagate(False)
 
-        self.tabframe = ctk.CTkFrame(self.OverBG, fg_color='red')
+        self.tabframe = ctk.CTkFrame(self.OverBG, fg_color='#b09e83')
         self.tabframe.pack(side='top', anchor='center', padx=5, pady=10)
         #------------------------------------------------
         
@@ -64,16 +64,25 @@ class ChoreScheduler:
         self.menu_tabview.add("Locations")
         self.menu_tabview.add("Members")'''
 
-        self.b_button = ctk.CTkButton(self.OverBG, text='Back', command=self.back_callback)
+        self.b_button = ctk.CTkButton(self.OverBG, 
+                                      text='Back', text_color='black',
+                                      command=self.back_callback, 
+                                      fg_color="#f7e7ce", hover_color="#e6d5b8")
         self.b_button.pack(side='bottom', pady=20, anchor='center')
 
-        self.tt_button = ctk.CTkButton(self.tabframe, text="Today's Tasks", command=self.first_tab)
+        self.tt_button = ctk.CTkButton(self.tabframe, text="Today's Tasks", text_color='black', 
+                                       command=self.first_tab, 
+                                       fg_color="#f7e7ce", hover_color="#e6d5b8")
         self.tt_button.pack(side='left', padx=5, pady=10)
 
-        self.l_button = ctk.CTkButton(self.tabframe, text="Locations", command=self.second_tab)
+        self.l_button = ctk.CTkButton(self.tabframe, text="Locations", text_color='black',
+                                      command=self.second_tab, 
+                                      fg_color="#f7e7ce", hover_color="#e6d5b8")
         self.l_button.pack(side='left', padx=5, pady=10)
 
-        self.m_button = ctk.CTkButton(self.tabframe, text="Members", command=self.third_tab)
+        self.m_button = ctk.CTkButton(self.tabframe, text="Members",  text_color='black',
+                                      command=self.third_tab, 
+                                      fg_color="#f7e7ce", hover_color="#e6d5b8")
         self.m_button.pack(side='left', padx=5, pady=10)
        
         self.first_tab()
@@ -83,15 +92,18 @@ class ChoreScheduler:
                 if widget not in (self.tabframe, self.b_button):
                     widget.destroy()
 
-        self.frametb1 = tk.Frame(self.OverBG, width=550, height=575)
+        self.frametb1 = tk.Frame(self.OverBG, width=550, height=575, bg='#c3b091')
         self.frametb1.pack()
         self.frametb1.pack_propagate(False)
 
         if len(self.chore_list) == 0:
-            no_tasks = ctk.CTkLabel(self.frametb1, text = "No tasks yet")
-            no_tasks.pack(pady=10)
+            nty_frame = ctk.CTkFrame(self.frametb1, fg_color="#c3b091")
+            nty_frame.pack(anchor='center', pady=(50, 0))
+
+            no_tasks = ctk.CTkLabel(nty_frame, text = "No tasks yet")
+            no_tasks.pack(anchor='center')
             
-            add_task = ctk.CTkButton(self.frametb1, text = "Add task", command = self.add_chore_form)
+            add_task = ctk.CTkButton(nty_frame, text = "Add task", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command = self.add_chore_form)
             add_task.pack(pady=10)
 
             self.toplevel_window1 = None
@@ -102,30 +114,48 @@ class ChoreScheduler:
     def second_tab(self):  
         for widget in self.OverBG.winfo_children():
                 if widget not in (self.tabframe, self.b_button):
-                    widget.destroy()
+                    widget.destroy()        
 
-        self.frametb2 = tk.Frame(self.OverBG, width=550, height=575)
-        self.frametb2.pack()
-        self.frametb2.pack_propagate(False)
+        if len(self.locations_list) == 0:    
+            nly_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
+            nly_frame.pack(anchor='center', pady=(50, 0))    
 
-        if len(self.locations_list) == 0:                        
-            ctk.CTkLabel(self.frametb2, text="No locations yet? Add one now!").pack(anchor='center')
+            ctk.CTkLabel(nly_frame, text="No locations yet? Add one now!").pack(anchor='center')
+
+            ctk.CTkButton(nly_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_locations).pack(pady=10)
+
             self.toplevel_window2 = None
 
         else:
+            for widget in self.OverBG.winfo_children():
+                if widget not in (self.tabframe, self.b_button):
+                    widget.destroy()
+
+            self.frametb2 = tk.Frame(self.OverBG, width=550, height=300)
+            self.frametb2.pack(pady=(40, 0))
+            self.frametb2.pack_propagate(False)
+
             self.location_table = ttk.Treeview(self.frametb2,
                                           columns=("Locations"), 
                                           show="headings",
                                           height=10)
             self.location_table.heading("Locations", text="Locations")
+
+            scrollbar = ttk.Scrollbar(self.frametb2, orient='vertical', command=self.location_table.yview)
             
+            self.location_table.pack(side='left', fill='both', expand=True)
+            scrollbar.pack(side='right', fill='y')
+            self.location_table.configure(yscrollcommand=scrollbar.set)
+
             for location in self.locations_list:
                 self.location_table.insert("", "end", values=location)
 
-            self.location_table.pack(anchor='center')
+            button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
+            button_frame.pack(side="bottom", pady=10)
 
-        ctk.CTkButton(self.frametb2, text='Delete', command=self.delete_location).pack(side='bottom', pady=10)
-        ctk.CTkButton(self.frametb2, text="Add", command=self.add_locations).pack(side='bottom', pady=10)
+            ctk.CTkButton(button_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_locations).pack(padx=10)
+            ctk.CTkButton(button_frame, text="Delete", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.delete_location).pack(padx=10)
+
 
     #----------------------------THIRD TAB--------------------------
     def third_tab(self):
@@ -133,29 +163,44 @@ class ChoreScheduler:
                 if widget not in (self.tabframe, self.b_button):
                     widget.destroy()
 
-        self.frametb3 = tk.Frame(self.OverBG, width=550, height=575)
-        self.frametb3.pack()
-        self.frametb3.pack_propagate(False)
+        if len(self.members_list) == 0:         
+            nmy_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
+            nmy_frame.pack(anchor='center', pady=(50, 0))      
 
-        if len(self.members_list) == 0:                        
-            ctk.CTkLabel(self.frametb3, text="No members yet? Add one now!").pack(anchor='center')
+            ctk.CTkLabel(nmy_frame, text="No members yet? Add one now!").pack(anchor='center')
             self.toplevel_window3 = None
 
+            ctk.CTkButton(nmy_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_members).pack(pady=10)
+
         else:
+            for widget in self.OverBG.winfo_children():
+                if widget not in (self.tabframe, self.b_button):
+                    widget.destroy()
+                
+            self.frametb3 = tk.Frame(self.OverBG, width=550, height=300)
+            self.frametb3.pack(pady=(40, 0))
+            self.frametb3.pack_propagate(False)
+
             self.member_table = ttk.Treeview(self.frametb3,
                                           columns=("Members"), 
                                           show="headings",
                                           height=10)
             self.member_table.heading("Members", text="Members")
+
+            scrollbar = ttk.Scrollbar(self.frametb3, orient='vertical', command=self.member_table.yview)
+
+            self.member_table.pack(side='left', fill='both', expand=True)
+            scrollbar.pack(side='right', fill='y')
+            self.member_table.configure(yscrollcommand=scrollbar.set)
             
             for member in self.members_list:
                 self.member_table.insert("", "end", values=member)
 
-            self.member_table.pack(anchor='center')
+            button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
+            button_frame.pack(side='bottom', pady=10)
 
-        ctk.CTkButton(self.frametb3, text='Delete', command=self.delete_member).pack(side='bottom', pady=10)
-        ctk.CTkButton(self.frametb3, text="Add", command=self.add_members).pack(side='bottom', pady=10)
-    
+            ctk.CTkButton(button_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_members).pack(padx=10)
+            ctk.CTkButton(button_frame, text='Delete', text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.delete_member).pack(padx=10)    
 
     #-------------------------TODAY'S TASKS---------------------------------------------
     def add_chore_form(self):
@@ -222,20 +267,32 @@ class ChoreScheduler:
         self.tree_archive.heading("Repeat", text="Repeat")
         self.tree_archive.heading("Status", text = "Status")
 
+        scrollbar = ttk.Scrollbar(table_frame, orient='vertical', command=self.tree_archive.yview)
+
+        self.tree_archive.pack(side='left', fill="both", expand=True)
+        scrollbar.pack(side='right', fill='y')
+        self.tree_archive.configure(yscrollcommand=scrollbar.set)
+        
         for item in self.tree_archive.get_children():
             self.tree_archive.delete(item)
 
         for chore in self.chore_list:
             self.tree_archive.insert("", "end", values=chore)
-        
-        self.tree_archive.pack(fill="both", expand=True)
 
         button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
-        button_frame.pack(fill="x", pady=5)
+        button_frame.pack(fill="x", padx=10, pady=5)
 
-        ctk.CTkButton(button_frame, text = "Delete Task", command = self.delete_chore).pack(side="bottom")
-        ctk.CTkButton(button_frame, text = "Update Task", command = self.update_chore).pack(side="bottom")
-        ctk.CTkButton(button_frame, text = "Add Task", command = self.add_chore_form).pack(side = "bottom")
+        ctk.CTkButton(button_frame, text = "Delete Task", text_color='black',
+                      command = self.delete_chore, 
+                      fg_color="#f7e7ce", hover_color="#e6d5b8").pack(side="bottom")
+        
+        ctk.CTkButton(button_frame, text = "Update Task", text_color='black',
+                      command = self.update_chore, 
+                      fg_color="#f7e7ce", hover_color="#e6d5b8").pack(side="bottom")
+        
+        ctk.CTkButton(button_frame, text = "Add Task", text_color='black',
+                      command = self.add_chore_form, 
+                      fg_color="#f7e7ce", hover_color="#e6d5b8").pack(side = "bottom")
     
     def save_chore(self):
         task_name = self.task_entry.get().strip()
