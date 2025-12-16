@@ -27,12 +27,28 @@ class ChoreScheduler:
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         bg_label.lower()   # send it behind everything
 
-        #---------------------FRAMES---------------------
-        self.OverBG = ctk.CTkFrame(self.root, width=700, height=765, fg_color="#c3b091")
-        self.OverBG.pack(side='top', anchor='center', pady=10)
+        #---------------------(SOME)FRAMES---------------------
+        label_frame = ctk.CTkFrame(self.root, width=497, height=47, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
+        label_frame.pack(pady=20)
+        label_frame.pack_propagate(False)
+
+        self.OverBG = ctk.CTkFrame(self.root, width=700, height=765, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
+        self.OverBG.pack(anchor='center', pady=10)
         self.OverBG.pack_propagate(False)
+
         self.tabframe = ctk.CTkFrame(self.OverBG, fg_color='red')
         self.tabframe.pack(side='top', anchor='center', padx=5, pady=10)
+        #------------------------------------------------
+        
+        #--------------------TITLE-----------------------
+        label = ctk.CTkLabel(label_frame, 
+                     text="Chore Scheduler", 
+                     font=("Nunito SemiBold", 40)
+                    )
+        label.pack(pady=5)
+        label.pack_propagate(False)
+        #------------------------------------------------ 
+
         #------------------------TABVIEW-----------------------------
         '''self.menu_tabview = ctk.CTkTabview(frame,
                                            #width=700,
