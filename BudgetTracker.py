@@ -36,9 +36,9 @@ class BudgetTracker:
         ctk.CTkLabel(label_frame, 
                      text="Budget Tracker", text_color="black", font=("Microsoft HaYei",35), 
                      fg_color="#c3b091"
-                     ).pack(pady=10, padx=5)
+                     ).pack(pady=5, padx=5)
         label_frame.pack(padx=5, pady=10, anchor='center')
-        self.budget_page = ctk.CTkFrame(self.window, width=700, height=900, border_width=2, border_color="black", corner_radius=0, fg_color='#c3b091')
+        self.budget_page = ctk.CTkFrame(self.window, width=700, height=700, border_width=2, border_color="black", corner_radius=0, fg_color='#c3b091')
         self.budget_page.pack()
         self.budget_page.pack_propagate(False)
 
@@ -48,16 +48,16 @@ class BudgetTracker:
         self.budget_switch_btn.pack(padx=5, pady=5)
 
         # --- 2. Input View Frame ---
-        self.input_view = tk.Frame(self.budget_page, bg='red') 
+        self.input_view = tk.Frame(self.budget_page, bg='#b09e83') 
 
         # Category Selection
-        self.frame_category = tk.Frame(self.input_view, width=500, height=170, bg='#c3b091')
+        self.frame_category = tk.Frame(self.input_view, width=500, height=170, bg='#b09e83')
         self.frame_category.pack(padx=10, pady=(20, 0))
         self.frame_category.pack_propagate(False)
 
         tk.Label(self.frame_category, text="Select Category:").pack(side=tk.TOP, pady=(0, 5))
 
-        self.frame_buttons = tk.Frame(self.frame_category, bg='#c3b091')
+        self.frame_buttons = tk.Frame(self.frame_category, bg='#b09e83')
         self.frame_buttons.pack(padx=10)
 
         for i, cat in enumerate(self.CATEGORIES):
@@ -89,7 +89,7 @@ class BudgetTracker:
         self.btn_clear.grid(row=2, column=0, columnspan=2, pady=5)
 
         # --- NEW: Layout Frame for Side-by-Side Content (Budget Left, Transactions Right) ---
-        self.frame_side_by_side = tk.Frame(self.input_view, bg='#c3b091')
+        self.frame_side_by_side = tk.Frame(self.input_view, bg='#b09e83')
         self.frame_side_by_side.pack(padx=10, pady=10, fill=tk.X, expand=True) 
         self.frame_side_by_side.grid_columnconfigure(0, weight=1)
         self.frame_side_by_side.grid_columnconfigure(1, weight=1)
@@ -159,7 +159,7 @@ class BudgetTracker:
 
         rp_frame.pack(fill='both', expand=True)
 
-        tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_callback).pack(side="bottom", pady=(0, 30))
+        tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_callback).pack(side="bottom", pady=10)
 
         # --- Data Loading and Initialization (Moved to the end) ---
         self.load_budgets()
