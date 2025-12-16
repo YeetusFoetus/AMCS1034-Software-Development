@@ -8,6 +8,7 @@ from PIL import Image, ImageTk, ImageFilter
 from ChoreScheduler import ChoreScheduler
 from GroceryListManager import groceryListManager
 from BudgetTracker import BudgetTracker
+from MealPlanner import MealPlanner
 
 class main_menu():
     def __init__(self, root):
@@ -17,6 +18,7 @@ class main_menu():
         self.chore_module = ChoreScheduler(self.root, back_callback = self.main_menu)
         self.grocery_module = groceryListManager(self.root, back_callback = self.main_menu)
         self.budget_module = BudgetTracker(self.root, back_callback = self.main_menu)
+        self.meal_module = MealPlanner(self.root, back_callback = self.main_menu)
 
         ctk.set_appearance_mode("Light")
 
@@ -180,7 +182,7 @@ class main_menu():
         self.budget_module.menu()
 
     def open_meal(self):
-        print("Meal Planner clicked")
+        self.meal_module.menu()
 
     def exit_program(self):
         self.root.destroy()

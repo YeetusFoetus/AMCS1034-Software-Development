@@ -257,7 +257,7 @@ class groceryListManager:
             if isSuccess == True:
                 tkinter.messagebox.showinfo("Grocery added" if self.isEditing(index, oldCategory) == False else "Grocery edited", "Your grocery which is '{}' has been {} successfully.".format(name, "added" if self.isEditing(index, oldCategory) == False else "edited"))
             else:
-                tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're adding '{name}' to the list. Please try again.")
+                tkinter.messagebox.showerror("Grocery failed to be added" if self.isEditing(index, oldCategory) == False else "Grocery failed to be edited", "Sorry, but there is an error occurred while we're adding {} '{}' to the list. Please try again.".format("adding" if self.isEditing(index, oldCategory) == False else "editing", name))
             
             return isSuccess
     
@@ -429,7 +429,7 @@ class groceryListManager:
             if isSuccess == True:
                 tkinter.messagebox.showinfo("Deletion successful", f"The grocery which is '{name}' has been deleted successfully.")
             else:
-                tkinter.messagebox.showerror("Grocery failed to be added", f"Sorry, but there is an error occurred while we're deleting '{name}' from the list. Please try again.")
+                tkinter.messagebox.showerror("Grocery failed to be deleted", f"Sorry, but there is an error occurred while we're deleting '{name}' from the list. Please try again.")
 
         else:
             print("INFO: The deleting operation has been cancelled by the user.")

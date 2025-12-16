@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
+import customtkinter as ctk
+from PIL import Image, ImageTk, ImageFilter
 
 class MealPlanner:
     def __init__(self, window, back_callback):
@@ -38,23 +40,32 @@ class MealPlanner:
         
         self.user_entries = {}
 
-    def open_planner_page(self):
+    def menu(self):
         
         for widget in self.window.winfo_children():
             widget.destroy()
+
+        bg_image = Image.open("house_interior.png")
+        bg_image = bg_image.filter(ImageFilter.GaussianBlur(8))
+        bg_photo = ImageTk.PhotoImage(bg_image)
+        bg_label = ctk.CTkLabel(self.window, image=bg_photo, text="")
+        bg_label.image = bg_photo
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        bg_label.lower()
             
-        self.main_frame = tk.Frame(self.window)
-        self.main_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        self.main_frame = tk.Frame(self.window, width=800, height=800, bg='#c3b091')
+        self.main_frame.pack(padx=20, pady=20)
+        self.main_frame.pack_propagate(False)
         
         tk.Label(self.main_frame, text="Meal Planner & Tracker", font=("Arial", 20, "bold")).pack(pady=20)
         
         # --- Part 1: Goal Selection ---
-        self.frame_part1 = tk.Frame(self.main_frame)
+        self.frame_part1 = tk.Frame(self.main_frame, bg='#b09e83')
         self.frame_part1.pack(pady=20)
         
         tk.Label(self.frame_part1, text="Choose Your Goal", font=("Arial", 14)).pack(pady=10)
         
-        btn_frame = tk.Frame(self.frame_part1)
+        btn_frame = tk.Frame(self.frame_part1, bg='#b09e83')
         btn_frame.pack()
         
         # Weight Loss
@@ -72,13 +83,21 @@ class MealPlanner:
         self.show_shopping_and_planning()
 
     def show_shopping_and_planning(self):
-        self.content_frame = tk.Frame(self.main_frame)
-        self.content_frame.pack(fill=tk.BOTH, expand=True)
+        self.content_frame = tk.Frame(self.main_frame, width=700, height=1000, bg='#b09e83')
+        self.content_frame.pack()
+        self.content_frame.pack_propagate(False)
         
         data = self.GOAL_DATA[self.current_goal]
+
+        if self.current_goal == "Weight Loss":
+            color = "red"#FFB6C1
+        elif self.current_goal == "Muscle Gain":
+            color = "blue"#ADD8E6
+        else:
+            color = "black"
         
         # --- Part 2: Shopping Guide ---
-        frame_shopping = tk.LabelFrame(self.content_frame, text=f"Shopping Guide for {self.current_goal} (Weekly Target)", font=("Arial", 12, "bold"), fg="blue", padx=10, pady=10)
+        frame_shopping = tk.LabelFrame(self.content_frame, text=f"Shopping Guide for {self.current_goal} (Weekly Target)", font=("Arial", 12, "bold"), fg=color, padx=10, pady=10)
         frame_shopping.pack(fill="x", pady=10)
         
         tk.Label(frame_shopping, text=data["desc"], font=("Arial", 10, "italic")).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 5))
@@ -142,15 +161,16 @@ class MealPlanner:
         
         tk.Button(self.content_frame, 
                   text="← Back to Goal Selection", 
-                  command=lambda: self.content_frame.destroy() or self.open_planner_page()).pack(pady=10)
+                  command=lambda: self.content_frame.destroy() or self.menu()).pack(pady=10)
         
     def show_report_page(self, report_details, final_msg, all_good):
         """ Display Report Page (Transition to new content)"""
         if hasattr(self, 'content_frame') and self.content_frame.winfo_exists():
             self.content_frame.destroy() 
             
-        self.report_frame = tk.Frame(self.main_frame)
-        self.report_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+        self.report_frame = tk.Frame(self.main_frame, width=700, height=1000, bg='#b09e83')
+        self.report_frame.pack()
+        self.report_frame.pack_propagate(False)
         
         tk.Label(self.report_frame, text=f"--- Daily Performance Report for {self.current_goal} ---", 
                  font=("Arial", 16, "bold")).pack(pady=15)
@@ -232,6 +252,6 @@ if __name__ == "__main__":
         tk.Label(root, text="Back to Main Menu placeholder").pack(pady=50)
         
     app = MealPlanner(root, back)
-    app.open_planner_page()
+    app.menu()
     
     root.mainloop()

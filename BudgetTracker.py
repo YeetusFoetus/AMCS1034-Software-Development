@@ -205,7 +205,7 @@ class BudgetTracker:
         bg_label = ctk.CTkLabel(self.window, image=bg_photo, text="")
         bg_label.image = bg_photo
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
-        bg_label.lower()   # send it behind everything
+        bg_label.lower()   
 
         self.open_budget_page()
         
@@ -416,7 +416,7 @@ class BudgetTracker:
         
         report_text = [
             "  --- SPENDING SUMMARY & BUDGET ---",           
-            f"{'Category':<12}\t{'Budget':>8}\t{'Spent':>8}\t{'Remain':>8}\t{'% of Total':>10}"
+            f"{'Category':<12}\t {'Budget':>8}\t {'Spent':>8}\t {'Remain':>8}\t {'% of Total':>10}"
         ]
         
         all_categories = sorted(list(set(self.CATEGORIES))) 
@@ -432,10 +432,10 @@ class BudgetTracker:
             spent_str = f"{spent:8.2f}"
             
             if remaining < 0:
-                remain_str = f"({abs(remaining):5.2f})" 
+                remain_str = f"{remaining:8.2f}" 
             else:
                 remain_str = f"{remaining:8.2f}"
-            
+
             report_text.append(
                 f"{category:<12}\tRM {budget_str}\tRM {spent_str}\tRM {remain_str}\t({percentage:4.1f}%)"
             )
