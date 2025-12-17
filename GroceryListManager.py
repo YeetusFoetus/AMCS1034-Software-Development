@@ -180,7 +180,7 @@ class groceryListManager:
             notch = Frame(self.UI, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
             
             # Adds a back button
-            Button(notch, font=("Arial", 11), text="Return to the main menu", command=self.back_callback).grid(row = 1, column = 1)
+            Button(notch, font=("TkDefaultButton", 11), text="Back to main menu", command=self.back_callback).grid(row = 1, column = 1)
 
             notch.pack(pady=20)
 
@@ -367,7 +367,7 @@ class groceryListManager:
         Note:
         - Tkinter elements can be placed inside a frame by replacing 'root' with the frame's name.
         """
-        Label(header, font=("Arial", 11), text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
+        Label(header, font=("TkDefaultButton", 11), text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
 
         Label(form, text="Name: ").grid(row = 1, column = 1)
         Entry(form, textvariable=groceryName).grid(row = 1, column = 2)
@@ -533,33 +533,33 @@ class groceryListManager:
         table = Frame(root, width=200, height=200, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
         footer = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
 
-        Label(header, font=("Arial", 12), text="My Refill List").grid(row = 1, column = 1)
+        Label(header, font=("TkDefaultButton", 12), text="My Refill List").grid(row = 1, column = 1)
 
         # Designs the table of grocer(ies) that need to be refilled
-        Label(table, width=21, font=("Arial", 11), text="Name").grid(row = 1, column = 1)
-        Label(table, width=21, font=("Arial", 11), text="Category").grid(row = 1, column = 2)
-        Label(table, width=21, font=("Arial", 11), text="Quantity").grid(row = 1, column = 3)
-        Label(table, width=21, font=("Arial", 11), text="Threshold").grid(row = 1, column = 4)
-        Label(table, width=21, font=("Arial", 11), text="You need to refill…").grid(row = 1, column = 5)
+        Label(table, width=21, font=("TkDefaultButton", 11), text="Name").grid(row = 1, column = 1)
+        Label(table, width=21, font=("TkDefaultButton", 11), text="Category").grid(row = 1, column = 2)
+        Label(table, width=21, font=("TkDefaultButton", 11), text="Quantity").grid(row = 1, column = 3)
+        Label(table, width=21, font=("TkDefaultButton", 11), text="Threshold").grid(row = 1, column = 4)
+        Label(table, width=21, font=("TkDefaultButton", 11), text="You need to refill…").grid(row = 1, column = 5)
 
         # 'Name' column
-        groceries_listView_name = Listbox(table, font=("Arial", 11), width=24)
+        groceries_listView_name = Listbox(table, font=("TkDefaultButton", 11), width=24)
         groceries_listView_name.grid(row = 2, column = 1)
 
         # 'Category' column
-        groceries_listView_category = Listbox(table, font=("Arial", 11), width=24)
+        groceries_listView_category = Listbox(table, font=("TkDefaultButton", 11), width=24)
         groceries_listView_category.grid(row = 2, column = 2)
 
         # 'Quantity' column
-        groceries_listView_quantity = Listbox(table, font=("Arial", 11), width=24)
+        groceries_listView_quantity = Listbox(table, font=("TkDefaultButton", 11), width=24)
         groceries_listView_quantity.grid(row = 2, column = 3)
 
         # 'Threshold' column
-        groceries_listView_threshold = Listbox(table, font=("Arial", 11), width=24)
+        groceries_listView_threshold = Listbox(table, font=("TkDefaultButton", 11), width=24)
         groceries_listView_threshold.grid(row = 2, column = 4)
 
         # 'You need to refill' column
-        groceries_listView_refillAmt = Listbox(table, font=("Arial", 11), width=24)
+        groceries_listView_refillAmt = Listbox(table, font=("TkDefaultButton", 11), width=24)
         groceries_listView_refillAmt.grid(row = 2, column = 5)
         
         # Defining necessary functions
@@ -674,9 +674,9 @@ class groceryListManager:
         # Label(root, text="Let's manage your grocery list.")
         
         # Defines the user actions
-        userActions_wwyltd = LabelFrame(actions, font=("Arial", 11), text="What would you like to do?", padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='#f7e7ce')
+        userActions_wwyltd = LabelFrame(actions, font=("TkDefaultButton", 11), text="What would you like to do?", padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='#f7e7ce')
         userActions_wwyltd.pack(anchor='center', fill='both', expand=True)
-        button_addGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Add a grocery", bg='light green')
+        button_addGrocery = Button(userActions_wwyltd, font=("TkDefaultButton", 11), text="Add a grocery", bg='light green')
         button_addGrocery.grid(row = 1, column = 1)
 
         def addEditGrocery():
@@ -693,31 +693,31 @@ class groceryListManager:
             empty.pack()
         else:
             # Adds the button that deletes and edits the groceries within the list
-            button_editGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Edit this grocery", bg='light blue')
+            button_editGrocery = Button(userActions_wwyltd, font=("TkDefaultButton", 11), text="Edit this grocery", bg='light blue')
             button_editGrocery.grid(row = 1, column = 2)
 
-            button_delGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Delete this grocery", bg='pink')
+            button_delGrocery = Button(userActions_wwyltd, font=("TkDefaultButton", 11), text="Delete this grocery", bg='pink')
             button_delGrocery.grid(row = 1, column = 3)
 
-            button_consumeGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Consume this grocery")
+            button_consumeGrocery = Button(userActions_wwyltd, font=("TkDefaultButton", 11), text="Consume this grocery")
             button_consumeGrocery.grid(pady=10, padx=3, row = 2, column = 1)
 
-            button_refillGrocery = Button(userActions_wwyltd, font=("Arial", 11), text="Refill this grocery")
+            button_refillGrocery = Button(userActions_wwyltd, font=("TkDefaultButton", 11), text="Refill this grocery")
             button_refillGrocery.grid(padx=3, row = 2, column = 2)
 
-            button_refillList = Button(userActions_wwyltd, font=("Arial", 11), text="Generate a refill list for me")
+            button_refillList = Button(userActions_wwyltd, font=("TkDefaultButton", 11), text="Generate a refill list for me")
             button_refillList.grid(row = 2, column = 3)
 
             # Designs the search bar
-            container_category = LabelFrame(search, text="Category: ", font=("Arial", 14), padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='#f7e7ce')
+            container_category = LabelFrame(search, text="Category: ", font=("TkDefaultButton", 14), padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='#f7e7ce')
             container_category.pack(anchor='center', fill='both', expand=True)
 
             # Designs the table of groceries
             # This frame arranges the list boxes horizontally to make them look like a table
-            Label(table, width=21, font=("Arial", 11), text="Name").grid(row = 5, column = 1)
-            Label(table, width=21, font=("Arial", 11), text="Category").grid(row = 5, column = 2)
-            Label(table, width=21, font=("Arial", 11), text="Quantity").grid(row = 5, column = 3)
-            Label(table, width=21, font=("Arial", 11), text="Threshold").grid(row = 5, column = 4)
+            Label(table, width=21, font=("TkDefaultButton", 11), text="Name").grid(row = 5, column = 1)
+            Label(table, width=21, font=("TkDefaultButton", 11), text="Category").grid(row = 5, column = 2)
+            Label(table, width=21, font=("TkDefaultButton", 11), text="Quantity").grid(row = 5, column = 3)
+            Label(table, width=21, font=("TkDefaultButton", 11), text="Threshold").grid(row = 5, column = 4)
 
             # 'Name' column
             groceries_listView_name = Listbox(table, font=("Fira Code", 11), width=24)
@@ -725,15 +725,15 @@ class groceryListManager:
             groceries_listView_name.grid_propagate(False)
 
             # 'Category' column
-            groceries_listView_category = Listbox(table, font=("Arial", 11), width=24)
+            groceries_listView_category = Listbox(table, font=("TkDefaultButton", 11), width=24)
             groceries_listView_category.grid(row = 6, column = 2)
 
             # 'Quantity' column
-            groceries_listView_quantity = Listbox(table, font=("Arial", 11), width=24)
+            groceries_listView_quantity = Listbox(table, font=("TkDefaultButton", 11), width=24)
             groceries_listView_quantity.grid(row = 6, column = 3)
 
             # 'Threshold' column
-            groceries_listView_threshold = Listbox(table, font=("Arial", 11), width=24)
+            groceries_listView_threshold = Listbox(table, font=("TkDefaultButton", 11), width=24)
             groceries_listView_threshold.grid(row = 6, column = 4)
         
             def getSelectedGrocery_name(event):
@@ -815,8 +815,8 @@ class groceryListManager:
                     pass
 
             option = OptionMenu(container_category, category_opt, *self.categories, command=change_categoryView)
-            option.config(font=("Arial", 12))
-            option["menu"].config(font=("Arial", 12))
+            option.config(font=("TkDefaultButton", 12))
+            option["menu"].config(font=("TkDefaultButton", 12))
             option.pack(anchor='center')  # Creates a drop-down menu that lists out all the groceries
 
             def editGrocery():

@@ -79,7 +79,7 @@ class main_menu():
         ctk.set_appearance_mode("Light")
 
     def initialize_main_menu(self):
-        self.root.deiconify()     # 🔑 SHOW THE WINDOW
+        self.root.deiconify()     
         self.main_menu()
 
     def main_menu(self):

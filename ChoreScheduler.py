@@ -50,39 +50,29 @@ class ChoreScheduler:
         #------------------------------------------------ 
 
         #------------------------TABVIEW-----------------------------
-        '''self.menu_tabview = ctk.CTkTabview(frame,
-                                           #width=700,
-                                           #height=850,
-                                           corner_radius=0,
-                                           text_color="black",
-                                           segmented_button_selected_color="#f7e7ce",
-                                           segmented_button_selected_hover_color="white",
-                                           fg_color="#c3b091")
-        self.menu_tabview.pack(padx=20, pady=20)
-        self.menu_tabview.pack_propagate(False)
-        self.menu_tabview.add("Today's Tasks")
-        self.menu_tabview.add("Locations")
-        self.menu_tabview.add("Members")'''
-
-        self.b_button = ctk.CTkButton(self.OverBG, 
-                                      text='Back', text_color='black',
-                                      command=self.back_callback, 
-                                      fg_color="#f7e7ce", hover_color="#e6d5b8")
+        self.b_button = tk.Button(self.OverBG, 
+                                      text='Back to main menu',
+                                      font=('TkDefaultFont', 11),
+                                      command=self.back_callback
+                                      )
         self.b_button.pack(side='bottom', pady=20, anchor='center')
 
-        self.tt_button = ctk.CTkButton(self.tabframe, text="Today's Tasks", text_color='black', 
+        self.tt_button = tk.Button(self.tabframe, text="Today's Tasks",
+                                   font=('TkDefaultFont', 14),
                                        command=self.first_tab, 
-                                       fg_color="#f7e7ce", hover_color="#e6d5b8")
+                                        )
         self.tt_button.pack(side='left', padx=5, pady=10)
 
-        self.l_button = ctk.CTkButton(self.tabframe, text="Locations", text_color='black',
-                                      command=self.second_tab, 
-                                      fg_color="#f7e7ce", hover_color="#e6d5b8")
+        self.l_button = tk.Button(self.tabframe, text="Locations",
+                                  font=('TkDefaultFont', 14),
+                                      command=self.second_tab
+                                      )
         self.l_button.pack(side='left', padx=5, pady=10)
 
-        self.m_button = ctk.CTkButton(self.tabframe, text="Members",  text_color='black',
+        self.m_button = tk.Button(self.tabframe, text="Members",
+                                  font=('TkDefaultFont', 14),
                                       command=self.third_tab, 
-                                      fg_color="#f7e7ce", hover_color="#e6d5b8")
+                                      )
         self.m_button.pack(side='left', padx=5, pady=10)
        
         self.first_tab()
@@ -100,10 +90,10 @@ class ChoreScheduler:
             nty_frame = ctk.CTkFrame(self.frametb1, fg_color="#c3b091")
             nty_frame.pack(anchor='center', pady=(50, 0))
 
-            no_tasks = ctk.CTkLabel(nty_frame, text = "No tasks yet")
+            no_tasks = ctk.CTkLabel(nty_frame, text = "No tasks yet", font=('TkDefaultFont', 14))
             no_tasks.pack(anchor='center')
             
-            add_task = ctk.CTkButton(nty_frame, text = "Add task", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command = self.add_chore_form)
+            add_task = tk.Button(nty_frame, text = "Add task", font=('TkDefaultFont', 12), command = self.add_chore_form)
             add_task.pack(pady=10)
 
             self.toplevel_window1 = None
@@ -120,9 +110,9 @@ class ChoreScheduler:
             nly_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
             nly_frame.pack(anchor='center', pady=(50, 0))    
 
-            ctk.CTkLabel(nly_frame, text="No locations yet? Add one now!").pack(anchor='center')
+            ctk.CTkLabel(nly_frame, text="No locations yet? Add one now!", font=('TkDefaultFont', 14)).pack(anchor='center')
 
-            ctk.CTkButton(nly_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_locations).pack(pady=10)
+            tk.Button(nly_frame, text="Add", font=('TkDefaultFont', 12), command=self.add_locations).pack(pady=10)
 
             self.toplevel_window2 = None
 
@@ -136,7 +126,7 @@ class ChoreScheduler:
             self.frametb2.pack_propagate(False)
 
             self.location_table = ttk.Treeview(self.frametb2,
-                                          columns=("Locations"), 
+                                          columns=("Locations",), 
                                           show="headings",
                                           height=10)
             self.location_table.heading("Locations", text="Locations")
@@ -148,13 +138,13 @@ class ChoreScheduler:
             self.location_table.configure(yscrollcommand=scrollbar.set)
 
             for location in self.locations_list:
-                self.location_table.insert("", "end", values=location)
+                self.location_table.insert("", "end", values=(location,))
 
             button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
             button_frame.pack(side="bottom", pady=10)
 
-            ctk.CTkButton(button_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_locations).pack(padx=10)
-            ctk.CTkButton(button_frame, text="Delete", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.delete_location).pack(padx=10)
+            tk.Button(button_frame, text="Add", font=('TkDefaultFont', 12), command=self.add_locations).pack(padx=10)
+            tk.Button(button_frame, text="Delete", font=('TkDefaultFont', 12), command=self.delete_location).pack(padx=10)
 
 
     #----------------------------THIRD TAB--------------------------
@@ -167,10 +157,10 @@ class ChoreScheduler:
             nmy_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
             nmy_frame.pack(anchor='center', pady=(50, 0))      
 
-            ctk.CTkLabel(nmy_frame, text="No members yet? Add one now!").pack(anchor='center')
+            ctk.CTkLabel(nmy_frame, text="No members yet? Add one now!", font=('TkDefaultFont', 14)).pack(anchor='center')
             self.toplevel_window3 = None
 
-            ctk.CTkButton(nmy_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_members).pack(pady=10)
+            tk.Button(nmy_frame, text="Add", font=('TkDefaultFont', 12), command=self.add_members).pack(pady=10)
 
         else:
             for widget in self.OverBG.winfo_children():
@@ -182,7 +172,7 @@ class ChoreScheduler:
             self.frametb3.pack_propagate(False)
 
             self.member_table = ttk.Treeview(self.frametb3,
-                                          columns=("Members"), 
+                                          columns=("Members",), 
                                           show="headings",
                                           height=10)
             self.member_table.heading("Members", text="Members")
@@ -194,13 +184,13 @@ class ChoreScheduler:
             self.member_table.configure(yscrollcommand=scrollbar.set)
             
             for member in self.members_list:
-                self.member_table.insert("", "end", values=member)
+                self.member_table.insert("", "end", values=(member,))
 
             button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
             button_frame.pack(side='bottom', pady=10)
 
-            ctk.CTkButton(button_frame, text="Add", text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.add_members).pack(padx=10)
-            ctk.CTkButton(button_frame, text='Delete', text_color='black', fg_color="#f7e7ce", hover_color="#e6d5b8", command=self.delete_member).pack(padx=10)    
+            tk.Button(button_frame, text="Add", font=('TkDefaultFont', 12), command=self.add_members).pack(padx=10)
+            tk.Button(button_frame, text='Delete', font=('TkDefaultFont', 12), command=self.delete_member).pack(padx=10)    
 
     #-------------------------TODAY'S TASKS---------------------------------------------
     def add_chore_form(self):
@@ -282,17 +272,23 @@ class ChoreScheduler:
         button_frame = ctk.CTkFrame(self.OverBG, fg_color="#c3b091")
         button_frame.pack(fill="x", padx=10, pady=5)
 
-        ctk.CTkButton(button_frame, text = "Delete Task", text_color='black',
+        tk.Button(button_frame, text = "Delete Task",
+                  font=('TkDefaultFont', 12),
+                  bg='pink',
                       command = self.delete_chore, 
-                      fg_color="#f7e7ce", hover_color="#e6d5b8").pack(side="bottom")
+                      ).pack(side="bottom", pady=(0, 3))
         
-        ctk.CTkButton(button_frame, text = "Update Task", text_color='black',
+        tk.Button(button_frame, text = "Update Task",
+                  font=('TkDefaultFont', 12),
+                  bg='light blue',
                       command = self.update_chore, 
-                      fg_color="#f7e7ce", hover_color="#e6d5b8").pack(side="bottom")
+                      ).pack(side="bottom", pady=(0, 3))
         
-        ctk.CTkButton(button_frame, text = "Add Task", text_color='black',
+        tk.Button(button_frame, text = "Add Task",
+                  font=('TkDefaultFont', 12),
+                  bg='light green',
                       command = self.add_chore_form, 
-                      fg_color="#f7e7ce", hover_color="#e6d5b8").pack(side = "bottom")
+                      ).pack(side = "bottom", pady=(0, 3))
     
     def save_chore(self):
         task_name = self.task_entry.get().strip()
@@ -381,6 +377,7 @@ class ChoreScheduler:
             return
         else:
             self.locations_list.append(location)
+            #
             self.toplevel_window2.destroy()
             self.second_tab()
 
@@ -388,16 +385,13 @@ class ChoreScheduler:
         selected = self.location_table.selection()
         if selected:
             for id in selected:
-                location_name = self.location_table.item(id)["values"][0] 
+                location_name = self.location_table.item(id)["values"][0]
+                location_name = str(location_name).strip()
 
-                for location in self.locations_list:
-                    print(location)
-                    if location == location_name:
-                        self.locations_list.remove(location)
-                        self.location_table.delete(id)
-                        break
-                    print(location, "test")
-
+                if location_name in self.locations_list:
+                    self.locations_list.remove(location_name)
+                    
+                self.location_table.delete(id)
 
     #-------------------MEMBERS--------------------
     def add_members(self):
@@ -436,12 +430,12 @@ class ChoreScheduler:
         if selected:
             for id in selected:
                 member_name = self.member_table.item(id)["values"][0]
+                member_name = str(member_name).strip()
 
-                for member in self.members_list:
-                    if member == member_name:
-                        self.members_list.remove(member)
-                        self.member_table.delete(id)
-                        break 
+                if member_name in self.members_list:
+                    self.members_list.remove(member_name)
+                    
+                self.member_table.delete(id)
         
         
 

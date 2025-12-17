@@ -52,27 +52,36 @@ class MealPlanner:
         bg_label.image = bg_photo
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         bg_label.lower()
+
+        label_frame = ctk.CTkFrame(self.window, border_width=2, border_color="black", corner_radius=0, fg_color="#c3b091")
+        ctk.CTkLabel(label_frame, 
+                     text="Meal Planner", text_color="black", font=("Microsoft HaYei",35), 
+                     fg_color="#c3b091"
+                     ).pack(pady=5, padx=5)
+        label_frame.pack(padx=5, pady=10, anchor='center')
             
-        self.main_frame = tk.Frame(self.window, width=800, height=800, bg='#c3b091')
+        self.main_frame = ctk.CTkFrame(self.window, width=700, height=600, border_width=2, border_color="black", corner_radius=0, fg_color='#c3b091')
         self.main_frame.pack(padx=20, pady=20)
         self.main_frame.pack_propagate(False)
         
-        tk.Label(self.main_frame, text="Meal Planner & Tracker", font=("Arial", 20, "bold")).pack(pady=20)
+        #tk.Label(self.main_frame, text="Meal Planner & Tracker", font=("Arial", 20, "bold")).pack(pady=20)
         
         # --- Part 1: Goal Selection ---
-        self.frame_part1 = tk.Frame(self.main_frame, bg='#b09e83')
-        self.frame_part1.pack(pady=20)
+        self.frame_part1 = tk.Frame(self.main_frame, width=600, height=300, bg='#c3b091')
+        self.frame_part1.pack(anchor='center', pady=(150, 0))
+        self.frame_part1.pack_propagate(False)
+
         
-        tk.Label(self.frame_part1, text="Choose Your Goal", font=("Arial", 14)).pack(pady=10)
+        tk.Label(self.frame_part1, text="Choose Your Goal", bg="#c3b091", font=("Arial", 22)).pack(pady=15)
         
-        btn_frame = tk.Frame(self.frame_part1, bg='#b09e83')
-        btn_frame.pack()
+        btn_frame = tk.Frame(self.frame_part1, bg='#c3b091')
+        btn_frame.pack(pady=(50, 0))
         
         # Weight Loss
-        tk.Button(btn_frame, text="Weight Loss (Cut)", bg="#FFB6C1", width=20, height=3, command=lambda: self.setup_goal("Weight Loss")).grid(row=0, column=0, padx=20)
+        tk.Button(btn_frame, text="Weight Loss (Cut)", bg="#FFB6C1", width=20, height=3, font=("Arial", 13), command=lambda: self.setup_goal("Weight Loss")).grid(row=50, column=0, padx=20)
         
         # Muscle
-        tk.Button(btn_frame, text="Muscle Gain (Bulk)", bg="#ADD8E6", width=20, height=3, command=lambda: self.setup_goal("Muscle Gain")).grid(row=0, column=1, padx=20)
+        tk.Button(btn_frame, text="Muscle Gain (Bulk)", bg="#ADD8E6", width=20, height=3, font=("Arial", 13), command=lambda: self.setup_goal("Muscle Gain")).grid(row=50, column=1, padx=20)
 
         # Back to Menu
         tk.Button(self.main_frame, text="Back to Main Menu", command=self.back_callback).pack(side=tk.BOTTOM, pady=10)
@@ -83,8 +92,8 @@ class MealPlanner:
         self.show_shopping_and_planning()
 
     def show_shopping_and_planning(self):
-        self.content_frame = tk.Frame(self.main_frame, width=700, height=1000, bg='#b09e83')
-        self.content_frame.pack()
+        self.content_frame = ctk.CTkFrame(self.main_frame, width=600, height=450, border_width=2, border_color='black', corner_radius=0, fg_color='#b09e83')
+        self.content_frame.pack(anchor='center', pady=(40, 10))
         self.content_frame.pack_propagate(False)
         
         data = self.GOAL_DATA[self.current_goal]
@@ -98,7 +107,7 @@ class MealPlanner:
         
         # --- Part 2: Shopping Guide ---
         frame_shopping = tk.LabelFrame(self.content_frame, text=f"Shopping Guide for {self.current_goal} (Weekly Target)", font=("Arial", 12, "bold"), fg=color, padx=10, pady=10)
-        frame_shopping.pack(fill="x", pady=10)
+        frame_shopping.pack(fill="x", padx=10, pady=20)
         
         tk.Label(frame_shopping, text=data["desc"], font=("Arial", 10, "italic")).grid(row=0, column=0, columnspan=3, sticky="w", pady=(0, 5))
         
@@ -127,10 +136,11 @@ class MealPlanner:
             tk.Label(frame_shopping, text=example, anchor="w").grid(row=row_idx, column=2, padx=10, sticky="w")
             row_idx += 1
 
-        # --- Daily Planner (System Show vs User Input) ---
-        frame_planning = tk.LabelFrame(self.content_frame, text="Daily Intake Tracker", font=("Arial", 12, "bold"), fg="green", padx=10, pady=10)
-        frame_planning.pack(fill="both", expand=True, pady=10)
-        
+        # --- Part 3: Daily Planner (System Show vs User Input) ---
+        frame_planning = tk.LabelFrame(self.content_frame, height=200, text="Daily Intake Tracker", font=("Arial", 12, "bold"), fg="green", padx=10, pady=10)
+        frame_planning.pack(fill="x", expand=True, padx=10, pady=(0, 25))
+        frame_planning.pack_propagate(False)
+
         tk.Label(frame_planning, text="Category", font=("Arial", 10, "bold")).grid(row=0, column=0, padx=10, pady=5)
         tk.Label(frame_planning, text="Target Goal (g)", font=("Arial", 10, "bold"), fg="black").grid(row=0, column=1, padx=10, pady=5, columnspan=2)
         tk.Label(frame_planning, text="Your Input (g)", font=("Arial", 10, "bold"), fg="black").grid(row=0, column=3, padx=10, pady=5, columnspan=2)
@@ -168,33 +178,39 @@ class MealPlanner:
         if hasattr(self, 'content_frame') and self.content_frame.winfo_exists():
             self.content_frame.destroy() 
             
-        self.report_frame = tk.Frame(self.main_frame, width=700, height=1000, bg='#b09e83')
-        self.report_frame.pack()
+        self.report_frame = tk.Frame(self.main_frame, width=550, height=300, bg='#c3b091')
+        self.report_frame.pack(pady=(200, 0))
         self.report_frame.pack_propagate(False)
         
-        tk.Label(self.report_frame, text=f"--- Daily Performance Report for {self.current_goal} ---", 
-                 font=("Arial", 16, "bold")).pack(pady=15)
-        details_frame = tk.LabelFrame(self.report_frame, text="Category Breakdown (Target vs Actual)", padx=10, pady=10)
-        details_frame.pack(padx=20, fill="x")
+        label_frame = ctk.CTkFrame(self.report_frame, fg_color='#c3b091', border_color='black', border_width=2, corner_radius=0)
+        label_frame.pack(pady=15, fill='x')
+
+        ctk.CTkLabel(label_frame, text=f"Daily Performance Report for {self.current_goal}", 
+                 font=("Arial", 21, "bold"),
+                 text_color='black',
+                 fg_color='#c3b091').pack(pady=5)
         
-        tk.Label(details_frame, text="Category", font=("Arial", 10, "bold")).grid(row=0, column=0, padx=10, sticky="w")
-        tk.Label(details_frame, text="Status", font=("Arial", 10, "bold")).grid(row=0, column=1, padx=10, sticky="w")
+        details_frame = tk.LabelFrame(self.report_frame, width=300, height=225, text="Category Breakdown (Target vs Actual)", font=("Arial", 13), padx=10, pady=10)
+        details_frame.pack(padx=5, fill='x')
+        details_frame.pack_propagate(False)
+        
+        tk.Label(details_frame, text="Category", font=("Arial", 12, "bold")).grid(row=0, column=0, padx=10, sticky="w")
+        tk.Label(details_frame, text="Status", font=("Arial", 12, "bold")).grid(row=0, column=1, padx=10, sticky="w")
         
         row_idx = 1
         for category, status in report_details.items():
-            tk.Label(details_frame, text=f"{category}:", width=20, anchor="w").grid(row=row_idx, column=0, padx=10, sticky="w")
+            tk.Label(details_frame, text=f"{category}:", font=("Arial", 11), width=20, anchor="w").grid(row=row_idx, column=0, padx=10, sticky="w")
             fg_color = "green" if status == "✅ Perfect!" else "red"
-            tk.Label(details_frame, text=status, anchor="w", fg=fg_color).grid(row=row_idx, column=1, padx=10, sticky="w")
+            tk.Label(details_frame, text=status, font=("Arial", 11), anchor="w", fg=fg_color).grid(row=row_idx, column=1, padx=10, sticky="w")
             row_idx += 1
             
-        tk.Label(self.report_frame, text="----------------", pady=10).pack()
         fg_color = "green" if all_good else "red"
         
-        tk.Label(self.report_frame, text=final_msg, font=("Arial", 14, "bold"), fg=fg_color, wraplength=500).pack(pady=15)
+        tk.Label(self.report_frame, text=final_msg, font=("Arial", 14, "bold"), bg='#c3b091', fg=fg_color, wraplength=500).pack(pady=15, fill='x')
         
         # Back to Part2/3
         tk.Button(self.report_frame, text="Back to Planner", 
-                  command=lambda: self.report_frame.destroy() or self.show_shopping_and_planning()).pack(pady=20)
+                  command=lambda: self.report_frame.destroy() or self.show_shopping_and_planning()).pack()
             
     def generate_report(self, targets):
         """Calculates the logic for Part 4 and passes the result to show_report_page"""
