@@ -398,7 +398,7 @@ class ChoreScheduler:
 
             return
         
-        self.chore = [task_name, location_name, member_name, due_date, repetition, "Pending"]
+        self.chore = [str(task_name), str(location_name), str(member_name), str(due_date), str(repetition), "Pending"]
 
         self.chore_list.append(self.chore)
         self.save_data()
