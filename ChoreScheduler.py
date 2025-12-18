@@ -194,6 +194,7 @@ class ChoreScheduler:
 
     #-------------------------TODAY'S TASKS---------------------------------------------
     def add_chore_form(self):
+        
         if self.toplevel_window1 == None or not self.toplevel_window1.winfo_exists():
             self.toplevel_window1 = ctk.CTkToplevel(self.OverBG)
             self.toplevel_window1.after(10, lambda: self.toplevel_window1.focus_force())
@@ -217,11 +218,35 @@ class ChoreScheduler:
             self.task_entry.pack(side='left', pady=5)
 
             ctk.CTkLabel(frame_addchore2, text='Location: ').pack(side='left', padx=5, pady=5)
-            self.location_menu = ctk.CTkOptionMenu(frame_addchore2, values=self.locations_list) 
+            if not self.locations_list:
+                self.location_menu = ctk.CTkOptionMenu(
+                    frame_addchore2,
+                    values=["No locations yet"]
+                )
+                self.location_menu.set("No locations yet")
+
+            else:
+                self.location_menu = ctk.CTkOptionMenu(
+                    frame_addchore2,
+                    values=self.locations_list
+                )
+                self.location_menu.set(self.locations_list[0])
             self.location_menu.pack(fill="x", padx=5, pady=5)   
 
             ctk.CTkLabel(frame_addchore3, text='Member: ').pack(side='left', padx=5, pady=5)
-            self.member_menu = ctk.CTkOptionMenu(frame_addchore3, values=self.members_list)
+            if not self.members_list:
+                self.member_menu = ctk.CTkOptionMenu(
+                    frame_addchore3,
+                    values=["No members yet"]
+                )
+                self.member_menu.set("No members yet")
+
+            else:
+                self.member_menu = ctk.CTkOptionMenu(
+                    frame_addchore3,
+                    values=self.members_list
+                )
+                self.member_menu.set(self.members_list[0])
             self.member_menu.pack(fill="x", padx=5, pady=5)  
 
             ctk.CTkLabel(frame_addchore4, text='Due By: ').pack(side='left', padx=5, pady=5)
@@ -303,7 +328,27 @@ class ChoreScheduler:
             self.toplevel_window_error1.grab_set()
             self.toplevel_window_error1.title("Error")
 
-            ctk.CTkLabel(self.toplevel_window_error1, text="Please enter a task name first").pack()
+            ctk.CTkLabel(self.toplevel_window_error1, text="Please enter a chore first").pack()
+
+            return
+        
+        if location_name == "No locations yet":
+            toplevel_window_error = ctk.CTkToplevel(self.OverBG)
+            toplevel_window_error.after(10, lambda: toplevel_window_error.focus_force())
+            toplevel_window_error.grab_set()
+            toplevel_window_error.title("Error")
+
+            ctk.CTkLabel(toplevel_window_error, text="Please add a location first").pack(padx=5, pady=10)
+
+            return
+        
+        if member_name == "No members yet":
+            toplevel_window_error = ctk.CTkToplevel(self.OverBG)
+            toplevel_window_error.after(10, lambda: toplevel_window_error.focus_force())
+            toplevel_window_error.grab_set()
+            toplevel_window_error.title("Error")
+
+            ctk.CTkLabel(toplevel_window_error, text="Please add a member first").pack(padx=5, pady=10)
 
             return
         

@@ -1,34 +1,21 @@
 import customtkinter as ctk
+from PIL import ImageTk, Image
 
 root = ctk.CTk()
 
-fruit_list = {
-    "apple":"Ripe",
-    "orange":"Rotten",
-    "banana":"Unripe"
-}
+# Open the png
+img = Image.open("house.png")
 
-scroll_frame = ctk.CTkScrollableFrame(root, width=400, height=300)
-scroll_frame.pack(pady=10, padx=10, fill="both", expand=True)
+# Resize to 16x16 (or 32x32)
+img = img.resize((16, 16), Image.Resampling.LANCZOS)
 
-header = ctk.CTkFrame(scroll_frame, fg_color="white")
-header.pack(fill="x")
+# Convert to PhotoImage
+photo = ImageTk.PhotoImage(img)
 
-ctk.CTkLabel(header, text="Chore", width=150, anchor="w").grid(row=0, column=0)
-ctk.CTkLabel(header, text="Status", width=100, anchor="w").grid(row=0, column=1)
-ctk.CTkLabel(header, text="Action", width=100, anchor="w").grid(row=0, column=2)
+# Set window icon
+root.iconphoto(True, photo)
 
-for fruit, status in fruit_list.items():
-    row = ctk.CTkFrame(scroll_frame)
-    row.pack(fill="x", pady=2)
-    
-    ctk.CTkLabel(row, text=fruit, width=150, anchor="w").grid(row=0, column=0)
-    ctk.CTkLabel(row, text=status, width=100, anchor="w").grid(row=0, column=1)
-    
-    # Example: delete button per row
-    ctk.CTkOptionMenu(row, width=80,).grid(row=0, column=2)
-
-
-
+# Keep a reference to prevent garbage collection
+root.icon_image = photo
 
 root.mainloop()

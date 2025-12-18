@@ -149,10 +149,10 @@ class BudgetTracker:
         self.net_balance_label.pack(side='bottom', pady=(0,25))
 
         # --- 3. Report View Frame ---
-        self.report_view = tk.Frame(self.budget_page, width=500, height=300, bg='yellow') 
-        tk.Label(self.report_view, text="Spending Insights Report", font=("Arial", 14, "bold")).pack(pady=10)
+        self.report_view = ctk.CTkFrame(self.budget_page, width=500, height=300, border_color='black', border_width=2, corner_radius=0, fg_color='#b09e83') 
+        tk.Label(self.report_view, text="Spending Insights Report", font=("Arial", 14, "bold"), bg='#b09e83').pack(pady=10)
 
-        rp_frame = tk.Frame(self.report_view, width=400, height=400, bg='pink')
+        rp_frame = tk.Frame(self.report_view, width=400, height=400, bg='#b09e83')
         
         self.report_content = tk.Label(rp_frame, text="Click 'View Report' to view data.", 
                                  justify=tk.LEFT, 
@@ -162,7 +162,7 @@ class BudgetTracker:
         self.report_content.pack(padx=10, pady=10)
         #self.report_content.pack_propagate(False)
 
-        rp_frame.pack(fill='both', expand=True)
+        rp_frame.pack(fill='both', expand=True, padx=5, pady=5)
 
         tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_callback).pack(side="bottom", pady=10)
 

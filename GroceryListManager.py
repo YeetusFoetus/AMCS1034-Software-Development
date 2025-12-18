@@ -268,7 +268,7 @@ class groceryListManager:
         if root is None and self.isback_callbackExists() == False:
             root = Toplevel()
             self.root = self.root    # Remembers the instance of the home page
-            # root.geometry("400x300")    # Sets the size of the window
+            #root.geometry("400x300")    # Sets the size of the window
         elif root is not None and self.isback_callbackExists() == False:
             self.root = self.root
         else:   # self.isback_callbackExists() == True
@@ -358,16 +358,18 @@ class groceryListManager:
             if result == True:
                 closeWindow()
 
-        header = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='orange')
-        form = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='yellow')
-        form_button = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='green')
-        footer = Frame(root, padx=self.widgets_padx, pady=self.widgets_pady, bg='blue')
+        outside_header = ctk.CTkFrame(root, width=497, height=50, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
+        addEdit_frame = ctk.CTkFrame(root, border_color='black', border_width=2, corner_radius=0, fg_color='#c3b091')
+        header = Frame(addEdit_frame, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
+        form = Frame(addEdit_frame, padx=self.widgets_padx, pady=self.widgets_pady, bg='#b09e83')
+        form_button = Frame(addEdit_frame, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
+        footer = Frame(addEdit_frame, padx=self.widgets_padx, pady=self.widgets_pady, bg='#c3b091')
 
         """
         Note:
         - Tkinter elements can be placed inside a frame by replacing 'root' with the frame's name.
         """
-        Label(header, font=("TkDefaultButton", 11), text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
+        Label(header, font=("TkDefaultButton", 12, 'bold'), bg='#c3b091', text="Add a grocery" if self.isEditing(index, oldCategory) == False else "Edit the grocery").grid(row = 1, column = 1)
 
         Label(form, text="Name: ").grid(row = 1, column = 1)
         Entry(form, textvariable=groceryName).grid(row = 1, column = 2)
@@ -385,15 +387,19 @@ class groceryListManager:
         # Note: 'root.destroy()' closes the active window.
         Button(form_button, text="Cancel", command=closeWindow).grid(row = 1, column = 2)
 
-        info4user = LabelFrame(footer, text="For your information", padx=self.LabelFrame_padx, pady=self.widgets_pady, bg='indigo')
+        info4user = LabelFrame(footer, text="For your information", padx=self.LabelFrame_padx, pady=self.widgets_pady)
         info4user.grid(row = 1, column = 1)
 
         Label(info4user, text="The first character of the name and category will be capitalised and the rest will be lower case.\n\ne.g.: 'cEreAl gRain' --> 'Cereal Grain'").grid(row = 1, column = 1)
 
-        header.pack()
-        form.pack()
-        form_button.pack()
-        footer.pack()
+        outside_header.pack(pady=20, side="top")
+        outside_header.pack_propagate(False)
+        ctk.CTkLabel(outside_header, text="Grocery List Manager", text_color="black", font=("Nunito SemiBold", 35)).pack(padx=5, pady=5)
+        addEdit_frame.pack(anchor='center', pady=(200, 0))
+        header.pack(pady=3)
+        form.pack(pady=3)
+        form_button.pack(pady=3)
+        footer.pack(padx=5, pady=3)
 
         # Displays the window
         root.mainloop()
