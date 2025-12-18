@@ -210,7 +210,7 @@ class groceryListManager:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's name cannot be empty.")
             return False    # Returns 'False' to the calling function
         elif category == "" or category is None:
-            tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
+            tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's category cannot be empty.")
             return False
         elif quantity == "" or quantity is None:
             tkinter.messagebox.showwarning("Error", "Sorry, but the grocery's quantity cannot be empty.")
