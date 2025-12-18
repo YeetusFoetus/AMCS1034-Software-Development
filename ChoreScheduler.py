@@ -14,6 +14,9 @@ class ChoreScheduler:
         self.members_list = []
         self.back_callback = back_callback ## function to call to go back to main menu 
         self.status = 5
+        self.toplevel_window1 = None
+        self.toplevel_window2 = None
+        self.toplevel_window3 = None
 
     def save_data(self):
         data = {
