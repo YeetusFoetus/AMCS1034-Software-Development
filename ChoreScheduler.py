@@ -15,7 +15,31 @@ class ChoreScheduler:
         self.back_callback = back_callback ## function to call to go back to main menu 
         self.status = 5
 
+    def save_data(self):
+        data = {
+            "chores": self.chore_list,
+            "locations": self.locations_list,
+            "members": self.members_list
+        }
+
+        with open("scheduler_data.json", "w") as file:
+            json.dump(data, file, indent=4)
+
+
+    def load_data(self):
+        if not path.exists("scheduler_data.json"):
+            return
+
+        with open("scheduler_data.json", "r") as file:
+            data = json.load(file)
+
+            self.chore_list = data.get("chores", [])
+            self.locations_list = data.get("locations", [])
+            self.members_list = data.get("members", [])
+
     def menu(self):
+        self.load_data()
+
         for widget in self.root.winfo_children():
             widget.destroy()  
 
@@ -27,7 +51,7 @@ class ChoreScheduler:
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         bg_label.lower()   # send it behind everything
 
-        #---------------------(SOME)FRAMES---------------------
+        #---------------------TOP FRAMES---------------------
         label_frame = ctk.CTkFrame(self.root, width=497, height=47, corner_radius=0, border_width=2, border_color="black", fg_color="#c3b091")
         label_frame.pack(pady=20)
         label_frame.pack_propagate(False)
@@ -202,63 +226,82 @@ class ChoreScheduler:
             self.toplevel_window1.title("Add a task")
             self.toplevel_window1.minsize(300, 300)
 
-            frame_addchore1 = ctk.CTkFrame(self.toplevel_window1)
-            frame_addchore1.pack(pady=5)
-            frame_addchore2 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore1 = ctk.CTkFrame(self.toplevel_window1, fg_color='#F2F2F2')
+            frame_addchore1.pack(pady=(15, 5))
+            frame_addchore2 = ctk.CTkFrame(self.toplevel_window1, fg_color='#F2F2F2')
             frame_addchore2.pack(pady=5)
-            frame_addchore3 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore3 = ctk.CTkFrame(self.toplevel_window1, fg_color='#F2F2F2')
             frame_addchore3.pack(pady=5)
-            frame_addchore4 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore4 = ctk.CTkFrame(self.toplevel_window1, fg_color='#F2F2F2')
             frame_addchore4.pack(pady=5)
-            frame_addchore5 = ctk.CTkFrame(self.toplevel_window1)
+            frame_addchore5 = ctk.CTkFrame(self.toplevel_window1, fg_color='#F2F2F2')
             frame_addchore5.pack(pady=5)
 
-            ctk.CTkLabel(frame_addchore1, text='Chore: ').pack(side='left', padx=5, pady=5)
+            ctk.CTkLabel(frame_addchore1, text='Chore: ', fg_color='#F2F2F2').pack(side='left', padx=5, pady=5)
             self.task_entry = ctk.CTkEntry(frame_addchore1)
             self.task_entry.pack(side='left', pady=5)
 
-            ctk.CTkLabel(frame_addchore2, text='Location: ').pack(side='left', padx=5, pady=5)
+            # Dropdown menu for Location
+            ctk.CTkLabel(frame_addchore2, text='Location: ', fg_color='#F2F2F2').pack(side='left', padx=5, pady=5)
             if not self.locations_list:
                 self.location_menu = ctk.CTkOptionMenu(
                     frame_addchore2,
-                    values=["No locations yet"]
+                    values=["No locations yet"],
+                    button_color='#CCCCCC',
+                    button_hover_color='#C4C4C4',
+                    fg_color='#d9d9d9',
+                    text_color='black'
                 )
                 self.location_menu.set("No locations yet")
 
             else:
                 self.location_menu = ctk.CTkOptionMenu(
                     frame_addchore2,
-                    values=self.locations_list
+                    values=self.locations_list,
+                    button_color='#CCCCCC',
+                    button_hover_color='#C4C4C4',
+                    fg_color='#d9d9d9',
+                    text_color='black'
                 )
                 self.location_menu.set(self.locations_list[0])
             self.location_menu.pack(fill="x", padx=5, pady=5)   
 
-            ctk.CTkLabel(frame_addchore3, text='Member: ').pack(side='left', padx=5, pady=5)
+
+            # Dropdown menu for Member
+            ctk.CTkLabel(frame_addchore3, text='Member: ', fg_color='#F2F2F2').pack(side='left', padx=5, pady=5)
             if not self.members_list:
                 self.member_menu = ctk.CTkOptionMenu(
                     frame_addchore3,
-                    values=["No members yet"]
+                    values=["No members yet"],
+                    button_color='#CCCCCC',
+                    button_hover_color='#C4C4C4',
+                    fg_color='#d9d9d9',
+                    text_color='black'
                 )
                 self.member_menu.set("No members yet")
 
             else:
                 self.member_menu = ctk.CTkOptionMenu(
                     frame_addchore3,
-                    values=self.members_list
+                    values=self.members_list,
+                    button_color='#CCCCCC',
+                    button_hover_color='#C4C4C4',
+                    fg_color='#d9d9d9',
+                    text_color='black'
                 )
                 self.member_menu.set(self.members_list[0])
             self.member_menu.pack(fill="x", padx=5, pady=5)  
 
-            ctk.CTkLabel(frame_addchore4, text='Due By: ').pack(side='left', padx=5, pady=5)
+            ctk.CTkLabel(frame_addchore4, text='Due By: ', fg_color='#F2F2F2').pack(side='left', padx=5, pady=5)
             self.date_entry = ctk.CTkEntry(frame_addchore4)
             self.date_entry.pack(side='left', pady=5)
 
-            ctk.CTkLabel(frame_addchore5, text='Repeat: ').pack(side='left', padx=5, pady=5)
+            ctk.CTkLabel(frame_addchore5, text='Repeat: ', fg_color='#F2F2F2').pack(side='left', padx=5, pady=5)
             self.repeat_entry = ctk.CTkEntry(frame_addchore5)
             self.repeat_entry.pack(side='left', pady=5)    
             
-            button = ctk.CTkButton(self.toplevel_window1, text='Add', command=self.save_chore)
-            button.pack(side='bottom', anchor='center', pady=5)            
+            button = tk.Button(self.toplevel_window1, text='Add', font=("TkDefaultFont", 11), command=self.save_chore)
+            button.pack(side='bottom', anchor='center', pady=(0, 10))            
         else:
             self.toplevel_window1.focus()
         
@@ -355,6 +398,7 @@ class ChoreScheduler:
         self.chore = [task_name, location_name, member_name, due_date, repetition, "Pending"]
 
         self.chore_list.append(self.chore)
+        self.save_data()
         self.toplevel_window1.destroy()
         self.first_tab()
 
@@ -391,6 +435,7 @@ class ChoreScheduler:
                 for chore in self.chore_list:
                     if chore[0] == chore_name:
                         self.chore_list.remove(chore)
+                        self.save_data()
                         self.tree_archive.delete(id)
                         break
                 
@@ -401,11 +446,13 @@ class ChoreScheduler:
             self.toplevel_window2.after(10, lambda: self.toplevel_window2.focus_force())
             self.toplevel_window2.grab_set()
             self.toplevel_window2.title("Add a location")
-            self.toplevel_window2.minsize(300, 300)
+            self.toplevel_window2.minsize(310, 100)
+
             self.location_entry = ctk.CTkEntry(self.toplevel_window2)
             self.location_entry.pack(pady=20)
-            button = ctk.CTkButton(self.toplevel_window2, text='Add', command=self.get_location)
-            button.pack(side='bottom', anchor='center')
+
+            button = tk.Button(self.toplevel_window2, text='Add', font=('TkDefaultFont', 11), command=self.get_location)
+            button.pack(side='bottom', anchor='center', pady=(0, 15))
         else:
             self.toplevel_window2.focus()
 
@@ -422,7 +469,7 @@ class ChoreScheduler:
             return
         else:
             self.locations_list.append(location)
-            #
+            self.save_data()
             self.toplevel_window2.destroy()
             self.second_tab()
 
@@ -435,6 +482,7 @@ class ChoreScheduler:
 
                 if location_name in self.locations_list:
                     self.locations_list.remove(location_name)
+                    self.save_data()
                     
                 self.location_table.delete(id)
 
@@ -445,11 +493,13 @@ class ChoreScheduler:
             self.toplevel_window3.after(10, lambda: self.toplevel_window3.focus_force())
             self.toplevel_window3.grab_set()
             self.toplevel_window3.title("Add a location")
-            self.toplevel_window3.minsize(300, 300)
+            self.toplevel_window3.minsize(310, 100)
+
             self.member_entry = ctk.CTkEntry(self.toplevel_window3)
             self.member_entry.pack(pady=20)
-            button = ctk.CTkButton(self.toplevel_window3, text='Add', command=self.get_member)
-            button.pack(side='bottom', anchor='center')
+
+            button = tk.Button(self.toplevel_window3, text='Add', font=('TkDefaultFont', 11), command=self.get_member)
+            button.pack(side='bottom', anchor='center', pady=(0, 15))
         else:
             self.toplevel_window3.focus()
 
@@ -466,6 +516,7 @@ class ChoreScheduler:
             return
         else:
             self.members_list.append(member)
+            self.save_data()
             self.toplevel_window3.destroy()
             self.third_tab()
 
@@ -479,6 +530,7 @@ class ChoreScheduler:
 
                 if member_name in self.members_list:
                     self.members_list.remove(member_name)
+                    self.save_data()
                     
                 self.member_table.delete(id)
         

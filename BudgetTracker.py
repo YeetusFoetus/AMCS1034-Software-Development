@@ -34,7 +34,7 @@ class BudgetTracker:
     def open_budget_page(self):
         label_frame = ctk.CTkFrame(self.window, border_width=2, border_color="black", corner_radius=0, fg_color="#c3b091")
         ctk.CTkLabel(label_frame, 
-                     text="Budget Tracker", text_color="black", font=("Microsoft HaYei",35), 
+                     text="Budget Tracker", text_color="black", font=("Nunito Semibold",35), 
                      fg_color="#c3b091"
                      ).pack(pady=5, padx=5)
         label_frame.pack(padx=5, pady=10, anchor='center')
@@ -43,15 +43,15 @@ class BudgetTracker:
         self.budget_page.pack_propagate(False)
 
         # Budget page
-        self.budget_switch_btn = tk.Button(self.budget_page, text="View Report", command=lambda: self.switch_budget_view("report"))
+        self.budget_switch_btn = tk.Button(self.budget_page, width=20, text="View Report", font=('TkDefaultFont', 13), command=lambda: self.switch_budget_view("report"))
         #,bg='#ADD8E6', width=15
-        self.budget_switch_btn.pack(padx=5, pady=(10,5))
+        self.budget_switch_btn.pack(padx=5, pady=(15,5))
 
         # --- 2. Input View Frame ---
         self.input_view = tk.Frame(self.budget_page, bg='#c3b091') 
 
         # Category Selection
-        self.frame_category = ctk.CTkFrame(self.input_view, width=500, height=140, border_color='black', border_width=2, corner_radius=0, fg_color='#b09e83')
+        self.frame_category = ctk.CTkFrame(self.input_view, width=500, height=130, border_color='black', border_width=2, corner_radius=0, fg_color='#b09e83')
         self.frame_category.pack(padx=10, pady=(15, 0))
         self.frame_category.pack_propagate(False)
 
@@ -76,21 +76,21 @@ class BudgetTracker:
         self.amount_frame.pack_propagate(False)
 
         # Selected Category Indicator
-        self.category_label_indicator = tk.Label(self.amount_frame, text="Selected Category: None", font=('Arial', 12, 'bold'), bg='#b09e83', fg='blue')
+        self.category_label_indicator = tk.Label(self.amount_frame, text="Selected Category: None", font=('Arial', 12, 'bold'), bg='#b09e83', fg='black')
         self.category_label_indicator.pack(pady=5)
         
         self.frame_input = tk.Frame(self.amount_frame, bg='#f7e7ce')
         self.frame_input.pack(fill='x', padx=10, pady=10)
 
-        tk.Label(self.frame_input, text="Amount:").grid(row=0, column=0, padx=(15, 0), pady=5)
-        self.entry_amount = tk.Entry(self.frame_input)
+        tk.Label(self.frame_input, text="Amount:", font=('TkDefaultFont', 11)).grid(row=0, column=0, padx=(15, 0), pady=5)
+        self.entry_amount = tk.Entry(self.frame_input, font=('TkDefaultFont', 11))
         self.entry_amount.grid(row=0, column=1, padx=(15, 0), pady=5)
 
-        self.btn_add = tk.Button(self.frame_input, text="Add Expense", command=self.add_expense, bg='lightgreen')
+        self.btn_add = tk.Button(self.frame_input, text="Add Expense", font=('TkDefaultFont', 11), command=self.add_expense, bg='lightgreen')
         self.btn_add.grid(row=1, column=0, columnspan=2, padx=(20, 0), pady=10)
 
-        self.btn_clear = tk.Button(self.frame_input, text="Clear ALL Expenses", command=self.clear_expenses, bg='pink', fg='red')
-        self.btn_clear.grid(row=2, column=0, columnspan=2, padx=(20, 0), pady=5)
+        self.btn_clear = tk.Button(self.frame_input, text="Clear ALL Expenses", font=('TkDefaultFont', 11), command=self.clear_expenses, bg='pink', fg='red')
+        self.btn_clear.grid(row=2, column=0, columnspan=2, padx=(20, 0), pady=(0, 15))
 
         # --- NEW: Layout Frame for Side-by-Side Content (Budget Left, Transactions Right) ---
         self.frame_side_by_side = tk.Frame(self.input_view, height=500, bg='#b09e83')
@@ -125,9 +125,10 @@ class BudgetTracker:
         tk.Button(
             self.frame_budget_set, 
             text="Save Budgets", 
+            font=('TkDefaultFont', 12),
             command=self.set_budgets, 
             bg='#90EE90'
-        ).pack(pady=(20, 10))
+        ).pack(pady=(30, 10))
         
         # -----------------------------------------------------------------------------------
         # --- RIGHT SIDE: Transaction List and Total (TRANSACTIONS) ---
@@ -164,7 +165,7 @@ class BudgetTracker:
 
         rp_frame.pack(fill='both', expand=True, padx=5, pady=5)
 
-        tk.Button(self.budget_page, text="Back to Main Menu", command=self.back_callback).pack(side="bottom", pady=10)
+        tk.Button(self.budget_page, text="Back to Main Menu", font=('TkDefaultFont', 13), command=self.back_callback).pack(side="bottom", pady=10)
 
         # --- Data Loading and Initialization (Moved to the end) ---
         self.load_budgets()

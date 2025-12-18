@@ -55,7 +55,7 @@ class MealPlanner:
 
         label_frame = ctk.CTkFrame(self.window, border_width=2, border_color="black", corner_radius=0, fg_color="#c3b091")
         ctk.CTkLabel(label_frame, 
-                     text="Meal Planner", text_color="black", font=("Microsoft HaYei",35), 
+                     text="Meal Planner", text_color="black", font=("Nunito Semibold",35), 
                      fg_color="#c3b091"
                      ).pack(pady=5, padx=5)
         label_frame.pack(padx=5, pady=10, anchor='center')

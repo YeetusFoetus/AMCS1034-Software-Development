@@ -1,0 +1,18 @@
+{
+    "chores": [
+        [
+            "Arrange shelf",
+            "Bedroom",
+            "Son",
+            "Tomorrow",
+            "",
+            "Pending"
+        ]
+    ],
+    "locations": [
+        "Bedroom"
+    ],
+    "members": [
+        "Son"
+    ]
+}

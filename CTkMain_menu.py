@@ -16,33 +16,29 @@ class SplashScreen:
         self.duration_ms = duration_ms
         self.callback = callback
         
-        # 1. Create a new top-level window (Toplevel is often used for splash screens)
         self.splash = tk.Toplevel(master)
         
-        # 2. Set window style and content
+        # Set window style
         self.splash.overrideredirect(True) # Remove window border and title bar
         self.splash.config(bg="#f0f0f0") 
         
-        # Welcome Text
         tk.Label(self.splash, 
                  text="Welcome to Household Management Assistant", 
                  font=("Arial", 18, "bold"), 
                  fg="#333333",
                  bg="#f0f0f0").pack(padx=50, pady=50)
         
-        # Simulated Loading Progress
         tk.Label(self.splash, 
                  text="Loading...", 
                  font=("Arial", 10),
                  fg="#555555",
                  bg="#f0f0f0").pack(pady=(0, 20))
         
-        # 3. Center the window on the screen
         self.center_window()
         
-        # 4. Set delay, call the close function after the duration
         self.splash.after(self.duration_ms, self.close_splash)
 
+    # Center the window
     def center_window(self):
         self.splash.update_idletasks()
         
@@ -95,8 +91,7 @@ class main_menu():
         bg_label.lower()   # send it behind everything
 
         #WELCOME TITLE
-        #load ttf file into Windows at runtime(running with 'file=' couldn't work)
-        ctypes.windll.gdi32.AddFontResourceExW(
+        ctypes.windll.gdi32.AddFontResourceExW(         #load ttf file into Windows at runtime
             r"Nunito/static/Nunito-SemiBold.ttf",
             16,
             0
@@ -164,9 +159,6 @@ class main_menu():
         #------
 
         #BUTTONS
-        #glm_frame = ctk.CTkFrame(main_frame1, fg_color="red")
-        #glm_frame.pack(side="left", padx=75)
-        #ctk.CTkLabel(glm_frame, text = "Grocery List ", font=("Nunito Semibold", 24)).pack()
         glm_button = ctk.CTkButton(main_frame1, 
                                    text="Grocery List\nManager", 
                                    width=5,  
@@ -174,52 +166,43 @@ class main_menu():
                                    fg_color="#f7e7ce",
                                    hover_color="#e6d5b8", 
                                    text_color="black",
+                                   font=('Nunito Semibold', 13),
                                    command=self.open_grocery)
         glm_button.image = photo1
         glm_button.pack(side="left", padx=75)
-        #glm_button.pack(pady=10)
         
-        #cs_frame = ctk.CTkFrame(main_frame1, fg_color="blue")
-        #cs_frame.pack(side="left", padx=75) 
-        #ctk.CTkLabel(cs_frame, text = "Chore Scheduler", font=("Nunito SemiBold", 24)).pack()
         cs_button = ctk.CTkButton(main_frame1, 
                                   text="   Chore\n   Scheduler", 
                                   width=5, image=photo2, 
                                   fg_color="#f7e7ce",
                                   hover_color="#e6d5b8", 
                                   text_color="black", 
+                                  font=('Nunito Semibold', 13), 
                                   command=self.open_chore)
         cs_button.image = photo2
         cs_button.pack(side="left", padx=75)
-        #cs_button.pack(pady=10)
         
-        #bt_frame = ctk.CTkFrame(main_frame2, fg_color="#f7e7ce")
-        #bt_frame.pack(anchor='n', side="left", padx=75)
-        #ctk.CTkLabel(bt_frame, text = "Budget Tracker", font=("Nunito SemiBold", 24)).pack()
         bt_button = ctk.CTkButton(main_frame2, 
                                   text="        Budget\n        Tracker", 
                                   width=5,  image=photo3, 
                                   fg_color="#f7e7ce", 
                                   hover_color="#e6d5b8", 
                                   text_color="black", 
+                                  font=('Nunito Semibold', 13),
                                   command=self.open_budget)
         bt_button.image = photo3
         bt_button.pack(side="left", padx=75)
-        #bt_button.pack(pady=10, fill="both", expand=True)
         
-        #mp_frame = ctk.CTkFrame(main_frame2, fg_color="#f7e7ce")
-        #mp_frame.pack(anchor='n', side='left', padx=75)
-        #ctk.CTkLabel(mp_frame, text="Meal Planner", font=("Nunito SemiBold", 24)).pack()
         mp_button = ctk.CTkButton(main_frame2, 
                                   text="        Meal\n        Planner", 
                                   width=5,  image=photo4, 
                                   fg_color="#f7e7ce", 
                                   hover_color="#e6d5b8", 
                                   text_color="black", 
+                                  font=('Nunito Semibold', 13),
                                   command=self.open_meal)
         mp_button.image = photo4
         mp_button.pack(side="left", padx=75)
-        #mp_button.pack(pady=10, fill="both", expand=True)
 
         exit = ctk.CTkButton(self.root, 
                              text = "Exit", 
@@ -228,6 +211,7 @@ class main_menu():
                              border_width=2,
                              border_color='red',
                              hover_color="#e6d5b8",
+                             font=('Nunito Semibold', 13),
                              command=self.exit_program)
         exit.pack(pady=(0, 60), side="bottom")
         #------
