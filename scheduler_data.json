@@ -1,36 +1,5 @@
 {
-    "chores": [
-        [
-            "Clean rubbish bin",
-            "Bedroom",
-            "Son",
-            "Today",
-            "Every 2 days",
-            "Pending"
-        ],
-        [
-            "Wash dishes",
-            "Kitchen",
-            "Son",
-            "",
-            "Every other day",
-            "Pending"
-        ],
-        [
-            "Wash dishes",
-            "Kitchen",
-            "Daughter",
-            "",
-            "Every other day",
-            "Pending"
-        ]
-    ],
-    "locations": [
-        "Bedroom",
-        "Kitchen"
-    ],
-    "members": [
-        "Son",
-        "Daughter"
-    ]
+    "chores": [],
+    "locations": [],
+    "members": []
 }
